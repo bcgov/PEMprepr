@@ -7,7 +7,7 @@
 #'
 #' @param aoi A character string of the folders
 #'
-#' @return a character vector that lists all of the folders created.
+#' @return a dataframe of the folders created
 #' @export
 #' @examples
 #' ## add more
@@ -52,19 +52,21 @@ setupfolders <- function(aoi){
   if (!exists(aoi)) {
 
     # set up folders if not already exist
-    folder_set_up <- c(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
+    folder_set_up <- data.frame(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
                        cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
                        out_path, sampling_raw_folder, clhs_outpath,training_data,
                        training_data_clean, model_dir, model_data, model_f,
                        sat_dir, CHM_dir)
+    folder_id <- t(folder_set_up)
+    names(folder_id) <-c("folder_id", "folder_location")
 
     for(fold in folder_set_up){
 
       ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
 
     }
-
-    return(print("Folder structure created!"))
+    print("Folder structure created!")
+    return(folder_id)
 
   } else {
 
