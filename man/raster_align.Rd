@@ -7,9 +7,12 @@
 raster_align(raster, polygon)
 }
 \arguments{
-\item{raster}{single channel terra::rast object}
+\item{raster}{a}
 
-\item{polygon}{the aoi polygon@return something@export  uncomment this to make it usable}
+\item{abc}{}
+}
+\value{
+ATexport
 }
 \description{
 Ensures raster aligns with vector data.
