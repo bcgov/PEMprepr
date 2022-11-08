@@ -13,34 +13,26 @@
 #' @export
 #' @examples
 
+## TESTING ----------
+## REMOVE  --
 # read in the aoi
-res = 10
-aoi <- terra::vect( "./temp_data/aoi.gpkg")
-setupfolders("CanyonCreek2")
+# res = 10
+# aoi <- terra::vect( "./temp_data/aoi.gpkg")
+# setupfolders("CanyonCreek2")
 
-output = cov_dir
+# output = cov_dir
+## ------------------
 
-create_template <- function(aoi, res, outpath = cov_dir){
+
+create_template <- function(aoi, res, outpath = "cov_dir"){
   template <- terra::rast(aoi, resolution = c(res,res))
   values(template) <- 1:ncell(template)
-#plot(template)
   resfolder = paste0(res,"m")
-terra::writeRaster(template, file.path(paste(outpath, resfolder, "template.tif", sep = "/")), overwrite = TRUE)
+
+  terra::writeRaster(template, file.path(paste(outpath, resfolder, "template.tif", sep = "/")), overwrite = TRUE)
 return(TRUE)
 }
 
 
-dem <- terra::rast( "./temp_data/10_DTM_mosaic.TIF")
-rtemplate <- terra::rast( "./temp_data/template.tif")
+## -----------------------------------
 
-align_raster <- function(covariate, resfolder, rtemplate = "", outpath = ""){
-  #resfolder = "10m"
-  covariate <- terra::rast(covariate, resolution = c(res,res))
-  rtemplate <- terra::rast(rtemplate)
-  crs(covariate) <- crs(rtemplate)
-  covariate <- terra::crop(dem, rtemplate) %>%
-    terra::resample(dem, rtemplate)
-  #plot(template)
-  terra::writeRaster(covariate, file.path(paste(outpath, resfolder, covariate_name, ".tif", sep = "/")), overwrite = TRUE)
-  return(TRUE)
-}
