@@ -16,13 +16,15 @@
 # read in the aoi
 res = 10
 aoi <- terra::vect( "./temp_data/aoi.gpkg")
-output =
+setupfolders("CanyonCreek2")
 
-create_template <- function(aoi, res, outpath = ""){
-resfolder = "10m"
-    template <- terra::rast(aoi, resolution = c(res,res))
+output = cov_dir
+
+create_template <- function(aoi, res, outpath = cov_dir){
+  template <- terra::rast(aoi, resolution = c(res,res))
   values(template) <- 1:ncell(template)
 #plot(template)
+  resfolder = paste0(res,"m")
 terra::writeRaster(template, file.path(paste(outpath, resfolder, "template.tif", sep = "/")), overwrite = TRUE)
 return(TRUE)
 }
