@@ -16,13 +16,6 @@
 
 setupfolders <- function(aoi){
 
-  ## add error control
-  if (exists(aoi)) {
-    print(paste("The", aoi, "folder already exists -- no action taken."))
-    stop()
-  }
-
-
   #base directory
   AOI_dir <- file.path(".", paste0(aoi))
   raw_dir <- file.path(AOI_dir, "00_raw_inputs")
@@ -54,20 +47,29 @@ setupfolders <- function(aoi){
   model_f <- file.path(AOI_dir, "30_maps_analysis", "models", "forest")
 
 
+  ## add error control
 
-  # set up folders if not already exist
-  folder_set_up <- c(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
-                     cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
-                     out_path, sampling_raw_folder, clhs_outpath,training_data,
-                     training_data_clean, model_dir, model_data, model_f,
-                     sat_dir, CHM_dir)
+  if (!exists(aoi)) {
 
-  for(fold in folder_set_up){
+    # set up folders if not already exist
+    folder_set_up <- c(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
+                       cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
+                       out_path, sampling_raw_folder, clhs_outpath,training_data,
+                       training_data_clean, model_dir, model_data, model_f,
+                       sat_dir, CHM_dir)
 
-    ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
+    for(fold in folder_set_up){
+
+      ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
+
+    }
+
+    return(print("Folder structure created!"))
+
+  } else {
+
+    print(paste("The", aoi, "folder already exists - defining folder names."))
 
   }
-
-  return(print("Folder structure created!"))
 
 }
