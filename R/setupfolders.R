@@ -16,6 +16,13 @@
 
 setupfolders <- function(aoi){
 
+  ## add error control
+  if (exists(aoi)) {
+    print(paste("The", aoi, "folder already exists -- no action taken."))
+    stop()
+  }
+
+
   #base directory
   AOI_dir <- file.path(".", paste0(aoi))
   raw_dir <- file.path(AOI_dir, "00_raw_inputs")
@@ -34,12 +41,12 @@ setupfolders <- function(aoi){
   CHM_dir  <- file.path(AOI_dir, "00_raw_inputs", "chm")
 
   # sample filepaths
-  out_path <- file.path(AOI_dir, "20_sample_design", "stage1_StudyDesign")
+  out_path <- file.path(AOI_dir, "20_sample_design", "stage1_studydesign")
   sampling_raw_folder <- file.path(out_path, "input_raster")
   clhs_outpath <- file.path(out_path, "clhs_sample_plans")
 
-  training_data <- file.path(AOI_dir, "10_map_inputs", "trainingData")
-  training_data_clean <- file.path(AOI_dir, "10_map_inputs", "trainingData", "clean")
+  training_data <- file.path(AOI_dir, "10_map_inputs", "trainingdata")
+  training_data_clean <- file.path(AOI_dir, "10_map_inputs", "trainingdata", "clean")
 
   # model building folders
   model_dir <- file.path(AOI_dir, "30_maps_analysis")
