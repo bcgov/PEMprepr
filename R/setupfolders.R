@@ -5,7 +5,7 @@
 #' Folder structure contains all the raw data, covariates generated, and
 #' subsequent models, and predicted map rasters.
 #'
-#' @param AOI A character string of the folders
+#' @param aoi A character string of the folders
 #'
 #' @return a character vector that lists all of the folders created.
 #' @export
@@ -14,10 +14,10 @@
 #' setupfolder("AppleValley")
 
 
-setupfolders <- function(AOI){
+setupfolders <- function(aoi){
 
   #base directory
-  AOI_dir <- file.path(".", paste0(AOI))
+  AOI_dir <- file.path(".", paste0(aoi))
   raw_dir <- file.path(AOI_dir, "00_raw_inputs")
   derived_dir <- file.path(AOI_dir, "10_map_inputs")
 
@@ -31,7 +31,7 @@ setupfolders <- function(AOI){
   lidar_dir <- file.path(AOI_dir, "00_raw_inputs", "dem", "lidar")
   trim_dir <- file.path(AOI_dir, "00_raw_inputs", "dem", "trim")
   sat_dir  <- file.path(AOI_dir, "00_raw_inputs", "satelite")
-  CHM_dir  <- file.path(AOI_dir, "00_raw_inputs", "CHM")
+  CHM_dir  <- file.path(AOI_dir, "00_raw_inputs", "chm")
 
   # sample filepaths
   out_path <- file.path(AOI_dir, "20_sample_design", "stage1_StudyDesign")
