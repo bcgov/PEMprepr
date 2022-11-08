@@ -4,10 +4,10 @@
 \alias{setupfolders}
 \title{Setup Folder Structure}
 \usage{
-setupfolders(AOI)
+setupfolders(aoi)
 }
 \arguments{
-\item{AOI}{A character string of the folders}
+\item{aoi}{A character string of the folders}
 }
 \value{
 a character vector that lists all of the folders created.
