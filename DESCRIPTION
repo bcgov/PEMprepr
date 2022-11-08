@@ -1,0 +1,16 @@
+Package: PEMprepr
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: c(
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre")),
+    person("Province of British Columbia", role = "cph")
+  )
+Description: What the package does (one paragraph).
+License: Apache License (== 2.0) | file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.0
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
