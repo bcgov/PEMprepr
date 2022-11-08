@@ -9,7 +9,7 @@
 #'
 #' @return a character vector that lists all of the folders created.
 #'
-#'
+#' @export
 
 setupfolders <- function(AOI){
 
