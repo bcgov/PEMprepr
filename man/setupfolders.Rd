@@ -19,3 +19,7 @@ Sets up the default folder structure
 Folder structure contains all the raw data, covariates generated, and
 subsequent models, and predicted map rasters.
 }
+\examples{
+## add more
+setupfolder("AppleValley")
+}
