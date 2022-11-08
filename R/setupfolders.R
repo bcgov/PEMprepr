@@ -34,12 +34,12 @@ setupfolders <- function(aoi){
   CHM_dir  <- file.path(AOI_dir, "00_raw_inputs", "chm")
 
   # sample filepaths
-  out_path <- file.path(AOI_dir, "20_sample_design", "stage1_StudyDesign")
+  out_path <- file.path(AOI_dir, "20_sample_design", "stage1_studydesign")
   sampling_raw_folder <- file.path(out_path, "input_raster")
   clhs_outpath <- file.path(out_path, "clhs_sample_plans")
 
-  training_data <- file.path(AOI_dir, "10_map_inputs", "trainingData")
-  training_data_clean <- file.path(AOI_dir, "10_map_inputs", "trainingData", "clean")
+  training_data <- file.path(AOI_dir, "10_map_inputs", "trainingdata")
+  training_data_clean <- file.path(AOI_dir, "10_map_inputs", "trainingdata", "clean")
 
   # model building folders
   model_dir <- file.path(AOI_dir, "30_maps_analysis")
@@ -47,20 +47,29 @@ setupfolders <- function(aoi){
   model_f <- file.path(AOI_dir, "30_maps_analysis", "models", "forest")
 
 
+  ## add error control
 
-  # set up folders if not already exist
-  folder_set_up <- c(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
-                     cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
-                     out_path, sampling_raw_folder, clhs_outpath,training_data,
-                     training_data_clean, model_dir, model_data, model_f,
-                     sat_dir, CHM_dir)
+  if (!exists(aoi)) {
 
-  for(fold in folder_set_up){
+    # set up folders if not already exist
+    folder_set_up <- c(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
+                       cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
+                       out_path, sampling_raw_folder, clhs_outpath,training_data,
+                       training_data_clean, model_dir, model_data, model_f,
+                       sat_dir, CHM_dir)
 
-    ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
+    for(fold in folder_set_up){
+
+      ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
+
+    }
+
+    return(print("Folder structure created!"))
+
+  } else {
+
+    print(paste("The", aoi, "folder already exists - defining folder names."))
 
   }
-
-  return(print("Folder structure created!"))
 
 }
