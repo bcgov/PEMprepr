@@ -23,7 +23,6 @@ setupfolders <- function(aoi){
   raw_dir <- file.path(AOI_dir, "00_raw_inputs")
   derived_dir <- file.path(AOI_dir, "10_map_inputs")
 
-
   # input and data processing directly
 
   cov_dir <- file.path(AOI_dir, "10_map_inputs", "covariates")
