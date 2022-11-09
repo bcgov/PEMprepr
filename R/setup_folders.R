@@ -7,13 +7,14 @@
 #' been created this function can be used to generate a list of the folder_id
 #' and associated file paths.
 #'
-#' @param aoi A character string of the folders
+#' @param aoi A character string to name the main data folder
 #'
 #' @return a named list of the folders created
 #' @export
 #' @examples
 #' ## add more
 #' setupfolder("AppleValley")
+#' list.dir
 
 
 setupfolders <- function(aoi){
@@ -25,29 +26,30 @@ setupfolders <- function(aoi){
 
   # input and data processing directly
 
-  cov_dir <- file.path(AOI_dir, "10_map_inputs", "covariates")
-  shape_dir <- file.path(AOI_dir, "00_raw_inputs", "vector")
-  shape_raw_dir <- file.path(AOI_dir, "00_raw_inputs", "vector", "raw")
-  dem_dir <- file.path(AOI_dir, "00_raw_inputs", "dem")
-  lidar_dir <- file.path(AOI_dir, "00_raw_inputs", "dem", "lidar")
-  trim_dir <- file.path(AOI_dir, "00_raw_inputs", "dem", "trim")
-  sat_dir  <- file.path(AOI_dir, "00_raw_inputs", "satelite")
-  CHM_dir  <- file.path(AOI_dir, "00_raw_inputs", "chm")
+  shape_dir <- file.path(AOI_dir,               "00_raw_inputs", "vector")
+  shape_raw_dir <- file.path(AOI_dir,           "00_raw_inputs", "vector", "raw")
+  dem_dir <- file.path(AOI_dir,                 "00_raw_inputs", "dem")
+  lidar_dir <- file.path(AOI_dir,               "00_raw_inputs", "dem", "lidar")
+  trim_dir <- file.path(AOI_dir,                "00_raw_inputs", "dem", "trim")
+  sat_dir  <- file.path(AOI_dir,                "00_raw_inputs", "satelite")
+  CHM_dir  <- file.path(AOI_dir,                "00_raw_inputs", "chm")
+
+  cov_dir <- file.path(AOI_dir,                 "10_clean_inputs", "covariates")
 
   # sample filepaths
-  out_path <- file.path(AOI_dir, "20_sample_design", "stage1_studydesign")
-  sampling_raw_folder <- file.path(out_path, "input_raster")
-  clhs_outpath <- file.path(out_path, "clhs_sample_plans")
+  out_path <- file.path(AOI_dir,                "20_sample_design", "stage1_studydesign")
+  sampling_raw_folder <- file.path(out_path,    "input_raster")
+  clhs_outpath <- file.path(out_path,           "clhs_sample_plans")
 
 
-  training_data <- file.path(AOI_dir, "10_clean_inputs", "trainingdata")
-  training_data_vector <- file.path(AOI_dir, "10_clean_inputs", "vector")
-  training_data_clean <- file.path(AOI_dir, "10_clean_inputs", "trainingdata", "clean")
+  training_data <- file.path(AOI_dir,           "10_clean_inputs", "trainingdata")
+  training_data_vector <- file.path(AOI_dir,    "10_clean_inputs", "vector")
+  training_data_clean <- file.path(AOI_dir,     "10_clean_inputs", "trainingdata", "clean")
 
   # model building folders
-  model_dir <- file.path(AOI_dir, "30_maps_analysis")
-  model_data <- file.path(AOI_dir, "30_maps_analysis", "models")
-  model_f <- file.path(AOI_dir, "30_maps_analysis", "models", "forest")
+  model_dir <- file.path(AOI_dir,               "30_maps_analysis")
+  model_data <- file.path(AOI_dir,              "30_maps_analysis", "models")
+  model_f <- file.path(AOI_dir,                 "30_maps_analysis", "models", "forest")
 
 
   ## add error control
@@ -66,12 +68,8 @@ setupfolders <- function(aoi){
 
 
 
-  if (!exists(aoi)) {
-
-
-
-
-
+  if (!dir.exists(AOI_dir)) {
+    print("creating folders")
     for(fold in folder_set_up){
 
       ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
@@ -82,7 +80,7 @@ setupfolders <- function(aoi){
 
   } else {
 
-    print(paste("The", aoi, "folder already exists - defining folder names."))
+    print(paste("The", aoi, "folder already exists - retrievied folder names."))
 
   }
 return(folder_id)
