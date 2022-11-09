@@ -5,9 +5,10 @@
 #' To facilitate stacking of rasters, and rasters of varied resolutions rasters
 #' must have the same extent. This function ensure that ..... MORE HERE ...
 #'
-#' @param raster a `terra::rast` object
+#' @param iraster a `terra::rast` object
 #' @param rtemplate a `terra::rast` object
-#' @param outpath a character string to save location
+#' @param outpath a character string to save location. Note that it will be placed
+#' in a subfolder based on the template resolution.
 #'
 #' @export
 #'
@@ -16,24 +17,28 @@
 #'
 
 
-align_raster <- function(raster,          ## input raster
+align_raster <- function(iraster,         ## input raster
                          rtemplate,       ## a terra::rast object
-                         outpath = ""){   ## export location
+                         outpath = c(NULL, "default", "yourpath"),
+                         outname = c(NULL, "yourname.tiff")){   ## export location
 
-  rtemplate <- terra::rast(rtemplate)
+  if (outpath == "default") {print("Add query default dir")}
+
+  # rtemplate <- terra::rast(rtemplate) ##
   res <- terra::res(rtemplate)[1]
 
-  ## Error check
-  ## 1. Template rexolution in x and y are the same
-
-
-  raster    <-    terra::rast(covariate, resolution = c(res,res))
+  # iraster    <-    terra::rast(covariate, resolution = res)
   # rtemplate <- terra::rast(rtemplate)
-  crs(covariate) <- crs(rtemplate)
-  covariate <- terra::crop(dem, rtemplate) %>%
-    terra::resample(dem, rtemplate)
+  crs(covariate) <- crs(rtemplate) ### This should be error checked
+
+  out <- terra::crop(dem, rtemplate)
+  out <- resample(out, rtemplate)
+
   #plot(template)
+
+  if (!is.null(outpath)|| !is.null(outname)) { ## CHECK THIS
   terra::writeRaster(covariate, file.path(paste(outpath, resfolder, covariate_name, ".tif", sep = "/")), overwrite = TRUE)
-  return(TRUE)
+  }
+  return(out) ## SpatRaster
 }
 
