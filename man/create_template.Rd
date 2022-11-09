@@ -8,8 +8,6 @@ create_template(aoi, res, outpath = "cov_dir")
 }
 \arguments{
 \item{aoi}{is a sf object bounding box created expanded in aoi_snap function(e.g. polygon).}
-
-\item{method}{Options are \emph{shrink} or \emph{expand}. \emph{Shrink} will snap the aoi in to the nearest 100m. \emph{Expand} will snap the aoi out to the nearest 100m.}
 }
 \value{
 a terra raster
@@ -21,6 +19,10 @@ This package assumes to data is in a metric equal area projection most likely BC
 \details{
 This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregate'd back to the lowest resolution.
 Having the aoi set 100m break-points facilitates this.
+}
+\examples{
+
+create_template(aoi)
 }
 \keyword{align}
 \keyword{aoi,}
