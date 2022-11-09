@@ -4,7 +4,7 @@
 \alias{create_template}
 \title{Create a raster template from AOI}
 \usage{
-create_template(aoi, res, outpath = "./10_clean_inputs/covariates")
+create_template(aoi, res, outpath = c(NULL, "default", "yourpath"))
 }
 \arguments{
 \item{aoi}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}
@@ -14,7 +14,7 @@ create_template(aoi, res, outpath = "./10_clean_inputs/covariates")
 \item{outpath}{output path.  Note that the results will be placed in a subfolder labelled with the resolution.}
 }
 \value{
-a terra raster
+a terra raster.  \emph{NOT CURRENTLY} saving raster objects
 }
 \description{
 Sets the baseline raster template to align and standardize all raster predictor layers
