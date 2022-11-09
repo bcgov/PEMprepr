@@ -1,10 +1,11 @@
 
 # Create satellite detrivatives for aligned rasters
 
-# devtools::install_github("16EAGLE/getSpatialData")
-# library(getSpatialData)
-# library(terra)
-# library(sf)
+devtools::install_github("16EAGLE/getSpatialData")
+library(getSpatialData)
+library(terra)
+library(sf)
+
 # library(sp)
 # library(mapview)
 # library(tidyverse)
@@ -19,93 +20,49 @@
 
 #in_aoi <- st_read(file.path('temp', "aoi.gpkg"))
 #out_path = shape_raw_dir <- file.path('temp')
+devtools::load_all()
+library(PEMprepr)
+
+## Testing
+#rtemplate = terra::rast(system.file("extdata", "DTM.tif", package = "PEMprepr")) #
+#aoi = sf::st_read(system.file("extdata", "aoi.gpkg", package = "PEMprepr"))
+#aoi1 = aoi_snap(aoi, method = 'shrink')
+
+## parameters
+
+# the location of the img files (will need to be aligned first )
+ifolder <- "D:\\PEM_DATA\\PEMprepr\\temp\\IMG_DATA\\"
+# output path
+out_path = cov_dir
+# write out option
 
 
-# input the aligned satelite raster  (use aligned raster)
+create_satellite <- function(ifolder, out_path = cov_dir, writeout = TRUE){
 
 
+  # check if folder contains tif objects (not jp2 objects)
 
-create_satellite <- function(iraster, rtemplate, out_path = cov_dir, writeout = TRUE){
+  # check if all rasters are aligned
 
-  iraster = raw satellite
-  rtempate = template raster (of res)
-  out_path =
-  writeout = TRUE
+  allsen <- terra::rast(ifolder)
 
-  sat_dir = raw_satellite_dir
-            file.path(AOI_dir, "0_raw_inputs", "satellite_layers")
-  cov_dir = output folder (per size)
-  cov_dir <- file.path(AOI_dir, "1_map_inputs", "covariates")
-  rtemplate<- raster(file.path(cov_dir, res,"template.tif"))
-
-
-
-
-
-allst <- stack(all)
-
-rtemp <- raster(file.path(cov_dir, res,"template.tif"))###example for use as a template in
-
-rtemp.wgs <- projectRaster(rtemp,
-                           crs = "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-
-# Point to saved sentinel data location.
-
-sen.dir = file.path(raw_dir, #"\\S2B_MSIL1C_20180714T193859_N0206_R042_T09UXA_20180714T225733.SAFE\\GRANULE\\L1C_T09UXA_A007075_20180714T194841\\IMG_DATA")
-"\\Sentinel-2\\S2A\\S2A_MSIL1C_20200731T194911_N0209_R085_T09UWB_20200731T231533.SAFE\\GRANULE\\L1C_T09UWB_A026680_20200731T195619\\IMG_DATA")
-
-
-
-# Make a list of the files in a directory of interest
-jp2 <- list.files(sen.dir, pattern = "\\.tif$", full.names = T)
-jp2_10 <- stack(jp2[c(2,3,4,8)])
-jp2_20 <- stack(jp2[c(5,6,7,11,12,13)])
-jp2_60 <- stack(jp2[c(1,9,10)])
-# # create an RGB to test
-# aoi <- mapview::viewRGB(x = jp2_10,
-#                         r = "T09UXA_20180714T193859_B04",
-#                         g = "T09UXA_20180714T193859_B03",
-#                         b = "T09UXA_20180714T193859_B02",
-#                         maxpixels = 1e+05) # %>% mapedit::editMap()
-#
-# function to prepare sentinel layers to match template
-senprep <- function(senstack, rtemp, crs.out = "+init=epsg:3005"){
-  print("please be patient - this will take a moment")
-  rtemp.crs <- projectRaster(rtemp,
-                             crs = "+proj=utm +zone=9 +datum=WGS84 +units=m +no_defs +ellps=WGS84 +towgs84=0,0,0")
-  print("cropping raster stack to raster template")
-  senst <- crop(senstack, rtemp.crs)
-  print("reprojecting raster stack")
-  senst <- projectRaster(senst , crs = crs.out)
-  print("downscaling as required")
-  senst <- resample(senst, rtemp, method = "bilinear")
-}
-# down scale the stacks
-sout <- senprep(jp2_10, rtemp)
-sout20 <- senprep(jp2_20, rtemp)
-sout60 <- senprep(jp2_60, rtemp)
-
-# stack and rename
-allsen <- stack(sout, sout20, sout60)
-
-# fix the bank names
-band_names <- tribble(
-  ~band, ~names,
-  "blue", "B02",
-  "green","B03",
-  "red", "B04",
-  "nir", "B08",
-  "rededge1", "B05",
-  "rededge2", "B06",
-  "rededge3", "B07",
-  "swir1", "B11",
-  "swir2", "B12",
-  "vegred", "B8A",
-  "ultablue", "B01",
-  "nir2", "B09",
-  "cirrus", "B10"
-)
-
+  # fix the bank names
+  band_names <- tribble(
+    ~band, ~names,
+    "blue", "B02",
+    "green","B03",
+    "red", "B04",
+    "nir", "B08",
+    "rededge1", "B05",
+    "rededge2", "B06",
+    "rededge3", "B07",
+    "swir1", "B11",
+    "swir2", "B12",
+    "vegred", "B8A",
+    "ultablue", "B01",
+    "nir2", "B09",
+    "cirrus", "B10"
+  )
 
 # write out individual bands
 short_names <- as.data.frame(names(allsen)) %>%
@@ -114,10 +71,7 @@ short_names <- as.data.frame(names(allsen)) %>%
   mutate(names = gsub("t09uwb_20200731t194911_","", names)) %>%
   pull(., names)
 
-
 names(allsen) <- tolower(short_names)
-
-writeRaster(allsen, file.path(cov_dir, res, ".tif"), bylayer = TRUE, suffix = names(allsen))
 
 # check layers
 
