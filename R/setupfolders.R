@@ -52,17 +52,23 @@ setupfolders <- function(aoi){
 
   ## add error control
 
+
+  ## set up folders if not already exist
+  ## also used to create list of default directories
+  folder_set_up <- data.frame(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
+                              cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
+                              out_path, sampling_raw_folder, clhs_outpath,
+                              training_data, training_data_clean, training_data_vector,
+                              model_dir, model_data, model_f,
+                              sat_dir, CHM_dir)
+  # folder_id <- as.data.frame(t(folder_set_up))
+  folder_id <- as.list(folder_set_up)
+
+
+
   if (!exists(aoi)) {
 
-    # set up folders if not already exist
-    folder_set_up <- data.frame(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
-                       cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
-                       out_path, sampling_raw_folder, clhs_outpath,
-                       training_data, training_data_clean, training_data_vector,
-                       model_dir, model_data, model_f,
-                       sat_dir, CHM_dir)
-    # folder_id <- as.data.frame(t(folder_set_up))
-    folder_id <- as.list(folder_set_up)
+
 
 
 
@@ -79,5 +85,5 @@ setupfolders <- function(aoi){
     print(paste("The", aoi, "folder already exists - defining folder names."))
 
   }
-
+return(folder_id)
 }
