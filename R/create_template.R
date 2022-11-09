@@ -28,18 +28,20 @@
 
 
 create_template <- function(aoi, res, outpath = "./10_clean_inputs/covariates"){
-  if (class(aoi) == "sf") {
+  if (class(aoi)[1] == "sf") {
     aoi <- terra::vect(aoi)
   }
 
   template <- terra::rast(aoi, resolution = res)
+  terra::values(template) <- 0
 
   outpath <- file.path(outpath, res)
   if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
 
   terra::writeRaster(template, file.path(outpath, "template.tif"), overwrite = TRUE)
 
-  return(TRUE)
+  print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
+  return(template)
 }
 
 
