@@ -6,12 +6,15 @@
 #' This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregate'd back to the lowest resolution.
 #' Having the aoi set 100m break-points facilitates this.
 #'
-#' @param aoi is a sf object bounding box created expanded in aoi_snap function(e.g. polygon).
-#' @param method Options are _shrink_ or _expand_. _Shrink_ will snap the aoi in to the nearest 100m. _Expand_ will snap the aoi out to the nearest 100m.
+#' @param aoi is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection
+#' @param res desired resolution of the raster (in meters)
+#' @param outpath output path.  Note that the results will be placed in a subfolder labelled with the resolution.
 #' @return a terra raster
 #' @keywords aoi, raster, template, crop, align
 #' @export
 #' @examples
+#'
+#' create_template(aoi, 10)
 
 ## TESTING ----------
 ## REMOVE  --
@@ -24,13 +27,19 @@
 ## ------------------
 
 
-create_template <- function(aoi, res, outpath = "cov_dir"){
-  template <- terra::rast(aoi, resolution = c(res,res))
-  values(template) <- 1:ncell(template)
-  resfolder = paste0(res,"m")
+create_template <- function(aoi, res, outpath = "./10_clean_inputs/covariates"){
+  if (class(aoi) == "sf") {
+    aoi <- terra::vect(aoi)
+  }
 
-  terra::writeRaster(template, file.path(paste(outpath, resfolder, "template.tif", sep = "/")), overwrite = TRUE)
-return(TRUE)
+  template <- terra::rast(aoi, resolution = res)
+
+  outpath <- file.path(outpath, res)
+  if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
+
+  terra::writeRaster(template, file.path(outpath, "template.tif"), overwrite = TRUE)
+
+  return(TRUE)
 }
 
 
