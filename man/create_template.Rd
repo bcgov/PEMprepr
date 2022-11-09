@@ -4,10 +4,14 @@
 \alias{create_template}
 \title{Create a raster template from AOI}
 \usage{
-create_template(aoi, res, outpath = "cov_dir")
+create_template(aoi, res, outpath = "./10_clean_inputs/covariates")
 }
 \arguments{
-\item{aoi}{is a sf object bounding box created expanded in aoi_snap function(e.g. polygon).}
+\item{aoi}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}
+
+\item{res}{desired resolution of the raster (in meters)}
+
+\item{outpath}{output path.  Note that the results will be placed in a subfolder labelled with the resolution.}
 }
 \value{
 a terra raster
@@ -22,7 +26,7 @@ Having the aoi set 100m break-points facilitates this.
 }
 \examples{
 
-create_template(aoi)
+create_template(aoi, 10)
 }
 \keyword{align}
 \keyword{aoi,}

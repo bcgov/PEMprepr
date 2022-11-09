@@ -4,14 +4,20 @@
 \alias{align_raster}
 \title{Align raster}
 \usage{
-align_raster(raster, rtemplate, outpath = "")
+align_raster(
+  iraster,
+  rtemplate,
+  outpath = c(NULL, "default", "yourpath"),
+  outname = c(NULL, "yourname.tiff")
+)
 }
 \arguments{
-\item{raster}{a \code{terra::rast} object}
+\item{iraster}{a \code{terra::rast} object}
 
 \item{rtemplate}{a \code{terra::rast} object}
 
-\item{outpath}{a character string to save location}
+\item{outpath}{a character string to save location. Note that it will be placed
+in a subfolder based on the template resolution.}
 }
 \description{
 Forces raster to an specified extent
