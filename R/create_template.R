@@ -9,7 +9,7 @@
 #' @param aoi is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection
 #' @param res desired resolution of the raster (in meters)
 #' @param outpath output path.  Note that the results will be placed in a subfolder labelled with the resolution.
-#' @return a terra raster
+#' @return a terra raster.  _NOT CURRENTLY_ saving raster objects
 #' @keywords aoi, raster, template, crop, align
 #' @export
 #' @examples
@@ -27,7 +27,7 @@
 ## ------------------
 
 
-create_template <- function(aoi, res, outpath = "./10_clean_inputs/covariates"){
+create_template <- function(aoi, res, outpath = c(NULL, "default", "yourpath")){
   if (class(aoi)[1] == "sf") {
     aoi <- terra::vect(aoi)
   }
@@ -38,7 +38,11 @@ create_template <- function(aoi, res, outpath = "./10_clean_inputs/covariates"){
   outpath <- file.path(outpath, res)
   if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
 
-  terra::writeRaster(template, file.path(outpath, "template.tif"), overwrite = TRUE)
+
+  # if (is.null(outpath)) {
+  # terra::writeRaster(template, file.path(outpath, "template.tif"), overwrite = TRUE)
+  # }
+
 
   print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
   return(template)
