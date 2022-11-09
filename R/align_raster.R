@@ -22,23 +22,30 @@ align_raster <- function(iraster,         ## input raster
                          outpath = c(NULL, "default", "yourpath"),
                          outname = c(NULL, "yourname.tiff")){   ## export location
 
-  if (outpath == "default") {print("Add query default dir")}
+  ## Error Checking
+  # 1. crs of iraster and raster are equal
+  # 2. NULL vs save names
+
+  # if (outpath == "default") {print("Add query default dir")}
 
   # rtemplate <- terra::rast(rtemplate) ##
   res <- terra::res(rtemplate)[1]
 
   # iraster    <-    terra::rast(covariate, resolution = res)
   # rtemplate <- terra::rast(rtemplate)
-  crs(covariate) <- crs(rtemplate) ### This should be error checked
 
-  out <- terra::crop(dem, rtemplate)
-  out <- resample(out, rtemplate)
+
+  #terra::crs(covariate) <- terra::crs(rtemplate) ### This should be error checked
+
+  out <- terra::crop(iraster, rtemplate)
+  out <- terra::resample(out, rtemplate)
 
   #plot(template)
 
-  if (!is.null(outpath)|| !is.null(outname)) { ## CHECK THIS
-  terra::writeRaster(covariate, file.path(paste(outpath, resfolder, covariate_name, ".tif", sep = "/")), overwrite = TRUE)
-  }
+  # if (!is.null(outpath)|| !is.null(outname)) { ## CHECK THIS
+  # terra::writeRaster(out, file.path(paste(outpath, resfolder, covariate_name, ".tif", sep = "/")), overwrite = TRUE)
+  # } else {
   return(out) ## SpatRaster
+  # }
 }
 
