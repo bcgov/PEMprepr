@@ -3,11 +3,13 @@
 #' Sets up the default folder structure
 #'
 #' Folder structure contains all the raw data, covariates generated, and
-#' subsequent models, and predicted map rasters.
+#' subsequent models, and predicted map rasters. _Note_ if directories have
+#' been created this function can be used to generate a list of the folder_id
+#' and associated file paths.
 #'
 #' @param aoi A character string of the folders
 #'
-#' @return a dataframe of the folders created
+#' @return a named list of the folders created
 #' @export
 #' @examples
 #' ## add more
@@ -37,8 +39,10 @@ setupfolders <- function(aoi){
   sampling_raw_folder <- file.path(out_path, "input_raster")
   clhs_outpath <- file.path(out_path, "clhs_sample_plans")
 
-  training_data <- file.path(AOI_dir, "10_map_inputs", "trainingdata")
-  training_data_clean <- file.path(AOI_dir, "10_map_inputs", "trainingdata", "clean")
+
+  training_data <- file.path(AOI_dir, "10_clean_inputs", "trainingdata")
+  training_data_vector <- file.path(AOI_dir, "10_clean_inputs", "vector")
+  training_data_clean <- file.path(AOI_dir, "10_clean_inputs", "trainingdata", "clean")
 
   # model building folders
   model_dir <- file.path(AOI_dir, "30_maps_analysis")
@@ -48,16 +52,25 @@ setupfolders <- function(aoi){
 
   ## add error control
 
+
+  ## set up folders if not already exist
+  ## also used to create list of default directories
+  folder_set_up <- data.frame(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
+                              cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
+                              out_path, sampling_raw_folder, clhs_outpath,
+                              training_data, training_data_clean, training_data_vector,
+                              model_dir, model_data, model_f,
+                              sat_dir, CHM_dir)
+  # folder_id <- as.data.frame(t(folder_set_up))
+  folder_id <- as.list(folder_set_up)
+
+
+
   if (!exists(aoi)) {
 
-    # set up folders if not already exist
-    folder_set_up <- data.frame(AOI_dir, raw_dir,shape_raw_dir, derived_dir,
-                       cov_dir, shape_dir, dem_dir,lidar_dir, trim_dir,
-                       out_path, sampling_raw_folder, clhs_outpath,training_data,
-                       training_data_clean, model_dir, model_data, model_f,
-                       sat_dir, CHM_dir)
-    folder_id <- t(folder_set_up)
-    names(folder_id) <-c("folder_id", "folder_location")
+
+
+
 
     for(fold in folder_set_up){
 
@@ -72,5 +85,5 @@ setupfolders <- function(aoi){
     print(paste("The", aoi, "folder already exists - defining folder names."))
 
   }
-
+return(folder_id)
 }

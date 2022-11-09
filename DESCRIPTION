@@ -15,4 +15,5 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    terra
+    terra,
+    sf

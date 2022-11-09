@@ -10,7 +10,7 @@ setupfolders(aoi)
 \item{aoi}{A character string of the folders}
 }
 \value{
-a dataframe of the folders created
+a named list of the folders created
 }
 \description{
 Sets up the default folder structure
