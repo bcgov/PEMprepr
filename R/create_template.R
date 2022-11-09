@@ -27,7 +27,9 @@
 ## ------------------
 
 
-create_template <- function(aoi, res, outpath = c(NULL, "default", "yourpath")){
+create_template <- function(aoi, res#, dropped saving for now
+                            #outpath = c(NULL, "default", "yourpath")
+                            ){
   if (class(aoi)[1] == "sf") {
     aoi <- terra::vect(aoi)
   }
@@ -35,8 +37,8 @@ create_template <- function(aoi, res, outpath = c(NULL, "default", "yourpath")){
   template <- terra::rast(aoi, resolution = res)
   terra::values(template) <- 0
 
-  outpath <- file.path(outpath, res)
-  if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
+  # outpath <- file.path(outpath, res)
+  # if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
 
 
   # if (is.null(outpath)) {
@@ -44,7 +46,7 @@ create_template <- function(aoi, res, outpath = c(NULL, "default", "yourpath")){
   # }
 
 
-  print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
+  # print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
   return(template)
 }
 
