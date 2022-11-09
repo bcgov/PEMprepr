@@ -7,7 +7,7 @@
 #' Depending on your system the path to `saga_cmd` may need to be specified.
 #'
 #'
-#' @param dtm is a dtm raster object
+#' @param dtm is a dtm SpatRaster object
 #' @param SAGApath Is the location of SAGA on your system.  On linux systems with SAGA GIS installed Use `SAGApath = ""`
 #' @param output Location of where rasters will be saved.
 #' @param layers The covariates that will be generated.  A full list of covariates is listed at: ADD
@@ -23,6 +23,8 @@
 create_covariates <- function(dtm, SAGApath = "",
                               output = "./cv-rasters",
                               layers = "all"){
+
+  dtm <-
 
   ### In future this would be good to set as a lookup table and then have a single
   # sub-function that uses the table parameters
@@ -94,7 +96,8 @@ create_covariates <- function(dtm, SAGApath = "",
 
   sDTM <- "dtm.tif"
   # sDTM <- paste0(saga_tmp_files, sDTM)
-  raster::writeRaster(dtm, sDTM, drivername = "GTiff", overwrite = TRUE)  # save SAGA Version using rgdal
+  terra::writeRaster(dtm, sDTM, )
+  # raster::writeRaster(dtm, sDTM, drivername = "GTiff", overwrite = TRUE)  # save SAGA Version using rgdal
 
   ## Bit of a hack here -- SAGA does not like the output from raster package
   ## save it as gTiff, re-open using rgdal and export as SAGA ...

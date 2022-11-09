@@ -17,7 +17,7 @@
 #' list.dir
 
 
-setupfolders <- function(aoi){
+setup_folders <- function(aoi){
 
   #base directory
   AOI_dir <- file.path(".", paste0(aoi))
@@ -65,6 +65,7 @@ setupfolders <- function(aoi){
                               sat_dir, CHM_dir)
   # folder_id <- as.data.frame(t(folder_set_up))
   folder_id <- as.list(folder_set_up)
+
 
 
 
