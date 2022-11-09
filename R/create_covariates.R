@@ -15,7 +15,7 @@
 #' @export
 #' @examples
 #' ##
-#' create_covariates(dtm,                          ## the dtm (loaded by raster() )
+#' create_covariates(dtm,                ## the dtm (loaded by raster() )
 #'         SAGApath = "C:/SAGA/"         ## specify location of SAGA on your machine
 #'         output   = "c:/dtm-derived" ) ## specify output folder
 
@@ -23,14 +23,20 @@
 create_covariates <- function(dtm, SAGApath = "",
                               output = "./cv-rasters",
                               layers = "all"){
+  ## testing
+  # dtm <- terra::rast(system.file("extdata", "DTM.tif", package = "PEMprepr"))
+  # dtm <- dat2
+  # layers <- "Filled_sinks"
+  # output <- "~/workspace/tmp/bannas"
+  # SAGApath <- ""
 
-  dtm <-
+
 
   ### In future this would be good to set as a lookup table and then have a single
   # sub-function that uses the table parameters
 
   ####### Options -- All the possible covariates ########
-  options <- c("Filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_curve",
+  layer_options <- c("Filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_curve",
                "tCatchment", "tca", "sCatchment", "twi", "channelsNetwork",
                "Distance2Water", "MultiResFlatness", "MultiResFlatness2",
                "MultiResFlatness3", "TRI", "convergence", "Openness",
@@ -40,17 +46,18 @@ create_covariates <- function(dtm, SAGApath = "",
                "SolarRad", "Convexity", "VertDistance", "TCI_low",
                "SWI", "WindExp", "Texture", "Protection", "VRM",
                "MBI", "mscale_TPI", "RelPosition", "SlopeCurvatures",
-               "SteepestSlope")
+               "SteepestSlope", "UpslopeArea")
+
 
 
   ####### flag all to run #######################
   if (layers == "all") {  ## currently gives warning ... but functions as expected.
-    layers <- options
+    layers <- layer_options
   }
 
 
   ####### Error handling -- unspecified layers ############
-  err.layers <- setdiff(layers, options)
+  err.layers <- setdiff(layers, layer_options)
 
   if (length(err.layers) == 1) {
     stop(paste(err.layers, "is not a valid covariate" ))
@@ -64,18 +71,26 @@ create_covariates <- function(dtm, SAGApath = "",
 
 
   ############# Set up Environment ########################
-
+  ##
   #   ## create output if it does not exist
   # ifelse(!dir.exists(file.path(output)),              #if tmpOut Does not Exists
   #         dir.create(file.path(output), recursive = TRUE), "Directory Already Exists")        #create tmpOut
+  #
+
   # # Testing
   # # setwd("e:/workspace/2019/PEM_2020")
   # # output = "./cv-rasters"
   # # SAGApath = "C:/SAGA/"
 
   ##### Link SAGA to R --------------------------------------------------
-  if(Sys.info()['sysname']=="Windows"){saga_cmd = paste0(SAGApath, "saga_cmd.exe")
-  } else {saga_cmd = "saga_cmd"}  ;
+  if(Sys.info()['sysname']=="Windows"){
+    saga_cmd <- paste0(SAGApath, "saga_cmd.exe")
+    fns      <- "\\" ### file name separator
+  } else {
+    saga_cmd = "saga_cmd"
+    fns      <- "/" ### file name separator
+
+  }  ;
   z<- system(paste(saga_cmd, "-v"), intern = TRUE)  ## prints that SAGA version number -- confirming it works.
   print(z)
 
@@ -84,34 +99,112 @@ create_covariates <- function(dtm, SAGApath = "",
   ifelse(!dir.exists(file.path(output)),              #if tmpOut Does not Exists
          dir.create(file.path(output)), print("Directory Already Exists"))        #create tmpOut
 
-  saga_tmp_files <- paste0(output,"/saga/")
+  saga_tmp_files <- paste0(output,"/saga")
   ifelse(!dir.exists(file.path(saga_tmp_files)),              #if tmpOut Does not Exists
          dir.create(file.path(saga_tmp_files)), print("Directory Already Exists"))        #create tmpOut
 
 
 
   ## Convert to Saga format for processing ---------------------------------------
-  rtnwd <- getwd() ## wd to return to
-  setwd(saga_tmp_files)
+  ## DON'T CHANGE WD ---
+  # rtnwd <- getwd() ## wd to return to
+  # setwd(saga_tmp_files)
 
-  sDTM <- "dtm.tif"
+  sDTM <- "dtm.sdat"
+  sDTM <- paste(saga_tmp_files, sDTM, sep= "/")
   # sDTM <- paste0(saga_tmp_files, sDTM)
-  terra::writeRaster(dtm, sDTM, )
+  terra::writeRaster(dtm, sDTM, overwrite = TRUE)
   # raster::writeRaster(dtm, sDTM, drivername = "GTiff", overwrite = TRUE)  # save SAGA Version using rgdal
 
   ## Bit of a hack here -- SAGA does not like the output from raster package
   ## save it as gTiff, re-open using rgdal and export as SAGA ...
-  dtm <- rgdal::readGDAL(sDTM)
+  # dtm <- rgdal::readGDAL(sDTM)
 
-  sDTM <- "dtm.sdat"
-  ## If the file exists delete and save over.
-  if(file.exists(sDTM)){
-    unlink(sDTM)
-    rgdal::writeGDAL(dtm, sDTM, drivername = "SAGA")  ## TRUE
-  } else {
-    rgdal::writeGDAL(dtm, sDTM, drivername = "SAGA" )               ## FALSE
-  }
-  ## END HACK ------------------
+  # sDTM <- "dtm.sdat"
+  # ## If the file exists delete and save over.
+  # if(file.exists(sDTM)){
+  #   unlink(sDTM)
+  #   rgdal::writeGDAL(dtm, sDTM, drivername = "SAGA")  ## TRUE
+  # } else {
+  #   rgdal::writeGDAL(dtm, sDTM, drivername = "SAGA" )               ## FALSE
+  # }
+  # ## END HACK ------------------
+
+  ############# Covariate File Names #############################################
+  ### Create Names for all the covariates ... needed here so that dependancies are
+  ### partially met
+  sDTM <- paste(saga_tmp_files, "dtm.sdat", sep= fns)
+  sinksRoute <- paste(saga_tmp_files, "sinkroute.sgrd",sep = fns)
+  sinksFilled <- paste(saga_tmp_files, "Filled_sinks.sgrd", sep = fns)
+  dem_preproc <- paste(saga_tmp_files,"dem_preproc.sgrd", sep = fns)
+  slope <- paste(saga_tmp_files, "slope.sgrd", sep = fns)
+  aspect <- paste(saga_tmp_files, "aspect.sgrd", sep = fns)
+  gencurve <- paste(saga_tmp_files, "gencurve.sgrd", sep = fns)
+  totcurve <- paste(saga_tmp_files, "totcurve.sgrd", sep = fns)
+  tCatchment <- paste(saga_tmp_files, "tCatchment.sgrd", sep = fns)
+  tca <- paste(saga_tmp_files, "tca1.sgrd", sep = fns)
+  sCatchment <- paste(saga_tmp_files, "sCatchment.sgrd", sep = fns)
+  twi <- paste(saga_tmp_files, "twi.sgrd", sep = fns)
+  channelsNetwork <- paste(saga_tmp_files, "cnetwork.sgrd", sep = fns)
+  hDistance <-  paste(saga_tmp_files, "hdist.sgrd", sep = fns)
+  vDistance  <- paste(saga_tmp_files, "vdist.sgrd", sep = fns)
+  hDistance <-  paste(saga_tmp_files, "hdistnob.sgrd", sep = fns)
+  vDistance  <- paste(saga_tmp_files, "vdistnob.sgrd", sep = fns)
+  MRVBF <- paste(saga_tmp_files, "mrvbf.sgrd", sep = fns)
+  MRRTF <- paste(saga_tmp_files, "mrrtf.sgrd", sep = fns)
+  MRVBF2 <- paste(saga_tmp_files, "mrvbf2.sgrd", sep = fns)
+  MRRTF2 <- paste(saga_tmp_files, "mrrtf2.sgrd", sep = fns)
+  TRI <- paste(saga_tmp_files, "tri.sgrd", sep = fns)
+  convergence <- paste(saga_tmp_files, "convergence.sgrd", sep = fns)
+  opos <- paste(saga_tmp_files, "open_pos.sgrd", sep = fns)
+  oneg <- paste(saga_tmp_files, "open_neg.sgrd", sep = fns)
+  dAH <- paste(saga_tmp_files, "dah.sgrd", sep = fns)
+  tpi <- paste(saga_tmp_files, "tpi.sgrd", sep = fns)
+  val_depth = paste(saga_tmp_files, "val_depth.sgrd", sep = fns)
+  RidgeLevel = paste(saga_tmp_files, "rid_level.sgrd", sep = fns)
+  MRNCatchment = paste(saga_tmp_files, "mnr_area.sgrd", sep = fns)
+  MRNMaxHeight = paste(saga_tmp_files, "mnr_mheight.sgrd", sep = fns)
+  MRN = paste(saga_tmp_files, "mnr.sgrd", sep = fns)
+  FlowAccumFT = paste(saga_tmp_files, "flow_accum_ft.sgrd", sep = fns)
+  MeanOvCatch = paste(saga_tmp_files, "MeanOvCatch.sgrd", sep = fns)
+  AccumMaterial = paste(saga_tmp_files, "AccumMaterial.sgrd", sep = fns)
+  SlopeLength = paste(saga_tmp_files, "slength.sgrd", sep = fns)
+  FlowAccumP = paste(saga_tmp_files, "flow_accum_p.sgrd", sep = fns)
+  FlowAccumTD = paste(saga_tmp_files, "flow_accum_td.sgrd", sep = fns)
+  MeanOvCatchTD = paste(saga_tmp_files, "MeanOvCatchTD.sgrd", sep = fns)
+  AccumMaterialTD = paste(saga_tmp_files, "AccumMaterialTD.sgrd", sep = fns)
+  FlowPathLenTD = paste(saga_tmp_files, "FlowPathLenTD.sgrd", sep = fns)
+  FlowPathLength = paste(saga_tmp_files, "max_fp_l.sgrd", sep = fns)
+  FlowPathLength = paste(saga_tmp_files, "max_fp_l1.sgrd", sep = fns)
+  FlowAccum = paste(saga_tmp_files, "slope_lts_fa.sgrd", sep = fns)
+  LSFactor = paste(saga_tmp_files, "ls_factor.sgrd", sep = fns)
+  DirInsol <- paste(saga_tmp_files, "direinso.sgrd", sep = fns)
+  DifInsol <- paste(saga_tmp_files, "diffinso.sgrd", sep = fns)
+  Convexity = paste(saga_tmp_files, "convexity.sgrd", sep = fns)
+  VertDistance = paste(saga_tmp_files, "vert_dis.sgrd", sep = fns)
+  TCILow = paste(saga_tmp_files, "tci_low.sgrd", sep = fns)
+  CatchmentArea = paste(saga_tmp_files, "swi_area.sgrd", sep = fns)
+  CatchmentSlope = paste(saga_tmp_files, "swi_slope.sgrd", sep = fns)
+  ModCatchmentArea = paste(saga_tmp_files, "swi_area_mod.sgrd", sep = fns)
+  TopoWetIndex = paste(saga_tmp_files, "swi_twi.sgrd", sep = fns)
+  WindExp = paste(saga_tmp_files, "wind_exp_index.sgrd", sep = fns)
+  Texture = paste(saga_tmp_files, "texture.sgrd", sep = fns)
+  Protection = paste(saga_tmp_files, "protection.sgrd", sep = fns)
+  VRM = paste(saga_tmp_files, "vrm.sgrd", sep = fns)
+  MBI = paste(saga_tmp_files, "mbi.sgrd", sep = fns)
+  TPI = paste(saga_tmp_files, "mscale_tpi.sgrd", sep = fns)
+  SlopeHeight = paste(saga_tmp_files, "slope_height.sgrd", sep = fns)
+  ValleyDepth = paste(saga_tmp_files, "ValleyDepth.sgrd", sep = fns) #don't need this as created above?
+  NormHeight = paste(saga_tmp_files, "norm_height.sgrd", sep = fns)
+  StandHeight = paste(saga_tmp_files, "stand_height.sgrd", sep = fns)
+  MSPosition = paste(saga_tmp_files, "ms_position.sgrd", sep = fns)
+  LocalCurve = paste(saga_tmp_files, "local_curv.sgrd", sep = fns)
+  UpslopeCurve = paste(saga_tmp_files, "upslope_curv.sgrd", sep = fns)
+  LocalUpCurve = paste(saga_tmp_files, "local_upslope_curv.sgrd", sep = fns)
+  DownCurve = paste(saga_tmp_files, "down_curv.sgrd", sep = fns)
+  LocalDownCurve = paste(saga_tmp_files, "local_downslope_curv.sgrd", sep = fns)
+  SteepestSlope <- paste(saga_tmp_files, "steepest_slope.sgrd", sep = fns)
+  UpslopeArea = paste(saga_tmp_files, "upslopearea.sgrd", sep = fns)
 
 
 
@@ -137,7 +230,8 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("Filled_sinks" %in% layers) {
 
-    sinksFilled <- "Filled_sinks.sgrd"
+    # sinksFilled <- "Filled_sinks.sgrd"
+    # sinksFilled <- paste(saga_tmp_files, sinksFilled, sep = "/")
     sysCMD <- paste(saga_cmd, "ta_preprocessor 5", "-ELEV" ,
                     #file.path(gsub("sdat","sgrd", sDTM)),
                     sDTM,
@@ -156,8 +250,10 @@ create_covariates <- function(dtm, SAGApath = "",
   # original script uses ta_preprocessor tool 1 - sink drainage and rout
   #http://www.saga-gis.org/saga_tool_doc/2.2.2/ta_preprocessor_1.html
   if ("sinkroute" %in% layers) {
-    sinksRoute <- "sinkroute.sgrd"
-    sinksRoute <- file.path(paste0(output, "/saga/", sinksRoute))  ##
+    # sinksRoute <- paste(saga_tmp_files,
+    #                     "sinkroute.sgrd",
+    #                     sep = "/")
+    # sinksRoute <- file.path(paste0(output, "/saga/", sinksRoute))  ##
 
     sysCMD <- paste(saga_cmd, "ta_preprocessor 1",
                     "-ELEVATION" , sDTM, #file.path(gsub("sdat","sgrd", sDTM)),
@@ -172,7 +268,9 @@ create_covariates <- function(dtm, SAGApath = "",
 
 
   if ("dem_preproc" %in% layers) {
-    dem_preproc <- "dem_preproc.sgrd"
+    # dem_preproc <- paste(saga_tmp_files,
+    #                      "dem_preproc.sgrd",
+    #                      sep = "/")
     #dem_preproc <- file.path(paste0(output, "/saga/", dem_preproc))
 
     sysCMD <- paste(saga_cmd, "ta_preprocessor 2",
@@ -190,14 +288,14 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("slope_aspect_curve" %in% layers) {
     # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_0.html
-    slope <- "slope.sgrd"
-    # slope = file.path(paste0(output, "/saga/", slope))
-    aspect <- "aspect.sgrd"
-    # aspect = file.path(tmpOut, aspect)
-    gencurve <- "gencurve.sgrd"
-    # gencurve = file.path(tmpOut, gencurve)
-    totcurve <- "totcurve.sgrd"
-    # totcurve = file.path(tmpOut, totcurve)
+    # slope <- paste(saga_tmp_files, "slope.sgrd", sep = "/")
+    # # slope = file.path(paste0(output, "/saga/", slope))
+    # aspect <- paste(saga_tmp_files, "aspect.sgrd", sep = "/")
+    # # aspect = file.path(tmpOut, aspect)
+    # gencurve <- paste(saga_tmp_files, "gencurve.sgrd", sep = "/")
+    # # gencurve = file.path(tmpOut, gencurve)
+    # totcurve <- paste(saga_tmp_files, "totcurve.sgrd", sep = "/")
+    # # totcurve = file.path(tmpOut, totcurve)
 
 
     sysCMD <- paste(saga_cmd, "ta_morphometry 0", "-ELEVATION",
@@ -223,7 +321,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_hydrology_0.html
   if ("tCatchment" %in% layers) {
 
-    tCatchment <- "tCatchment.sgrd"
+    # tCatchment <- paste(saga_tmp_files, "tCatchment.sgrd", sep = "/")
     # tCatchment = file.path(tmpOut, tCatchment)
     sysCMD <- paste(saga_cmd, "ta_hydrology 0", "-ELEVATION",
                     # file.path(gsub("sdat","sgrd", sDTM)),
@@ -248,7 +346,7 @@ create_covariates <- function(dtm, SAGApath = "",
   ##### >> 3a -- Total Catchment Area --------------------------------------
   if ("tca" %in% layers) {
 
-    tca <- "tca1.sgrd"
+    # tca <- paste(saga_tmp_files, "tca1.sgrd", sep = "/")
     # tca <- file.path(tmpOut, tca)
     flowlength4 <- "flowlength1.sgrd"
     # flowlength4 <- file.path(tmpOut, flowlength4)
@@ -296,7 +394,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
   # this is a new parameter - not calculated for Deception
   if ("sCatchment" %in% layers) {
-    sCatchment <- "sCatchment.sgrd"
+    # sCatchment <- paste(saga_tmp_files, "sCatchment.sgrd", sep = "/")
     # sCatchment  = file.path(tmpOut, sCatchment)
 
     sysCMD <- paste(saga_cmd, "ta_hydrology 19", "-DEM", sinksFilled,       # Input from 1
@@ -312,7 +410,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_hydrology_20.html
 
   if ("twi" %in% layers) {
-    twi <- "twi.sgrd"
+    # twi <- paste(saga_tmp_files, "twi.sgrd", sep = "/")
     # twi = file.path(tmpOut, twi)
     # sCatchment = file.path(tmpOut, sCatchment) # or tca?
 
@@ -332,7 +430,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # https://sourceforge.net/projects/saga-gis/files/SAGA%20-%20Documentation/SAGA%20Documents/SagaManual.pdf/download
 
   if ("channelsNetwork" %in% layers) {
-    channelsNetwork <- "cnetwork.sgrd"
+    # channelsNetwork <- paste(saga_tmp_files, "cnetwork.sgrd", sep = "/")
     # channelsNetwork = file.path(tmpOut, channelsNetwork)
 
     sysCMD <- paste(saga_cmd, "ta_channels 0",
@@ -352,8 +450,8 @@ create_covariates <- function(dtm, SAGApath = "",
   ##### >> 7 -- Overland Flow Distance to Channel Network -----------------
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_channels_4.html
   if ("Distance2Water" %in% layers) {
-    hDistance <- "hdist.sgrd"
-    vDistance  <- "vdist.sgrd"
+    # hDistance <-  paste(saga_tmp_files, "hdist.sgrd", sep = "/")
+    # vDistance  <- paste(saga_tmp_files, "vdist.sgrd", sep = "/")
     # hDistance = file.path(tmpOut, hDistance)
     # vDistance = file.path(tmpOut, vDistance)
 
@@ -371,8 +469,8 @@ create_covariates <- function(dtm, SAGApath = "",
   # metrics cannot be calculated)
 
   if ("Distance2Water2" %in% layers) {
-    hDistance <- "hdistnob.sgrd"
-    vDistance  <- "vdistnob.sgrd"
+    # hDistance <-  paste(saga_tmp_files, "hdistnob.sgrd", sep = "/")
+    # vDistance  <- paste(saga_tmp_files, "vdistnob.sgrd", sep = "/")
     # hDistance = file.path(tmpOut, hDistance)
     # vDistance = file.path(tmpOut, vDistance)
 
@@ -409,8 +507,8 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_8.html
   if ("MultiResFlatness" %in% layers) {
 
-    MRVBF <- "mrvbf.sgrd"
-    MRRTF <- "mrrtf.sgrd"
+    # MRVBF <- paste(saga_tmp_files, "mrvbf.sgrd", sep = "/")
+    # MRRTF <- paste(saga_tmp_files, "mrrtf.sgrd", sep = "/")
 
     # MRVBF = file.path(tmpOut, MRVBF)
     # MRRTF  = file.path(tmpOut, MRRTF)
@@ -440,8 +538,8 @@ create_covariates <- function(dtm, SAGApath = "",
   #
   if ("MultiResFlatness2" %in% layers) {
 
-    MRVBF2 <- "mrvbf2.sgrd"
-    MRRTF2 <- "mrrtf2.sgrd"
+    # MRVBF2 <- paste(saga_tmp_files, "mrvbf2.sgrd", sep = "/")
+    # MRRTF2 <- paste(saga_tmp_files, "mrrtf2.sgrd", sep = "/")
 
     # MRVBF2 = file.path(tmpOut, MRVBF2)
     # MRRTF2  = file.path(tmpOut, MRRTF2)
@@ -515,7 +613,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("TRI" %in% layers) {
 
-    TRI <- "tri.sgrd"
+    # TRI <- paste(saga_tmp_files, "tri.sgrd", sep = "/")
     # TRI  = file.path(tmpOut, TRI)
     sysCMD <- paste(saga_cmd, "ta_morphometry 16",
                     # "-DEM", file.path(gsub("sdat","sgrd", sDTM)),
@@ -534,7 +632,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("convergence" %in% layers) {
 
-    convergence <- "convergence.sgrd"
+    # convergence <- paste(saga_tmp_files, "convergence.sgrd", sep = "/")
     # convergence  = file.path(tmpOut, convergence)
     sysCMD <- paste(saga_cmd, "ta_morphometry 1",
                     "-ELEVATION ",
@@ -552,9 +650,9 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("Openness" %in% layers) {
 
-    opos <- "open_pos.sgrd"
-    # opos = file.path(tmpOut, opos)
-    oneg <- "open_neg.sgrd"
+    # opos <- paste(saga_tmp_files, "open_pos.sgrd", sep = "/")
+    # # opos = file.path(tmpOut, opos)
+    # oneg <- paste(saga_tmp_files, "open_neg.sgrd", sep = "/")
     # oneg = file.path(tmpOut, oneg)
     sysCMD <- paste(saga_cmd, "ta_lighting 5", "-DEM",
                     # file.path(gsub("sdat","sgrd", sDTM)),
@@ -573,7 +671,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_12.html
 
   if ("dah" %in% layers) {
-    dAH <- "dah.sgrd"
+    # dAH <- paste(saga_tmp_files, "dah.sgrd", sep = "/")
     sysCMD <- paste(saga_cmd, "ta_morphometry 12", "-DEM",
                     # file.path(gsub("sdat","sgrd", sDTM)), # Input DTM
                     sDTM,
@@ -586,7 +684,7 @@ create_covariates <- function(dtm, SAGApath = "",
   ##### >> 13 -- Topographic Position Index --------------------------------
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_18.html
   if ("TPI" %in% layers) {
-    tpi <- "tpi.sgrd"
+    # tpi <- paste(saga_tmp_files, "tpi.sgrd", sep = "/")
     # tpi= file.path(tmpOut, tpi)
 
     sysCMD <- paste(saga_cmd, "ta_morphometry 18", "-DEM",
@@ -610,11 +708,11 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_channels_7.html
   if ("RidgeValley" %in% layers) {
 
-    val_depth = "val_depth.sgrd"
-    # val_depth = file.path(tmpOut, val_depth)
-
-    RidgeLevel = "rid_level.sgrd"
-    # RidgeLevel = file.path(tmpOut, RidgeLevel)
+    # val_depth = paste(saga_tmp_files, "val_depth.sgrd", sep = "/")
+    # # val_depth = file.path(tmpOut, val_depth)
+    #
+    # RidgeLevel = paste(saga_tmp_files, "rid_level.sgrd", sep = "/")
+    # # RidgeLevel = file.path(tmpOut, RidgeLevel)
 
     sysCMD = paste(saga_cmd, "ta_channels 7",
                    "-ELEVATION", sinksFilled,            # input DEM
@@ -633,12 +731,12 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_23.html
   if ("MRN" %in% layers) {
 
-    MRNCatchment = "mnr_area.sgrd"
-    # MRNCatchment = file.path(tmpOut, MRNCatchment)
-    MRNMaxHeight = "mnr_mheight.sgrd"
-    # MRNMaxHeight = file.path(tmpOut, MRNMaxHeight)
-    MRN = "mnr.sgrd"
-    # MRN = file.path(tmpOut, MRN)
+    # MRNCatchment = paste(saga_tmp_files, "mnr_area.sgrd", sep = "/")
+    # # MRNCatchment = file.path(tmpOut, MRNCatchment)
+    # MRNMaxHeight = paste(saga_tmp_files, "mnr_mheight.sgrd", sep = "/")
+    # # MRNMaxHeight = file.path(tmpOut, MRNMaxHeight)
+    # MRN = paste(saga_tmp_files, "mnr.sgrd", sep = "/")
+    # # MRN = file.path(tmpOut, MRN)
 
     sysCMD = paste(saga_cmd, "ta_hydrology 23",
                    "-DEM", sinksFilled,                 # input DEM
@@ -654,12 +752,13 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("FlowAccumulation" %in% layers) {
 
-    FlowAccumFT = "flow_accum_ft.sgrd"
-    # FlowAccumFT = file.path(tmpOut, FlowAccumFT)
-    MeanOvCatch = "MeanOvCatch.sgrd"
-    # MeanOvCatch = file.path(tmpOut, MeanOvCatch)
-    AccumMaterial = "AccumMaterial.sgrd"
-    # AccumMaterial = file.path(tmpOut, AccumMaterial)
+    # FlowAccumFT = paste(saga_tmp_files, "flow_accum_ft.sgrd", sep = "/")
+    # # FlowAccumFT = file.path(tmpOut, FlowAccumFT)
+    # MeanOvCatch = paste(saga_tmp_files, "MeanOvCatch.sgrd", sep = "/")
+    # # MeanOvCatch = file.path(tmpOut, MeanOvCatch)
+    # AccumMaterial = paste(saga_tmp_files, "AccumMaterial.sgrd", sep = "/")
+    #
+    # # AccumMaterial = file.path(tmpOut, AccumMaterial)
     sysCMD = paste(saga_cmd, "ta_hydrology 2",
                    "-ELEVATION", sinksFilled,            # input DEM
                    "-FLOW", FlowAccumFT,                 # output Flow Accumulation
@@ -677,7 +776,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_7.html
   if ("SlopeLength" %in% layers) {
 
-    SlopeLength = "slength.sgrd"
+    # SlopeLength = paste(saga_tmp_files, "slength.sgrd", sep = "/")
     # SlopeLength = file.path(tmpOut, SlopeLength)
     sysCMD = paste(saga_cmd, "ta_hydrology 7",
                    "-DEM", sinksFilled,             # input DEM
@@ -692,7 +791,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_29.html
   if ("FlowAccumulation2" %in% layers) {
 
-    FlowAccumP = "flow_accum_p.sgrd"
+    # FlowAccumP = paste(saga_tmp_files, "flow_accum_p.sgrd", sep = "/")
     # FlowAccumP = file.path(tmpOut, FlowAccumP)
     sysCMD = paste(saga_cmd, "ta_hydrology 29",
                    "-DEM", sinksFilled,                  # input DEM
@@ -708,13 +807,14 @@ create_covariates <- function(dtm, SAGApath = "",
   #
   if ("FlowAccumulation3" %in% layers) {
 
-    FlowAccumTD = "flow_accum_td.sgrd"
-    # FlowAccumTD = file.path(tmpOut, FlowAccumTD)
-    MeanOvCatchTD = "MeanOvCatchTD.sgrd"
-    # MeanOvCatchTD = file.path(tmpOut, MeanOvCatchTD)
-    AccumMaterialTD = "AccumMaterialTD.sgrd"
-    # AccumMaterialTD = file.path(tmpOut, AccumMaterialTD)
-    FlowPathLenTD = "FlowPathLenTD.sgrd"
+    # FlowAccumTD = paste(saga_tmp_files, "flow_accum_td.sgrd", sep = "/")
+    # # FlowAccumTD = file.path(tmpOut, FlowAccumTD)
+    # MeanOvCatchTD = paste(saga_tmp_files, "MeanOvCatchTD.sgrd", sep = "/")
+    # # MeanOvCatchTD = file.path(tmpOut, MeanOvCatchTD)
+    # AccumMaterialTD = paste(saga_tmp_files, "AccumMaterialTD.sgrd", sep = "/")
+    # # AccumMaterialTD = file.path(tmpOut, AccumMaterialTD)
+    # FlowPathLenTD = paste(saga_tmp_files, "FlowPathLenTD.sgrd", sep = "/")
+
     # FlowPathLenTD = file.path(tmpOut, FlowPathLenTD)
     sysCMD = paste(saga_cmd, "ta_hydrology 0",
                    "-ELEVATION", sinksFilled,                 # input DEM
@@ -754,7 +854,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_27.html
   if ("FlowPathLength" %in% layers) {
 
-    FlowPathLength = "max_fp_l.sgrd"
+    # FlowPathLength = paste(saga_tmp_files, "max_fp_l.sgrd", sep = "/")
     # FlowPathLength = file.path(tmpOut, FlowPathLength)
     sysCMD = paste(saga_cmd, "ta_hydrology 27",
                    "-ELEVATION", sinksFilled,            # input DEM
@@ -771,7 +871,7 @@ create_covariates <- function(dtm, SAGApath = "",
   #
   if ("FlowPathLength2" %in% layers) {
 
-    FlowPathLength = "max_fp_l1.sgrd"
+    # FlowPathLength = paste(saga_tmp_files, "max_fp_l1.sgrd", sep = "/")
     # FlowPathLength = file.path(tmpOut, FlowPathLength)
     sysCMD = paste(saga_cmd, "ta_hydrology 27",
                    "-ELEVATION", sinksFilled,            # input DEM
@@ -790,7 +890,7 @@ create_covariates <- function(dtm, SAGApath = "",
   #
   if ("FlowPathLength3" %in% layers) {
 
-    FlowAccum = "slope_lts_fa.sgrd"
+    # FlowAccum = paste(saga_tmp_files, "slope_lts_fa.sgrd", sep = "/")
     # FlowAccum = file.path(tmpOut, FlowAccum)
     sysCMD = paste(saga_cmd, "ta_hydrology 26",
                    "-DEM", sinksFilled,               # input DEM
@@ -807,7 +907,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
   if ("LSFactor" %in% layers) {
 
-    LSFactor = "ls_factor.sgrd"
+    # LSFactor = paste(saga_tmp_files, "ls_factor.sgrd", sep = "/")
     # LSFactor = file.path(tmpOut, LSFactor)
     sysCMD = paste(saga_cmd, "ta_hydrology 22",
                    "-SLOPE", slope,                # input Slope
@@ -830,8 +930,8 @@ create_covariates <- function(dtm, SAGApath = "",
   #Calculation of potential incoming solar radiation (insolation). Times of sunrise/sunset will only be calculated if time span is set to single day.
   if ("SolarRad" %in% layers) {
 
-    DirInsol <- "direinso.sgrd"
-    DifInsol <- "diffinso.sgrd"
+    # DirInsol <- paste(saga_tmp_files, "direinso.sgrd", sep = "/")
+    # DifInsol <- paste(saga_tmp_files, "diffinso.sgrd", sep = "/")
 
     sysCMD <- paste(saga_cmd, "ta_lighting 2",
                     "-GRD_DEM",
@@ -860,7 +960,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_21.html
   if ("Convexity" %in% layers) {
 
-    Convexity = "convexity.sgrd"
+    # Convexity = paste(saga_tmp_files, "convexity.sgrd", sep = "/")
     # Convexity = file.path(tmpOut, Convexity)
     sysCMD = paste(saga_cmd, "ta_morphometry 21",
                    "-DEM", sinksFilled,                   # input DEM
@@ -884,7 +984,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 26 -- Vertical Distance to Channel Network ------------- ## froze - maybe just very slow?
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_channels_3.html
-    VertDistance = "vert_dis.sgrd"
+    # VertDistance = paste(saga_tmp_files, "vert_dis.sgrd", sep = "/")
     # VertDistance = file.path(tmpOut, VertDistance)
     # channelsNetwork = file.path(tmpOut, channelsNetwork)
     # sinksFilled
@@ -903,7 +1003,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_24.html
   if ("TCI_low" %in% layers) {
 
-    TCILow = "tci_low.sgrd"
+    # TCILow = paste(saga_tmp_files, "tci_low.sgrd", sep = "/")
     # TCILow = file.path(tmpOut, TCILow)
     sysCMD = paste(saga_cmd, "ta_hydrology 24",
                    "-DISTANCE", VertDistance,            # input Vertical Distance to Channel Network
@@ -919,14 +1019,14 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_hydrology_15.html
   if ("SWI" %in% layers) {
 
-    CatchmentArea = "swi_area.sgrd"
-    # CatchmentArea = file.path(tmpOut, CatchmentArea)
-    CatchmentSlope = "swi_slope.sgrd"
-    # CatchmentSlope = file.path(tmpOut, CatchmentSlope)
-    ModCatchmentArea = "swi_area_mod.sgrd"
-    # ModCatchmentArea = file.path(tmpOut, ModCatchmentArea)
-    TopoWetIndex = "swi_twi.sgrd"
-    # TopoWetIndex = file.path(tmpOut, TopoWetIndex)
+    # CatchmentArea = paste(saga_tmp_files, "swi_area.sgrd", sep = "/")
+    # # CatchmentArea = file.path(tmpOut, CatchmentArea)
+    # CatchmentSlope = paste(saga_tmp_files, "swi_slope.sgrd", sep = "/")
+    # # CatchmentSlope = file.path(tmpOut, CatchmentSlope)
+    # ModCatchmentArea = paste(saga_tmp_files, "swi_area_mod.sgrd", sep = "/")
+    # # ModCatchmentArea = file.path(tmpOut, ModCatchmentArea)
+    # TopoWetIndex = paste(saga_tmp_files, "swi_twi.sgrd", sep = "/")
+    # # TopoWetIndex = file.path(tmpOut, TopoWetIndex)
     sysCMD = paste(saga_cmd, "ta_hydrology 15",
                    "-DEM", sinksFilled,                 # input DEM
                    "-AREA", CatchmentArea,              # output Catchment Area
@@ -948,7 +1048,7 @@ create_covariates <- function(dtm, SAGApath = "",
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_27.html
   if ("WindExp" %in% layers) {
 
-    WindExp = "wind_exp_index.sgrd"
+    # WindExp = paste(saga_tmp_files, "wind_exp_index.sgrd", sep = "/")
     # WindExp = file.path(tmpOut, WindExp)
     sysCMD = paste(saga_cmd, "ta_morphometry 27",
                    "-DEM", sinksFilled,                     # input DEM
@@ -966,7 +1066,7 @@ create_covariates <- function(dtm, SAGApath = "",
     #### >> 30 -- Terrain Surface Texture -----------------------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_20.html
 
-    Texture = "texture.sgrd"
+    # Texture = paste(saga_tmp_files, "texture.sgrd", sep = "/")
     # Texture = file.path(tmpOut, Texture)
     sysCMD = paste(saga_cmd, "ta_morphometry 20",
                    "-DEM", sinksFilled,                      # input DEM
@@ -986,7 +1086,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 31 -- Morphometric Protection Index ----------------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_7.html
-    Protection = "protection.sgrd"
+    # Protection = paste(saga_tmp_files, "protection.sgrd", sep = "/")
     # Protection = file.path(tmpOut, Protection)
     sysCMD = paste(saga_cmd, "ta_morphometry 7",
                    "-DEM", sinksFilled,                        # input DEM
@@ -1003,7 +1103,7 @@ create_covariates <- function(dtm, SAGApath = "",
     #### >> 32 -- Vector Ruggedness Measure ---------------------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_17.html
 
-    VRM = "vrm.sgrd"
+    # VRM = paste(saga_tmp_files, "vrm.sgrd", sep = "/")
     # VRM = file.path(tmpOut, VRM)
     sysCMD = paste(saga_cmd, "ta_morphometry 17",
                    "-DEM", sinksFilled,                      # input DEM
@@ -1023,7 +1123,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 33 -- Mass Balance Index ----------------------------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_10.html
-    MBI = "mbi.sgrd"
+    # MBI = paste(saga_tmp_files, "mbi.sgrd", sep = "/")
     # MBI = file.path(tmpOut, MBI)
     sysCMD = paste(saga_cmd, "ta_morphometry 10",
                    "-DEM", sinksFilled,                 # input DEM
@@ -1042,7 +1142,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 34 -- Multi-Scale Topographic Position Index --------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_28.html
-    TPI = "mscale_tpi.sgrd"
+    # TPI = paste(saga_tmp_files, "mscale_tpi.sgrd", sep = "/")
     # TPI = file.path(tmpOut, TPI)
     sysCMD = paste(saga_cmd, "ta_morphometry 28",
                    "-DEM", sinksFilled,                # input DEM
@@ -1060,16 +1160,16 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 35 -- Relative Heights and Slope Positions ----------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_14.html
-    SlopeHeight = "slope_height.sgrd"
-    # SlopeHeight = file.path(tmpOut, SlopeHeight)
-    ValleyDepth = "ValleyDepth.sgrd" #don't need this as created above?
-    # ValleyDepth = file.path(tmpOut, ValleyDepth)
-    NormHeight = "norm_height.sgrd"
-    # NormHeight = file.path(tmpOut, NormHeight)
-    StandHeight = "stand_height.sgrd"
-    # StandHeight = file.path(tmpOut, StandHeight)
-    MSPosition = "ms_position.sgrd"
-    # MSPosition = file.path(tmpOut, MSPosition)
+    # SlopeHeight = paste(saga_tmp_files, "slope_height.sgrd", sep = "/")
+    # # SlopeHeight = file.path(tmpOut, SlopeHeight)
+    # ValleyDepth = paste(saga_tmp_files, "ValleyDepth.sgrd", sep = "/") #don't need this as created above?
+    # # ValleyDepth = file.path(tmpOut, ValleyDepth)
+    # NormHeight = paste(saga_tmp_files, "norm_height.sgrd", sep = "/")
+    # # NormHeight = file.path(tmpOut, NormHeight)
+    # StandHeight = paste(saga_tmp_files, "stand_height.sgrd", sep = "/")
+    # # StandHeight = file.path(tmpOut, StandHeight)
+    # MSPosition = paste(saga_tmp_files, "ms_position.sgrd", sep = "/")
+    # # MSPosition = file.path(tmpOut, MSPosition)
     sysCMD = paste(saga_cmd, "ta_morphometry 14",
                    "-DEM", sinksFilled,                 # input DEM
                    "-HO", SlopeHeight,                  # output Slope Height
@@ -1123,16 +1223,16 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 37 -- Upslope and Downslope Curvature ---------------------
     # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_26.html
-    LocalCurve = "local_curv.sgrd"
-    # LocalCurve = file.path(tmpOut, LocalCurve)
-    UpslopeCurve = "upslope_curv.sgrd"
-    # UpslopeCurve = file.path(tmpOut, UpslopeCurve)
-    LocalUpCurve = "local_upslope_curv.sgrd"
-    # LocalUpCurve = file.path(tmpOut, LocalUpCurve)
-    DownCurve = "down_curv.sgrd"
-    # DownCurve = file.path(tmpOut, DownCurve)
-    LocalDownCurve = "local_downslope_curv.sgrd"
-    # LocalDownCurve = file.path(tmpOut, LocalDownCurve)
+    # LocalCurve = paste(saga_tmp_files, "local_curv.sgrd", sep = "/")
+    # # LocalCurve = file.path(tmpOut, LocalCurve)
+    # UpslopeCurve = paste(saga_tmp_files, "upslope_curv.sgrd", sep = "/")
+    # # UpslopeCurve = file.path(tmpOut, UpslopeCurve)
+    # LocalUpCurve = paste(saga_tmp_files, "local_upslope_curv.sgrd", sep = "/")
+    # # LocalUpCurve = file.path(tmpOut, LocalUpCurve)
+    # DownCurve = paste(saga_tmp_files, "down_curv.sgrd", sep = "/")
+    # # DownCurve = file.path(tmpOut, DownCurve)
+    # LocalDownCurve = paste(saga_tmp_files, "local_downslope_curv.sgrd", sep = "/")
+    # # LocalDownCurve = file.path(tmpOut, LocalDownCurve)
     sysCMD = paste(saga_cmd, "ta_morphometry 26",
                    "-DEM", sinksFilled,                         # input DEM
                    "-C_LOCAL", LocalCurve,                      # output Local Curvature
@@ -1151,7 +1251,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     #### >> 38 -- Steepest Slope (Slope Aspect and Curvature) --------
     # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_0.html
-    SteepestSlope <- "steepest_slope.sgrd"
+    # SteepestSlope <- paste(saga_tmp_files, "steepest_slope.sgrd", sep = "/")
     # SteepestSlope = file.path(tmpOut, SteepestSlope)
     sysCMD <- paste(saga_cmd, "ta_morphometry 0",
                     "-ELEVATION", sinksFilled,                              # input DEM
@@ -1174,13 +1274,14 @@ create_covariates <- function(dtm, SAGApath = "",
     ## not included in deception run
 
     # http://www.saga-gis.org/saga_tool_doc/7.6.2/ta_hydrology_4.html
-    UpslopeArea = "upslopearea.sgrd"
+    # UpslopeArea = paste(saga_tmp_files, "upslopearea.sgrd", sep = "/")
     # UpslopeArea = file.path(tmpOut, UpslopeArea)
     sysCMD = paste(saga_cmd, "ta_hydrology 4",
                    "-ELEVATION", sinksFilled,           # input DEM
                    "-AREA", UpslopeArea,                # output Upslope Area
                    "-METHOD", 2,
                    "-CONVERGENCE", 1.1
+                   # "-CONVERGE", 1.1
     )
     system(sysCMD)
 
@@ -1196,49 +1297,49 @@ create_covariates <- function(dtm, SAGApath = "",
 
 
   #### Convert to GeoTif --------------------------------
-  setwd(rtnwd)
+  # setwd(rtnwd)
 
   ## Collect tmp saga file names
 
   ## TEST paramaters
   # output <- "e:/tmp"
 
-  tmpFiles <- paste(output, "saga", sep = "/")
-  l <- list.files(path = tmpFiles, pattern = "*.sdat")
-  l <- l[!grepl(".xml", l)] ## removes xmls from the list
-  print(l)
+  # tmpFiles <- paste(output, "saga", sep = "/")
+  # l <- list.files(path = tmpFiles, pattern = "*.sdat")
+  # l <- l[!grepl(".xml", l)] ## removes xmls from the list
+  # print(l)
 
   ## OutFile Suffix Use resolution as suffix for out filename
-  r <- raster::raster(paste(tmpFiles, l[1], sep= "/"))
-  subFolder <- raster::res(r)[1]  ##
-  suf <- paste0("_", subFolder, ".tif")
-  outList <- gsub(".sdat", suf, l)
+  # r <- raster::raster(paste(tmpFiles, l[1], sep= "/"))
+  # subFolder <- raster::res(r)[1]  ##
+  # suf <- paste0("_", subFolder, ".tif")
+  # outList <- gsub(".sdat", suf, l)
 
   ## Loop through files and convert to tif
-  for(i in 1:length(l)){
+  # for(i in 1:length(l)){
+  #
+  #   ## parms for testing
+  #   # i <- 1
+  #
+  #   #actions
+  #   r <- l[i]
+  #   inFile <- paste(tmpFiles, r, sep = "/")
+  #   # print(inFile)
+  #   r <- raster::raster(inFile)
+  #
+  #
+  #
+  #   outFile <- paste(output, subFolder, outList[i], sep = "/")  ## Names output
+  #
+  #   ifelse(!dir.exists(file.path(paste(output, subFolder, sep = "/"))),              #if tmpOut Does not Exists
+  #          dir.create(file.path(paste(output, subFolder, sep = "/"))),
+  #          "Directory Already Exisits")        #create tmpOut
+  #
+  #   raster::writeRaster(r, outFile, overwrite = TRUE)  ## Saves at 25m resolution
+  #
+  #
+  # }
 
-    ## parms for testing
-    # i <- 1
-
-    #actions
-    r <- l[i]
-    inFile <- paste(tmpFiles, r, sep = "/")
-    # print(inFile)
-    r <- raster::raster(inFile)
-
-
-
-    outFile <- paste(output, subFolder, outList[i], sep = "/")  ## Names output
-
-    ifelse(!dir.exists(file.path(paste(output, subFolder, sep = "/"))),              #if tmpOut Does not Exists
-           dir.create(file.path(paste(output, subFolder, sep = "/"))),
-           "Directory Already Exisits")        #create tmpOut
-
-    raster::writeRaster(r, outFile, overwrite = TRUE)  ## Saves at 25m resolution
-
-
-  }
-
-  ## Remove tmp saga files
-  unlink(paste(output, "saga", sep = "/"), recursive = TRUE)
+  # ## Remove tmp saga files
+  # unlink(paste(output, "saga", sep = "/"), recursive = TRUE)
 }
