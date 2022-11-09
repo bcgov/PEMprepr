@@ -3,3 +3,7 @@
 .RData
 .Ruserdata
 inst/doc
+
+
+# Colin's custom ignores
+cc_test_flow.R
