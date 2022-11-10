@@ -2,7 +2,9 @@
 ## ISSUES
 ## - TEM download not working
 ## - options call ... change to global env.
-## - remove foreach loop in water
+## - review look for water ... overwriting issue?
+## ... water is as far as I got.
+## make it BEC label?
 
 
 
@@ -180,17 +182,18 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   #          delete_layer = TRUE)
   #
   #
-  ### BREAKS HERE ...
-  # # 5) TEM
-  # message("\rDownloading TEM layers")
-  # tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   collect() %>%
-  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  ### WORKS TO HERE ----------------------------------------------
+  ### BREAKS BELOW ... FIX NEEDED --------------------------------
+  # 5) TEM
+  message("\rDownloading TEM layers")
+  tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
+      bcdata::filter(INTERSECTS(in_aoi)) %>%
+      collect() %>%
+     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
 
-  # st_write(tem, file.path(out_path, "tem.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
+  st_write(tem, file.path(out_path, "tem.gpkg"), delete_dsn = TRUE,
+           delete_layer = TRUE)
 
 
   # 6) Water (Lakes, Rivers, Wetlands)
@@ -203,23 +206,28 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   # cl <- parallel::makeCluster(parallel::detectCores())
   # doParallel::registerDoParallel(cl)
 
-  waterbodies <- foreach(i = water_records, .combine = rbind,
-                         .packages = c("tidyverse", "bcdata", "sf")) %dopar%
-    {
-      bcdc_query_geodata(i, crs = epsg) %>% # lakes
+
+  for (i in waterbodies) {
+  # waterbodies <- foreach(i = water_records, .combine = rbind,
+  #                        .packages = c("tidyverse", "bcdata", "sf")) %dopar%
+    # {
+    waterbodies <- bcdc_query_geodata(i, crs = epsg) %>% # lakes
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         collect() %>%
         {if(nrow(.) > 0) st_intersection(., in_aoi) else NULL}
-    }
+    # }
   # parallel::stopCluster(cl)
 
   # filter a subset of columns
+
   waterbodies_sf <- waterbodies %>%
     dplyr::select(id, WATERBODY_TYPE, AREA_HA)
 
+
+  ## THIS LOOKS LIKE IT WILL OVER-WRITE the previous look ... is filename unique???????? --------------
   st_write(waterbodies_sf, file.path(out_path, "water.gpkg"), delete_dsn = TRUE,
            delete_layer = TRUE)
-
+  }
   # 7) Download road network
   # The main road network layer has too many roads in it. Filter it down to only
   # include named roads and combine those with actual mapped FSR's
