@@ -18,7 +18,7 @@
 
 multi_res <- function(input, output="CoVars",
                       resolution = c(2.5, 5, 10, 25)) {
-
+  print("Depreciated.  Use `align_rasters()` instead")
 
   # ##testing
   # setwd("e:/workspace/2019/PEM_2020/data/")
@@ -46,7 +46,7 @@ multi_res <- function(input, output="CoVars",
     ##Testing
     # i <- resolution[4]
 
-    ## create a target raster:: to tun the 1m to 2.5m raster -- contrained to the extent
+    ## create a target raster:: to tun the 1m to 2.5m raster -- constrained to the extent
     target <- raster::raster(ncol=10, nrow=10, xmn=e[1], xmx=e[2], ymn=e[3], ymx=e[4]) ## empty raster
     raster::res(target) <- i ## Makes target resolution
     raster::projection(target) <-  raster::crs(r)
