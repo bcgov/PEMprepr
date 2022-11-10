@@ -68,7 +68,6 @@ setup_folders <- function(aoi){
 
 
 
-
   if (!dir.exists(AOI_dir)) {
     print("creating folders")
     for(fold in folder_set_up){
