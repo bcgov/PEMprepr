@@ -25,7 +25,7 @@ Depending on your system the path to \code{saga_cmd} may need to be specified.
 }
 \examples{
 ##
-create_covariates(dtm,                          ## the dtm (loaded by raster() )
+create_covariates(dtm,                ## the dtm (loaded by raster() )
         SAGApath = "C:/SAGA/"         ## specify location of SAGA on your machine
         output   = "c:/dtm-derived" ) ## specify output folder
 }

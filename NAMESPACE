@@ -2,7 +2,9 @@
 
 export(align_raster)
 export(aoi_snap)
+export(aoi_snap_landscape)
 export(create_covariates)
 export(create_template)
 export(multi_res)
 export(setup_folders)
+import(magrittr)
