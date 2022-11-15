@@ -7,7 +7,7 @@
 #' Depending on your system the path to `saga_cmd` may need to be specified.
 #'
 #'
-#' @param dtm is a dtm SpatRaster object
+#' @param dtm is a dtm `SpatRaster` object (i.e. loaded via `terra::rast`)
 #' @param SAGApath Is the location of SAGA on your system.  On linux systems with SAGA GIS installed Use `SAGApath = ""`
 #' @param output Location of where rasters will be saved.
 #' @param layers The covariates that will be generated.  A full list of covariates is listed at: ADD
@@ -101,16 +101,16 @@ create_covariates <- function(dtm, SAGApath = "",
     warning("SAGA-GIS is less that 7.6.  Not all covariates will generate.  Upgrade your SAGA, visit https://sourceforge.net/projects/saga-gis/files/")
   }
 
-
-
   # OUTPUTS: ------------------------------------------------------------
   ifelse(!dir.exists(file.path(output)),              #if tmpOut Does not Exists
          dir.create(file.path(output)), print("Directory Already Exists"))        #create tmpOut
 
-  saga_tmp_files <- paste0(output,"/saga")
+  rn <- terra::res(dtm)[1] ## Get the resolution
+
+
+  saga_tmp_files <- paste(output, rn, sep = "/")
   ifelse(!dir.exists(file.path(saga_tmp_files)),              #if tmpOut Does not Exists
          dir.create(file.path(saga_tmp_files)), print("Directory Already Exists"))        #create tmpOut
-
 
 
   ## Convert to Saga format for processing ---------------------------------------
