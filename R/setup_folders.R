@@ -17,10 +17,23 @@
 #' list.dir
 
 
-setup_folders <- function(aoi){
+setup_folders <- function(aoi_name, full_names = TRUE){
+
+  # Testing ---------------
+  # full_names <- TRUE
+  # aoi_name <- "e:/workRspace/tmp/apple123/apple" ## full path example
+  # aoi_name <- "carrot"  ## relative example
+  ## END TESTING ----------
+
+  ## convert to full path if not provided
+  if (full_names == TRUE) {
+    if (is_absolute_path(aoi_name) == FALSE) {
+      aoi_name <- paste(as.character(getwd()), aoi_name, sep = "/")
+    }
+  }
 
   #base directory
-  AOI_dir <- file.path(".", paste0(aoi))
+  AOI_dir <- file.path(paste0(aoi_name))
   raw_dir <- file.path(AOI_dir, "00_raw_inputs")
   derived_dir <- file.path(AOI_dir, "10_map_inputs")
 
@@ -63,25 +76,48 @@ setup_folders <- function(aoi){
                               training_data, training_data_clean, training_data_vector,
                               model_dir, model_data, model_f,
                               sat_dir, CHM_dir)
-  # folder_id <- as.data.frame(t(folder_set_up))
+
+
+
+
+  ### Compare if dirs exist ... or if there are additionsal dirs
   folder_id <- as.list(folder_set_up)
 
+  # either way return the folder list.
+  ## Retrieve full path name
+  tf <- as.data.frame(t(folder_set_up))
+  tf$id <- row.names(tf)
+  names(tf) <- c("path", "id")
+  row.names(tf) <- NULL
+
+  tf$exists <- dir.exists(tf$path)
 
 
-  if (!dir.exists(AOI_dir)) {
+if(sum(tf$exists) < nrow(tf)) {
     print("creating folders")
     for(fold in folder_set_up){
 
       ifelse(!dir.exists(fold), dir.create(fold, recursive = TRUE), FALSE)
 
+
+
     }
-    print("Folder structure created!")
-    return(folder_id)
+  print("Folder structure created!")
 
   } else {
 
-    print(paste("The", aoi, "folder already exists - retrievied folder names."))
+    print(paste("The", as.character(aoi_name), "folder already exists - returning folder names."))
 
   }
-return(folder_id)
+
+
+  return(folder_id)
+
+
 }
+#
+#
+# is_absolute_path <- function(path) {
+#   grepl("^(/|[A-Za-z]:|\\\\|~)", path)
+# }
+#
