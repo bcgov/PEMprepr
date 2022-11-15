@@ -1,10 +1,11 @@
 ## Original GP notes at bottome
 ## ISSUES
-## - TEM download not working
-## - options call ... change to global env.
-## - review look for water ... overwriting issue?
-## ... water is as far as I got.
-## sf::st_write syntax update... replace delete_dsn with append = FALSE
+## - fixed: TEM download not working
+## - fixed: using withr --  options call ... change to global env.
+## - fixed: review look for water ... overwriting issue?
+## - fixed ??? fires appears to be working ... but no fires > 20 years are recorded for example area.
+## - fixed sf::st_write syntax update... replace delete_dsn with append = FALSE
+## - Towns is -- all towns in BC ... is that the intent?
 ## make it BEC label?
 
 
@@ -93,11 +94,19 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   )
   #
   ## CALL all the subfunctions --------------
-  # get_BEC(in_aoi, out_path)     ## works
-  # get_VRI(in_aoi, out_path)     ## works
-  # get_harvest(in_aoi, out_path) ## works
-  # get_TEM(in_aoi, out_path)     ## works
-  get_water(in_aoi, out_path)
+  get_BEC(in_aoi, out_path)     ## works
+  get_VRI(in_aoi, out_path)     ## works
+  get_harvest(in_aoi, out_path) ## works
+  get_TEM(in_aoi, out_path)     ## works
+  get_water(in_aoi, out_path)   ## works
+  get_roads(in_aoi, out_path)   ## works
+  get_towns(in_aoi, out_path)   ## works
+  get_fires(in_aoi, out_path)   ## works, but test on area with recent fire
+  get_fire_severity(in_aoi, out_path)      ## works
+  get_parks(in_aoi, out_path)              ## works
+  get_transmission_lines(in_aoi, out_path) ## works
+
+  return(print(paste("Layers have been downloaded and saved to", out_path)))
 }
 
 
@@ -303,79 +312,126 @@ get_roads <- function(in_aoi, out_path) {
   st_write(road_merge, file.path(out_path, "road_network.gpkg"), append = FALSE)
 }
 
-  # 8 Major Towns
 
-  # towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
-  #   collect()
-  #
-  # st_write(towns, file.path(out_path, "major_towns_bc.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  #
-  # # 9 fire polygons
-  # fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
-  #                   "22c7cb44-1463-48f7-8e47-88857f207702")
-  #
-  # cl <- parallel::makeCluster(parallel::detectCores())
-  # # doParallel::registerDoParallel(cl)
-  #
-  # fires <- foreach(i = fire_records, .combine = rbind,
-  #                  .packages = c("tidyverse", "bcdata", "sf")) %dopar%
-  #   {
-  #     bcdc_query_geodata(i) %>%
-  #       bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #       collect() %>%
-  #       {if(nrow(.) > 0) st_intersection(., in_aoi) %>%
-  #           dplyr::select(id, FIRE_NUMBER, VERSION_NUMBER, FIRE_YEAR,
-  #                         FIRE_SIZE_HECTARES, LOAD_DATE) %>%
-  #           dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= 20)}
-  #   }
-  #
-  # # parallel::stopCluster(cl)
-  #
-  # st_write(fires, file.path(out_path, "fire.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  # # 10. fire severity
-  # fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   bcdata::select(c("FIRE_YEAR", "BURN_SEVERITY_RATING")) %>% # Treed sites
-  #   collect()
-  #
-  # st_write(fire_int, file.path(out_path, "fire_int.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  # # 11. BC parks
-  #
-  # parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   collect() %>%
-  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-  #
-  # st_write(parks, file.path(out_path, "parks.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  # # 12. National parks (if an option)
-  # national_parks <- bcdc_query_geodata("88e61a14-19a0-46ab-bdae-f68401d3d0fb") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   collect()%>%
-  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-  #
-  # st_write(national_parks, file.path(out_path, "natparks.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  # # 13. transmission lines
-  # #bcdc_search("transmission")
-  # trans_line <-  bcdc_query_geodata("384d551b-dee1-4df8-8148-b3fcf865096a") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   collect()%>%
-  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-  #
-  # st_write(trans_line, file.path(out_path, "translines.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  #
-  #
+
+# 8 Major Towns ---------------------------------
+get_towns <- function(in_aoi, out_path) {
+  message("\rDownloading Town locations")
+
+  towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
+    bcdata::collect()
+
+  st_write(towns, file.path(out_path, "major_towns_bc.gpkg"), append = FALSE)
+}
+
+
+# 9) Fire polygons  ---------------------------------
+get_fires <- function(in_aoi, out_path) {
+  message("\rDownloading recent fire disturbance (<20 years)")
+
+  fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
+                    "22c7cb44-1463-48f7-8e47-88857f207702")
+
+  fires_all <- NA ## placeholder
+
+
+  for (i in 1:length(fire_records)) {
+
+
+      fires <- bcdata::bcdc_query_geodata(fire_records[i]) %>%
+        bcdata::filter(INTERSECTS(in_aoi)) %>%
+        collect() %>%
+        {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+      # filter for recent fires
+      if(nrow(fires) > 0) {
+        fires <- sf::st_intersection(fires, in_aoi) %>%
+          dplyr::select(id, FIRE_NUMBER, VERSION_NUMBER, FIRE_YEAR,
+                      FIRE_SIZE_HECTARES, LOAD_DATE) %>%
+          dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= 20) }
+
+
+      if(nrow(fires) > 0) {
+        ## bind results of loops
+        if (i == 1) {
+            fires_all <- fires } else { ## i > 1
+              if (is.na(fires_all)) {fires_all <- fires } else {fires_all <- rbind(fires_all, fires)}
+              }
+        } #else {print("No fires in layer queried") }
+
+     # rm(fires)
+    } ## end loop
+
+  if (is.na(fires_all) || nrow(fires_all) == 0) {
+    print("No recent fire disturbance in area of interest") } else {
+    sf::st_write(fires_all, file.path(out_path, "fire.gpkg"), append = FALSE)
+  }
+}
+
+# 10. fire severity -------------------------------------
+get_fire_severity <- function(in_aoi, out_path) {
+  message("\rDownloading burn severity layer")
+
+
+  fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    bcdata::select(c("FIRE_YEAR", "BURN_SEVERITY_RATING")) %>% # Treed sites
+    collect()
+
+  if(nrow(fire_int) > 0) {
+    st_write(fire_int, file.path(out_path, "fire_int.gpkg"), append = FALSE)
+  } else {
+    print("No burn severity in AOI")
+  }
+}
+
+
+# 11) BC parks and National parks-----------------
+get_parks <- function(in_aoi, out_path) {
+  message("\rDownloading Parks")
+
+
+  parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    collect() %>%
+    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+  if (nrow(parks) > 0) {
+    st_write(parks, file.path(out_path, "parks.gpkg"), append = FALSE)
+  } else {
+    print("no provincial parks in aoi")
+  }
+
+  # 12. National parks (if an option)
+  national_parks <- bcdc_query_geodata("88e61a14-19a0-46ab-bdae-f68401d3d0fb") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    collect()%>%
+    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+  if (nrow(national_parks) > 0) {
+    st_write(national_parks, file.path(out_path, "natparks.gpkg"), append = FALSE)
+  } else { print("no national parks in aoi")}
+}
+
+
+# 13) transmission lines -------------------------------
+get_transmission_lines <- function(in_aoi, out_path) {
+  message("\rDownloading Parks")
+
+  #bcdc_search("transmission")
+  trans_line <-  bcdc_query_geodata("384d551b-dee1-4df8-8148-b3fcf865096a") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    collect()%>%
+    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+  if(nrow(trans_line > 0)) {
+    st_write(trans_line, file.path(out_path, "translines.gpkg"), append = FALSE)
+  } else {
+    print("No transmission lines in area of interest")
+  }
+
+}
+
 
 
 
