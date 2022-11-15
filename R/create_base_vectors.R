@@ -92,10 +92,11 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
     options(bcdata.max_geom_pred_size = as.numeric(st_area(in_aoi)) + 10)
   )
   #
-  #
-  get_BEC(in_aoi, out_path) ## works
-  # get_VRI(in_aoi, out_path) ## works
-  # get_harvest(in_aoi, out_path) ##works
+  ## CALL all the subfunctions --------------
+  # get_BEC(in_aoi, out_path)     ## works
+  # get_VRI(in_aoi, out_path)     ## works
+  # get_harvest(in_aoi, out_path) ## works
+  # get_TEM(in_aoi, out_path)     ## works
 }
 
 
@@ -169,7 +170,7 @@ get_VRI <- function(in_aoi, out_path) {
 }
 
 
-## 3) Get harvest history --------------------------------
+## 3) Get harvest history and FTEN --------------------------------
 get_harvest <- function(in_aoi, out_path) {
   # 3) Download recent cutblocks (within last 20 years)
   message("\rDownloading cutblock layers")
@@ -210,18 +211,19 @@ get_harvest <- function(in_aoi, out_path) {
   #
   ### WORKS TO HERE ----------------------------------------------
   ### BREAKS BELOW ... FIX NEEDED --------------------------------
-  # 5) TEM
-  # message("\rDownloading TEM layers")
-  # tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
-  #     bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #     collect() %>%
-  #    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-  #
-  #
-  # st_write(tem, file.path(out_path, "tem.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
 
+## 5) TEM -----------------------------
+get_TEM <- function(in_aoi, out_path) {
+  # message("\rDownloading TEM layers")
+  tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
+      bcdata::filter(INTERSECTS(in_aoi)) %>%
+      collect() %>%
+     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+
+  st_write(tem, file.path(out_path, "tem.gpkg"), append = FALSE)
+
+}
   # # 6) Water (Lakes, Rivers, Wetlands)
   #
   # # Use foreach in parallel to efficiently download multiple water layers
