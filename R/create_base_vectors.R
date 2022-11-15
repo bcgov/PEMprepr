@@ -85,19 +85,32 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   epsg <- st_crs(in_aoi)
 
   # Adjust max download size based on AOI
+  ## PROBLEMATIC -- should not be done globally -----------------
   options(bcdata.max_geom_pred_size = as.numeric(st_area(in_aoi)) + 10)
   #
   #
+  get_BEC(in_aoi, out_path) ##
+}
+
+
+
+
+
+## get_BEC ----------------------------
+get_BEC <- function(in_aoi, out_path) {
+
   # # 1) BEC Biogeographical linework
-  # bec <- bcdc_query_geodata("f358a53b-ffde-4830-a325-a5a03ff672c3") %>%
-  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #   collect() %>%
-  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-  #
-  # st_write(bec, file.path(out_path, "bec.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
-  #
+  bec <- bcdc_query_geodata("f358a53b-ffde-4830-a325-a5a03ff672c3") %>%
+    bcdata::filter(INTERSECTS(in_aoi)) %>%
+    collect() %>%
+    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+
+  st_write(bec, file.path(out_path, "bec.gpkg"), delete_dsn = TRUE,
+           delete_layer = TRUE)
+
+
+}
+
   # # 2) Download VRI
   # vri <- bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
   #   bcdata::filter(INTERSECTS(in_aoi)) %>%
@@ -185,157 +198,157 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   ### WORKS TO HERE ----------------------------------------------
   ### BREAKS BELOW ... FIX NEEDED --------------------------------
   # 5) TEM
-  message("\rDownloading TEM layers")
-  tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
-      bcdata::filter(INTERSECTS(in_aoi)) %>%
-      collect() %>%
-     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  # message("\rDownloading TEM layers")
+  # tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
+  #     bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #     collect() %>%
+  #    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  #
+  #
+  # st_write(tem, file.path(out_path, "tem.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
 
-
-  st_write(tem, file.path(out_path, "tem.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-
-  # 6) Water (Lakes, Rivers, Wetlands)
-
-  # Use foreach in parallel to efficiently download multiple water layers
-  water_records <- c("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6", # lakes
-                     "f7dac054-efbf-402f-ab62-6fc4b32a619e", # rivers
-                     "93b413d8-1840-4770-9629-641d74bd1cc6") # wetlands
-
-  # cl <- parallel::makeCluster(parallel::detectCores())
-  # doParallel::registerDoParallel(cl)
-
-
-  for (i in waterbodies) {
-  # waterbodies <- foreach(i = water_records, .combine = rbind,
-  #                        .packages = c("tidyverse", "bcdata", "sf")) %dopar%
-    # {
-    waterbodies <- bcdc_query_geodata(i, crs = epsg) %>% # lakes
-        bcdata::filter(INTERSECTS(in_aoi)) %>%
-        collect() %>%
-        {if(nrow(.) > 0) st_intersection(., in_aoi) else NULL}
-    # }
-  # parallel::stopCluster(cl)
-
-  # filter a subset of columns
-
-  waterbodies_sf <- waterbodies %>%
-    dplyr::select(id, WATERBODY_TYPE, AREA_HA)
-
-
-  ## THIS LOOKS LIKE IT WILL OVER-WRITE the previous look ... is filename unique???????? --------------
-  st_write(waterbodies_sf, file.path(out_path, "water.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-  }
+  # # 6) Water (Lakes, Rivers, Wetlands)
+  #
+  # # Use foreach in parallel to efficiently download multiple water layers
+  # water_records <- c("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6", # lakes
+  #                    "f7dac054-efbf-402f-ab62-6fc4b32a619e", # rivers
+  #                    "93b413d8-1840-4770-9629-641d74bd1cc6") # wetlands
+  #
+  # # cl <- parallel::makeCluster(parallel::detectCores())
+  # # doParallel::registerDoParallel(cl)
+  #
+  #
+  # for (i in waterbodies) {
+  # # waterbodies <- foreach(i = water_records, .combine = rbind,
+  # #                        .packages = c("tidyverse", "bcdata", "sf")) %dopar%
+  #   # {
+  #   waterbodies <- bcdc_query_geodata(i, crs = epsg) %>% # lakes
+  #       bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #       collect() %>%
+  #       {if(nrow(.) > 0) st_intersection(., in_aoi) else NULL}
+  #   # }
+  # # parallel::stopCluster(cl)
+  #
+  # # filter a subset of columns
+  #
+  # waterbodies_sf <- waterbodies %>%
+  #   dplyr::select(id, WATERBODY_TYPE, AREA_HA)
+  #
+  #
+  # ## THIS LOOKS LIKE IT WILL OVER-WRITE the previous look ... is filename unique???????? --------------
+  # st_write(waterbodies_sf, file.path(out_path, "water.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  # }
   # 7) Download road network
   # The main road network layer has too many roads in it. Filter it down to only
   # include named roads and combine those with actual mapped FSR's
 
-  message("\rDownloading Road network")
-  roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
-    bcdata::filter(
-      BBOX(st_bbox(in_aoi))) %>%#,
-    #ROAD_NAME_ID > 0) %>%
-    collect() %>%
-    dplyr::select(id, ROAD_NAME_FULL, FEATURE_LENGTH_M) %>%
-    dplyr::rename(NAME = ROAD_NAME_FULL) %>%
-    {if(nrow(.) > 0) {
-      st_intersection(., in_aoi) %>%
-        st_cast("MULTILINESTRING")
-    } else .}
-
-  fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
-    bcdata::filter(
-      BBOX(st_bbox(in_aoi)),
-      LIFE_CYCLE_STATUS_CODE == "ACTIVE") %>%
-    collect() %>%
-    dplyr::select(id, MAP_LABEL, FEATURE_LENGTH_M) %>%
-    dplyr::rename(NAME = MAP_LABEL) %>%
-    {if(nrow(.) > 0) {
-      st_intersection(., in_aoi) %>%
-        st_cast("MULTILINESTRING")
-    } else .}
-
-  road_merge <- rbind(roads, fsr)
-
-  st_write(road_merge, file.path(out_path, "road_network.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
+  # message("\rDownloading Road network")
+  # roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
+  #   bcdata::filter(
+  #     BBOX(st_bbox(in_aoi))) %>%#,
+  #   #ROAD_NAME_ID > 0) %>%
+  #   collect() %>%
+  #   dplyr::select(id, ROAD_NAME_FULL, FEATURE_LENGTH_M) %>%
+  #   dplyr::rename(NAME = ROAD_NAME_FULL) %>%
+  #   {if(nrow(.) > 0) {
+  #     st_intersection(., in_aoi) %>%
+  #       st_cast("MULTILINESTRING")
+  #   } else .}
+  #
+  # fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
+  #   bcdata::filter(
+  #     BBOX(st_bbox(in_aoi)),
+  #     LIFE_CYCLE_STATUS_CODE == "ACTIVE") %>%
+  #   collect() %>%
+  #   dplyr::select(id, MAP_LABEL, FEATURE_LENGTH_M) %>%
+  #   dplyr::rename(NAME = MAP_LABEL) %>%
+  #   {if(nrow(.) > 0) {
+  #     st_intersection(., in_aoi) %>%
+  #       st_cast("MULTILINESTRING")
+  #   } else .}
+  #
+  # road_merge <- rbind(roads, fsr)
+  #
+  # st_write(road_merge, file.path(out_path, "road_network.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
 
   # 8 Major Towns
 
-  towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
-    collect()
-
-  st_write(towns, file.path(out_path, "major_towns_bc.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-
-  # 9 fire polygons
-  fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
-                    "22c7cb44-1463-48f7-8e47-88857f207702")
-
-  cl <- parallel::makeCluster(parallel::detectCores())
-  # doParallel::registerDoParallel(cl)
-
-  fires <- foreach(i = fire_records, .combine = rbind,
-                   .packages = c("tidyverse", "bcdata", "sf")) %dopar%
-    {
-      bcdc_query_geodata(i) %>%
-        bcdata::filter(INTERSECTS(in_aoi)) %>%
-        collect() %>%
-        {if(nrow(.) > 0) st_intersection(., in_aoi) %>%
-            dplyr::select(id, FIRE_NUMBER, VERSION_NUMBER, FIRE_YEAR,
-                          FIRE_SIZE_HECTARES, LOAD_DATE) %>%
-            dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= 20)}
-    }
-
-  # parallel::stopCluster(cl)
-
-  st_write(fires, file.path(out_path, "fire.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-  # 10. fire severity
-  fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
-    bcdata::select(c("FIRE_YEAR", "BURN_SEVERITY_RATING")) %>% # Treed sites
-    collect()
-
-  st_write(fire_int, file.path(out_path, "fire_int.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-  # 11. BC parks
-
-  parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
-    collect() %>%
-    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-
-  st_write(parks, file.path(out_path, "parks.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-  # 12. National parks (if an option)
-  national_parks <- bcdc_query_geodata("88e61a14-19a0-46ab-bdae-f68401d3d0fb") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
-    collect()%>%
-    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-
-  st_write(national_parks, file.path(out_path, "natparks.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-  # 13. transmission lines
-  #bcdc_search("transmission")
-  trans_line <-  bcdc_query_geodata("384d551b-dee1-4df8-8148-b3fcf865096a") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
-    collect()%>%
-    {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
-
-  st_write(trans_line, file.path(out_path, "translines.gpkg"), delete_dsn = TRUE,
-           delete_layer = TRUE)
-
-
-}
+  # towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
+  #   collect()
+  #
+  # st_write(towns, file.path(out_path, "major_towns_bc.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  #
+  # # 9 fire polygons
+  # fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
+  #                   "22c7cb44-1463-48f7-8e47-88857f207702")
+  #
+  # cl <- parallel::makeCluster(parallel::detectCores())
+  # # doParallel::registerDoParallel(cl)
+  #
+  # fires <- foreach(i = fire_records, .combine = rbind,
+  #                  .packages = c("tidyverse", "bcdata", "sf")) %dopar%
+  #   {
+  #     bcdc_query_geodata(i) %>%
+  #       bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #       collect() %>%
+  #       {if(nrow(.) > 0) st_intersection(., in_aoi) %>%
+  #           dplyr::select(id, FIRE_NUMBER, VERSION_NUMBER, FIRE_YEAR,
+  #                         FIRE_SIZE_HECTARES, LOAD_DATE) %>%
+  #           dplyr::filter(as.numeric(format(Sys.time(), "%Y")) - FIRE_YEAR <= 20)}
+  #   }
+  #
+  # # parallel::stopCluster(cl)
+  #
+  # st_write(fires, file.path(out_path, "fire.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  # # 10. fire severity
+  # fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
+  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #   bcdata::select(c("FIRE_YEAR", "BURN_SEVERITY_RATING")) %>% # Treed sites
+  #   collect()
+  #
+  # st_write(fire_int, file.path(out_path, "fire_int.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  # # 11. BC parks
+  #
+  # parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
+  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #   collect() %>%
+  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  #
+  # st_write(parks, file.path(out_path, "parks.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  # # 12. National parks (if an option)
+  # national_parks <- bcdc_query_geodata("88e61a14-19a0-46ab-bdae-f68401d3d0fb") %>%
+  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #   collect()%>%
+  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  #
+  # st_write(national_parks, file.path(out_path, "natparks.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  # # 13. transmission lines
+  # #bcdc_search("transmission")
+  # trans_line <-  bcdc_query_geodata("384d551b-dee1-4df8-8148-b3fcf865096a") %>%
+  #   bcdata::filter(INTERSECTS(in_aoi)) %>%
+  #   collect()%>%
+  #   {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
+  #
+  # st_write(trans_line, file.path(out_path, "translines.gpkg"), delete_dsn = TRUE,
+  #          delete_layer = TRUE)
+  #
+  #
+  #
 
 
 
