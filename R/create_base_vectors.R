@@ -97,6 +97,7 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   # get_VRI(in_aoi, out_path)     ## works
   # get_harvest(in_aoi, out_path) ## works
   # get_TEM(in_aoi, out_path)     ## works
+  get_water(in_aoi, out_path)
 }
 
 
@@ -207,14 +208,14 @@ get_harvest <- function(in_aoi, out_path) {
   cutblocks_ften <- dplyr::bind_rows( ften, cutblocks)
   st_write(cutblocks_ften, file.path(out_path, "cutblocks_ften.gpkg"), append = FALSE)
 }
-  #
-  #
-  ### WORKS TO HERE ----------------------------------------------
-  ### BREAKS BELOW ... FIX NEEDED --------------------------------
+
+
+
+
 
 ## 5) TEM -----------------------------
 get_TEM <- function(in_aoi, out_path) {
-  # message("\rDownloading TEM layers")
+  message("\rDownloading TEM layers")
   tem <- bcdc_query_geodata("0a83163b-a62f-4ce6-a9a1-21c228b0c0a3") %>%
       bcdata::filter(INTERSECTS(in_aoi)) %>%
       collect() %>%
@@ -224,72 +225,83 @@ get_TEM <- function(in_aoi, out_path) {
   st_write(tem, file.path(out_path, "tem.gpkg"), append = FALSE)
 
 }
-  # # 6) Water (Lakes, Rivers, Wetlands)
-  #
-  # # Use foreach in parallel to efficiently download multiple water layers
-  # water_records <- c("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6", # lakes
-  #                    "f7dac054-efbf-402f-ab62-6fc4b32a619e", # rivers
-  #                    "93b413d8-1840-4770-9629-641d74bd1cc6") # wetlands
-  #
-  # # cl <- parallel::makeCluster(parallel::detectCores())
-  # # doParallel::registerDoParallel(cl)
-  #
-  #
-  # for (i in waterbodies) {
-  # # waterbodies <- foreach(i = water_records, .combine = rbind,
-  # #                        .packages = c("tidyverse", "bcdata", "sf")) %dopar%
-  #   # {
-  #   waterbodies <- bcdc_query_geodata(i, crs = epsg) %>% # lakes
-  #       bcdata::filter(INTERSECTS(in_aoi)) %>%
-  #       collect() %>%
-  #       {if(nrow(.) > 0) st_intersection(., in_aoi) else NULL}
-  #   # }
-  # # parallel::stopCluster(cl)
-  #
-  # # filter a subset of columns
-  #
-  # waterbodies_sf <- waterbodies %>%
-  #   dplyr::select(id, WATERBODY_TYPE, AREA_HA)
-  #
-  #
-  # ## THIS LOOKS LIKE IT WILL OVER-WRITE the previous look ... is filename unique???????? --------------
-  # st_write(waterbodies_sf, file.path(out_path, "water.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  # }
-  # 7) Download road network
+
+## 6) Water (Lakes, Rivers, Wetlands) --------------------------------------
+get_water <- function(in_aoi, out_path) {
+
+  message("\rDownloading lake, river, and wetland layers")
+  # Use foreach in parallel to efficiently download multiple water layers
+  water_records <- c("cb1e3aba-d3fe-4de1-a2d4-b8b6650fb1f6", # lakes
+                     "f7dac054-efbf-402f-ab62-6fc4b32a619e", # rivers
+                     "93b413d8-1840-4770-9629-641d74bd1cc6") # wetlands
+
+  # water_names <- c("w_lakes.gpkg",
+  #                  "w_rivers.gpkg",
+  #                  "w_wetlands.gpkg")
+
+  for (i in 1:length(water_records)) {
+
+    waterbodies <- bcdata::bcdc_query_geodata(water_records[i]) %>% #, crs = st_crs(in_aoi)) %>%
+      bcdata::filter(INTERSECTS(in_aoi)) %>%
+      bcdata::collect()
+
+    if(nrow(waterbodies) > 0) {  ## If there are records ... process them
+        waterbodies <- sf::st_intersection(waterbodies, in_aoi)
+
+        waterbodies_sf <- waterbodies %>%
+          dplyr::select(id, WATERBODY_TYPE, AREA_HA)
+
+
+        ## create a consolidated record
+        if (i == 1) {
+          all_water <- waterbodies_sf } else {
+            all_water <- rbind(all_water, waterbodies_sf)
+          }
+
+      # st_write(waterbodies_sf, file.path(out_path, water_names[i]), append = FALSE)
+    }
+  }
+  st_write(all_water, file.path(out_path, "water.gpkg"), append = FALSE)
+}
+
+
+
+
+
+# 7) Download road network --------------------
+get_roads <- function(in_aoi, out_path) {
   # The main road network layer has too many roads in it. Filter it down to only
   # include named roads and combine those with actual mapped FSR's
 
-  # message("\rDownloading Road network")
-  # roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
-  #   bcdata::filter(
-  #     BBOX(st_bbox(in_aoi))) %>%#,
-  #   #ROAD_NAME_ID > 0) %>%
-  #   collect() %>%
-  #   dplyr::select(id, ROAD_NAME_FULL, FEATURE_LENGTH_M) %>%
-  #   dplyr::rename(NAME = ROAD_NAME_FULL) %>%
-  #   {if(nrow(.) > 0) {
-  #     st_intersection(., in_aoi) %>%
-  #       st_cast("MULTILINESTRING")
-  #   } else .}
-  #
-  # fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
-  #   bcdata::filter(
-  #     BBOX(st_bbox(in_aoi)),
-  #     LIFE_CYCLE_STATUS_CODE == "ACTIVE") %>%
-  #   collect() %>%
-  #   dplyr::select(id, MAP_LABEL, FEATURE_LENGTH_M) %>%
-  #   dplyr::rename(NAME = MAP_LABEL) %>%
-  #   {if(nrow(.) > 0) {
-  #     st_intersection(., in_aoi) %>%
-  #       st_cast("MULTILINESTRING")
-  #   } else .}
-  #
-  # road_merge <- rbind(roads, fsr)
-  #
-  # st_write(road_merge, file.path(out_path, "road_network.gpkg"), delete_dsn = TRUE,
-  #          delete_layer = TRUE)
-  #
+  message("\rDownloading Road network")
+  roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
+    bcdata::filter(
+      BBOX(st_bbox(in_aoi))) %>%#,
+    #ROAD_NAME_ID > 0) %>%
+    collect() %>%
+    dplyr::select(id, ROAD_NAME_FULL, FEATURE_LENGTH_M) %>%
+    dplyr::rename(NAME = ROAD_NAME_FULL) %>%
+    {if(nrow(.) > 0) {
+      st_intersection(., in_aoi) %>%
+        st_cast("MULTILINESTRING")
+    } else .}
+
+  fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
+    bcdata::filter(
+      BBOX(st_bbox(in_aoi)),
+      LIFE_CYCLE_STATUS_CODE == "ACTIVE") %>%
+    collect() %>%
+    dplyr::select(id, MAP_LABEL, FEATURE_LENGTH_M) %>%
+    dplyr::rename(NAME = MAP_LABEL) %>%
+    {if(nrow(.) > 0) {
+      st_intersection(., in_aoi) %>%
+        st_cast("MULTILINESTRING")
+    } else .}
+
+  road_merge <- rbind(roads, fsr)
+
+  st_write(road_merge, file.path(out_path, "road_network.gpkg"), append = FALSE)
+}
 
   # 8 Major Towns
 
