@@ -87,12 +87,20 @@ create_covariates <- function(dtm, SAGApath = "",
     saga_cmd <- paste0(SAGApath, "saga_cmd.exe")
     fns      <- "\\" ### file name separator
   } else {
-    saga_cmd = "saga_cmd"
+    saga_cmd <- "saga_cmd"
     fns      <- "/" ### file name separator
 
   }  ;
   z<- system(paste(saga_cmd, "-v"), intern = TRUE)  ## prints that SAGA version number -- confirming it works.
-  print(z)
+  z <- print(z)
+  v <- suppressWarnings(as.numeric(unlist(strsplit(z, "[[:punct:][:space:]]+")[1])))
+  v <- v[!is.na(v)][1:2]
+  v <- as.numeric(paste(v[1], v[2], sep = "."))
+
+  if (v < 7.6) {
+    warning("SAGA-GIS is less that 7.6.  Not all covariates will generate.  Upgrade your SAGA, visit https://sourceforge.net/projects/saga-gis/files/")
+  }
+
 
 
   # OUTPUTS: ------------------------------------------------------------
