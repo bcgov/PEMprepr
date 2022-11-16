@@ -16,19 +16,61 @@ knitr::opts_chunk$set(
 See https://github.com/BCDevExchange/Our-Project-Docs/blob/master/discussion/projectstates.md
 If you have bcgovr installed and you use RStudio, click the 'Insert BCDevex Badge' Addin. -->
 
+[![img](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
+
 # PEMprepr
 
-Description of package
+One module of the [`PEMr`](https://github.com/bcgov/PEMr )project. Functions in the package focus on the initial data acquisition, covariate generation, including the  preparation of multi-resolution covariate stack. 
+
+Additional modules in the project include:
+
+- `PEMsamplr` -- functions for preparing a sample plan
+- `PEMmodelr` -- model generation, and evaluation
+- `PEMmapr` -- map production
 
 ### Features
 
+The raster focused functions have the objective of creating a multi-resolution raster stack of numerous covariates. 
+
+1. Snap and area of interest to ensure that subsequent rasters are stackable 
+2. Creation of covariates from a digital terrain model via [SAGA-GIS](https://saga-gis.sourceforge.io/en/index.html)
+3. Disaggregate coarse resolution rasters to fine scales 
+
+The bulk of the functions are _wrapper-functions_ utilizing the [`terra`](https://github.com/rspatial/terra) and [`sf`](https://github.com/r-spatial/sf) packages
+
+Vector functions in this package faciltate the aquisition of a standard set of 
+data from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) via the [`bcdata`]() package.
+
+
 ### Installation
+
+```{r, eval=FALSE}
+remotes::install_github("bcgov/PEMprepr")
+
+```
+
 
 ### Usage
 
+Raster based: 
+
+1. Create a standardized folder structure for the area of interest
+1. Create an standardized area of interest -- that fits well to a xxx100m^2^ extent
+2. Create a digital terrain model for the desired resolutions (e.g. 5, 10, and 25m^2^)
+3. Generate covariates for each resolution 
+4. disaggregate the course scale covariates to the finest resolution level
+
+Vector based -- collect a standard set of vectors and place them within the folder structure. 
+
+#### Standardized folder structure 
+
+_todo -- add a graphic of the folders_
+
+
+
 #### Example
 
-This is a basic example which shows you how to solve a common problem:
+Pending ... should have it here by the end of the week (Nov. 18)
 
 ```{r example}
 ## basic example code
