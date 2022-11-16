@@ -11,9 +11,9 @@ create_fine_res(
 )
 }
 \arguments{
-\item{inputFileList}{a character vector specifying the location of all the input rasters .  Input list should only be a raster type (e.g. .tif).  Best practice is to use list.files(full.names = TRUE).}
+\item{inputFileList}{a character vector specifying the location of all the input rasters.  Input list should only be a raster type (e.g. .tif, .sdat).  Best practice is to use list.files(full.names = TRUE).}
 
-\item{output}{destination of the output files. \emph{NOTE} files names will be}
+\item{output}{destination of the output files. \emph{NOTE} files names will have a suffix added to indicate the original resolution.}
 
 \item{targetRes}{desired resolution to convert to.}
 }

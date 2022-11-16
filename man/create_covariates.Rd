@@ -7,7 +7,7 @@
 create_covariates(dtm, SAGApath = "", output = "./cv-rasters", layers = "all")
 }
 \arguments{
-\item{dtm}{is a dtm SpatRaster object}
+\item{dtm}{is a dtm \code{SpatRaster} object (i.e. loaded via \code{terra::rast})}
 
 \item{SAGApath}{Is the location of SAGA on your system.  On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 

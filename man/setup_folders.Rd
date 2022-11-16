@@ -4,7 +4,7 @@
 \alias{setup_folders}
 \title{Setup Folder Structure}
 \usage{
-setup_folders(aoi)
+setup_folders(aoi_name, full_names = TRUE)
 }
 \arguments{
 \item{aoi}{A character string to name the main data folder}

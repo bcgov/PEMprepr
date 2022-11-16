@@ -6,5 +6,6 @@ inst/doc
 
 
 # Colin's custom ignores
+.gitignore
 cc_test_flow.R
 ./PEMprepr.Rproj

@@ -16,4 +16,6 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     terra,
-    sf
+    sf,
+    bcdata,
+    magrittr

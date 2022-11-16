@@ -4,10 +4,12 @@
 \alias{aoi_snap_landscape}
 \title{AOI Snap to landscape}
 \usage{
-aoi_snap_landscape(in_aoi)
+aoi_snap_landscape(in_aoi, preview = TRUE)
 }
 \arguments{
-\item{in_aoi}{}
+\item{in_aoi}{\code{sf} polygon as the Area of Interest. Needs to be a meters based projection (e.g. Albers, UTM)}
+
+\item{preview}{Boolean.  \code{TRUE} will provide a mapview preview of the resulting aoi, the input aoi, and the Freshwater Atlas Watersheds that intersect.}
 }
 \value{
 sf polygon
