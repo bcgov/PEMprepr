@@ -141,6 +141,8 @@ create_covariates <- function(dtm, SAGApath = "",
   ############# Covariate File Names #############################################
   ### Create Names for all the covariates ... needed here so that dependancies are
   ### partially met
+
+  ### This is ugly! re-write
   sDTM <- paste(saga_tmp_files, "dtm.sdat", sep= fns)
   sinksRoute <- paste(saga_tmp_files, "sinkroute.sgrd",sep = fns)
   sinksFilled <- paste(saga_tmp_files, "Filled_sinks.sgrd", sep = fns)
@@ -150,7 +152,8 @@ create_covariates <- function(dtm, SAGApath = "",
   gencurve <- paste(saga_tmp_files, "gencurve.sgrd", sep = fns)
   totcurve <- paste(saga_tmp_files, "totcurve.sgrd", sep = fns)
   tCatchment <- paste(saga_tmp_files, "tCatchment.sgrd", sep = fns)
-  tca <- paste(saga_tmp_files, "tca1.sgrd", sep = fns)
+  tca <- paste(saga_tmp_files, "tca1.sgrd", sep = fns, sep = fns)
+  flowlength4 <- paste(saga_tmp_files, "flowlength1.sgrd", sep = fns) ## part of tca
   sCatchment <- paste(saga_tmp_files, "sCatchment.sgrd", sep = fns)
   twi <- paste(saga_tmp_files, "twi.sgrd", sep = fns)
   channelsNetwork <- paste(saga_tmp_files, "cnetwork.sgrd", sep = fns)
@@ -184,7 +187,7 @@ create_covariates <- function(dtm, SAGApath = "",
   FlowPathLenTD = paste(saga_tmp_files, "FlowPathLenTD.sgrd", sep = fns)
   FlowPathLength = paste(saga_tmp_files, "max_fp_l.sgrd", sep = fns)
   FlowPathLength = paste(saga_tmp_files, "max_fp_l1.sgrd", sep = fns)
-  FlowAccum = paste(saga_tmp_files, "slope_lts_fa.sgrd", sep = fns)
+  FloOwAccum = paste(saga_tmp_files, "slope_lts_fa.sgrd", sep = fns)
   LSFactor = paste(saga_tmp_files, "ls_factor.sgrd", sep = fns)
   DirInsol <- paste(saga_tmp_files, "direinso.sgrd", sep = fns)
   DifInsol <- paste(saga_tmp_files, "diffinso.sgrd", sep = fns)
@@ -356,7 +359,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
     # tca <- paste(saga_tmp_files, "tca1.sgrd", sep = "/")
     # tca <- file.path(tmpOut, tca)
-    flowlength4 <- "flowlength1.sgrd"
+    # flowlength4 <- "flowlength1.sgrd"
     # flowlength4 <- file.path(tmpOut, flowlength4)
 
     sysCMD <- paste(saga_cmd, "ta_hydrology 1",
@@ -1288,8 +1291,7 @@ create_covariates <- function(dtm, SAGApath = "",
                    "-ELEVATION", sinksFilled,           # input DEM
                    "-AREA", UpslopeArea,                # output Upslope Area
                    "-METHOD", 2,
-                   "-CONVERGENCE", 1.1
-                   # "-CONVERGE", 1.1
+                   "-CONVERGE", 1.1
     )
     system(sysCMD)
 
