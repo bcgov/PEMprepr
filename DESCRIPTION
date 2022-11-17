@@ -1,6 +1,6 @@
 Package: PEMprepr
 Title: Prepares data for PEMr
-Version: 0.0.1.9000
+Version: 0.0.1.91117
 Authors@R: c(
     person("Colin", "Chisholm", , "Colin.Chisholm@unbc.ca", role = c("aut", "cre")),
     person("Gen", "Perkins", , "Genevieve.Perkins@gov.bc.ca", role = c("aut")),
