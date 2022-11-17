@@ -39,6 +39,8 @@ the PEM Project.
 A portion of the  [Aleza Lake Research Forest](aleza.unbc.ca), one of the pilot study sites for this project, 
 is used for this example. The area outlined in red will be used in the steps below
 
+In the example below it is assumed that you are running the following within a new R project. 
+
 ```{r, echo = FALSE, eval = FALSE, include=FALSE}
 ## this section is invisible ... just used to create the image.
 aleza <- sf::st_read(system.file("extdata/aleza.gpkg", 
@@ -72,8 +74,6 @@ knitr::include_graphics("aleza.png")
 
 
 
-In the example below it is assumed that you are running the following within a new R project. 
-
 # Workflow
 
 The following provides a standard workflow for preparing data for subsequent 
@@ -94,6 +94,7 @@ Data for the project can quickly become difficult to manage.  To facilitate ease
 a standard set of folders for each area of interest. The following creates the needed folders for 
 the area of interest: _aleza_. In addition, `fstr` stores a named list of the folders created 
 which we will utilize later (e.g. to programmatically place results of functions in the correct place).
+
 _Note: if the folders have been generated previously this function will still return the list of 
 folder names. 
 
@@ -199,19 +200,19 @@ layer_options <-
     "MultiResFlatness", "MultiResFlatness2",
     "MultiResFlatness3", "TRI", "convergence", "Openness",
     "dah", "TPI", "RidgeValley", "MRN", "FlowAccumulation",
-       "SlopeLength", "FlowAccumulation2", "FlowAccumulation3",
-                 "FlowPathLength", "FlowPathLength2", "FlowPathLength3", 
-                 "LSFactor", "SolarRad", "Convexity", "VertDistance", "TCI_low",
-                 "SWI", "WindExp", "Texture", "Protection", "VRM",
-                 "MBI", "mscale_TPI", "RelPosition", "SlopeCurvatures",
-                 "SteepestSlope", "UpslopeArea")
+    "SlopeLength", "FlowAccumulation2", "FlowAccumulation3",
+    "FlowPathLength", "FlowPathLength2", "FlowPathLength3", 
+    "LSFactor", "SolarRad", "Convexity", "VertDistance", "TCI_low",
+    "SWI", "WindExp", "Texture", "Protection", "VRM",
+    "MBI", "mscale_TPI", "RelPosition", "SlopeCurvatures",
+    "SteepestSlope", "UpslopeArea")
 
 
 
 create_covariates(dtm = dtm25,           ## raster created above
                   SAGApath = "c:/SAGA/", ## Where SAGA GIS is installed
                   output = fstr$cov_dir, ## from the setup_folders above
-                  layers = "UpslopeArea")        ## 
+                  layers = "all")        ## use all or one of the above
 
 ```
 
