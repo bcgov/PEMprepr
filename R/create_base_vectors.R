@@ -121,7 +121,7 @@ get_BEC <- function(in_aoi, out_path) {
   # # 1) BEC Biogeographical linework
   bec <- bcdc_query_geodata("f358a53b-ffde-4830-a325-a5a03ff672c3") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
-    collect() %>%
+    bcdata::collect() %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
   st_write(bec, file.path(out_path, "bec.gpkg"), append = FALSE)
@@ -137,7 +137,7 @@ get_VRI <- function(in_aoi, out_path) {
   vri <- bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::select(c("BCLCS_LEVEL_2","BCLCS_LEVEL_4","PROJ_AGE_CLASS_CD_1", "SPECIES_CD_1")) %>% # Treed sites
-    collect() %>%
+    bcdata::collect() %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
   st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
@@ -188,7 +188,7 @@ get_harvest <- function(in_aoi, out_path) {
   # Uses date filter which filters cutblock ages less than 20 years, or 7305 days
   cutblocks <- bcdc_query_geodata("b1b647a6-f271-42e0-9cd0-89ec24bce9f7") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
-    collect()
+    bcdata::collect()
 
   cutblocks <- cutblocks %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>%
@@ -201,7 +201,7 @@ get_harvest <- function(in_aoi, out_path) {
   ften <- bcdc_query_geodata("cff7b8f7-6897-444f-8c53-4bb93c7e9f8b") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::select("HARVEST_AUTH_STATUS_CODE", "ISSUE_DATE", "CURRENT_EXPIRY_DATE_CALC", "LIFE_CYCLE_STATUS_CODE", "FILE_STATUS_CODE") %>%# Treed sites
-    collect()
+    bcdata::collect()
 
 
   ften <- ften %>%

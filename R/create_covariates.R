@@ -152,7 +152,7 @@ create_covariates <- function(dtm, SAGApath = "",
   gencurve <- paste(saga_tmp_files, "gencurve.sgrd", sep = fns)
   totcurve <- paste(saga_tmp_files, "totcurve.sgrd", sep = fns)
   tCatchment <- paste(saga_tmp_files, "tCatchment.sgrd", sep = fns)
-  tca <- paste(saga_tmp_files, "tca1.sgrd", sep = fns, sep = fns)
+  tca <- paste(saga_tmp_files, "tca1.sgrd", sep = fns)
   flowlength4 <- paste(saga_tmp_files, "flowlength1.sgrd", sep = fns) ## part of tca
   sCatchment <- paste(saga_tmp_files, "sCatchment.sgrd", sep = fns)
   twi <- paste(saga_tmp_files, "twi.sgrd", sep = fns)
@@ -1289,6 +1289,7 @@ create_covariates <- function(dtm, SAGApath = "",
     # UpslopeArea = file.path(tmpOut, UpslopeArea)
     sysCMD = paste(saga_cmd, "ta_hydrology 4",
                    "-ELEVATION", sinksFilled,           # input DEM
+                   "-SINKROUTE", sinksRoute,
                    "-AREA", UpslopeArea,                # output Upslope Area
                    "-METHOD", 2,
                    "-CONVERGE", 1.1
