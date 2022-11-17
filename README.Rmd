@@ -45,7 +45,7 @@ data from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) via the [`bc
 ### Installation
 
 ```{r, eval=FALSE}
-remotes::install_github("bcgov/PEMprepr")
+remotes::install_github("bcgov/PEMprepr", build_vignettes = TRUE)
 
 ```
 
@@ -70,13 +70,15 @@ _todo -- add a graphic of the folders_
 
 #### Example
 
-Pending ... should have it here by the end of the week (Nov. 18)
+The vignette for the package provide an example workflow.
 
 ```{r example}
-## basic example code
+vignette("PEMprepr")
 ```
 
 ### Project Status
+
+currently functional ... with polish needed.
 
 ### Getting Help or Reporting an Issue
 

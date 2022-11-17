@@ -40,7 +40,7 @@ package.
 ### Installation
 
 ``` r
-remotes::install_github("bcgov/PEMprepr")
+remotes::install_github("bcgov/PEMprepr", build_vignettes = TRUE)
 ```
 
 ### Usage
@@ -65,13 +65,16 @@ the folder structure.
 
 #### Example
 
-Pending … should have it here by the end of the week (Nov. 18)
+The vignette for the package provide an example workflow.
 
 ``` r
-## basic example code
+vignette("PEMprepr")
+#> starting httpd help server ... done
 ```
 
 ### Project Status
+
+currently functional … with polish needed.
 
 ### Getting Help or Reporting an Issue
 

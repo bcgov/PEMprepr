@@ -1,15 +1,17 @@
 Package: PEMprepr
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Prepares data for PEMr
+Version: 0.0.1.9000
 Authors@R: c(
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre")),
+    person("Colin", "Chisholm", , "Colin.Chisholm@unbc.ca", role = c("aut", "cre")),
+    person("Gen", "Perkins", , "Genevieve.Perkins@gov.bc.ca", role = c("aut")),
+    person("Will", "MacKenzie", , "Will.MacKenzie@gov.bc.ca", role = c("aut")),
     person("Province of British Columbia", role = "cph")
   )
-Description: What the package does (one paragraph).
+Description: Prepares raster and vector layers for use in a PEMr project
 License: Apache License (== 2.0) | file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.2
 Suggests: 
     knitr,
     rmarkdown
