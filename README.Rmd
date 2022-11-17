@@ -72,7 +72,7 @@ _todo -- add a graphic of the folders_
 
 The vignette for the package provide an example workflow.
 
-```{r example}
+```{r example, eval=FALSE}
 vignette("PEMprepr")
 ```
 

@@ -69,7 +69,6 @@ The vignette for the package provide an example workflow.
 
 ``` r
 vignette("PEMprepr")
-#> starting httpd help server ... done
 ```
 
 ### Project Status
