@@ -9,3 +9,9 @@ inst/doc
 .gitignore
 cc_test_flow.R
 ./PEMprepr.Rproj
+.Rbuildignore
+PEMprepr.Rproj
+
+# auto added
+/Meta/
+doc
