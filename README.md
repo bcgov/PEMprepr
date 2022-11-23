@@ -65,7 +65,14 @@ the folder structure.
 
 #### Example
 
-The vignette for the package provide an example workflow.
+see: https://bcgov.github.io/PEMprepr/
+
+or locally,
+
+The vignette for the package provides an example workflow.
+
+
+
 
 ``` r
 vignette("PEMprepr")
