@@ -33,8 +33,7 @@ library(terra)
 `PEMprepr`, short for _Predictive Ecosystem Mapping -- Preparation_ is the first of a
 series of packages supporting the British Columbia Biogeoecosystem Classification's  
 Predictive Ecosystem Mapping (PEM) project.  See [BC-BEC](https://www.for.gov.bc.ca/HRE/becweb/index.html) 
-and [`PEMr`](https://github.com/bcgov/PEMr) on _GitHub_for details about the BC BEC classification system and, 
-the PEM Project. 
+and [`PEMr`](https://github.com/bcgov/PEMr) on _GitHub_for details about the BC BEC classification system and, the PEM Project. 
 
 A portion of the  [Aleza Lake Research Forest](aleza.unbc.ca), one of the pilot study sites for this project, 
 is used for this example. The area outlined in red will be used in the steps below
@@ -43,6 +42,7 @@ In the example below it is assumed that you are running the following within a n
 
 ```{r, echo = FALSE, eval = FALSE, include=FALSE}
 ## this section is invisible ... just used to create the image.
+
 aleza <- sf::st_read(system.file("extdata/aleza.gpkg", 
                                  package = "PEMprepr"), 
                      quiet = TRUE)
