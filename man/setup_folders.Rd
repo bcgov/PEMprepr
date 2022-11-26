@@ -2,9 +2,9 @@
 % Please edit documentation in R/setup_folders.R
 \name{setup_folders}
 \alias{setup_folders}
-\title{Setup Folder Structure}
+\title{Setup PEM folder structure}
 \usage{
-setup_folders(aoi_name, full_names = TRUE)
+setup_folders(aoi_name)
 }
 \arguments{
 \item{aoi}{A character string to name the main data folder}
@@ -13,7 +13,7 @@ setup_folders(aoi_name, full_names = TRUE)
 a named list of the folders created
 }
 \description{
-Sets up the default folder structure
+Sets up the default folder structure for all analysis and modelling
 }
 \details{
 Folder structure contains all the raw data, covariates generated, and
