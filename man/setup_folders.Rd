@@ -7,7 +7,7 @@
 setup_folders(aoi_name)
 }
 \arguments{
-\item{aoi}{A character string to name the main data folder}
+\item{aoi_name}{A character string to name the main data folder}
 }
 \value{
 a named list of the folders created

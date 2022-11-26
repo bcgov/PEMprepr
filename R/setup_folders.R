@@ -7,7 +7,7 @@
 #' been created this function can be used to generate a list of the folder_id
 #' and associated file paths.
 #'
-#' @param aoi A character string to name the main data folder
+#' @param aoi_name A character string to name the main data folder
 #'
 #' @return a named list of the folders created
 #' @export
@@ -112,6 +112,7 @@ setup_folders <- function(aoi_name){
     }
     print("folder structure created")
   } else {
+
     print(paste("The", as.character(aoi_name), "folder already exists - returning folder names."))
 
   }
