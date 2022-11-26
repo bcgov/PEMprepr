@@ -21,7 +21,7 @@ setup_folders <- function(aoi_name){
 
   # Testing ---------------
   # aoi_name <- "e:/workRspace/tmp/apple123/apple" ## full path example
-  #aoi_name <- "carrot"  ## relative example
+  #aoi_name <- "carrot1"  ## relative example
   ## END TESTING ----------
 
   #base directory
@@ -90,9 +90,9 @@ setup_folders <- function(aoi_name){
                               remoteplan_201020 ,trans_review2030)
 
   # generate absolute paths
-  folder_set_up <- rbind(folder_set_up, R.utils::getAbsolutePath(folder_set_up))
+  folder_set_up_all <- rbind(folder_set_up, R.utils::getAbsolutePath(folder_set_up))
 
-  folder_id <- as.list(folder_set_up)
+  folder_id <- as.list(folder_set_up_all)
 
   # either way return the folder list.
   ## Retrieve full path name
