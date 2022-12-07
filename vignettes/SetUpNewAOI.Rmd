@@ -1,0 +1,282 @@
+---
+title: "Set up new study area"
+subtitle: "Example workflow #2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{PEMprepr}
+%\VignetteEncoding{UTF-8}
+%\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+## NOTE to regenerate all of the results of this Rmd
+## some chunks will need to be run manually prior to
+## knitting the report
+## i.e. ones that generate graphics.
+
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+devtools::load_all("D:\\PEM_DATA\\PEMsamplr")
+devtools::load_all("D:\\PEM_DATA\\PEMprepr")
+
+library(PEMprepr)
+library(ggplot2)
+library(sf)
+library(terra)
+```
+
+`PEMprepr`, short for _Predictive Ecosystem Mapping -- Preparation_ is the first of a
+series of packages supporting the British Columbia Biogeoecosystem Classification's
+Predictive Ecosystem Mapping (PEM) project.  See [BC-BEC](https://www.for.gov.bc.ca/HRE/becweb/index.html)
+and [`PEMr`](https://github.com/bcgov/PEMr) on _GitHub_for details about the BC BEC classification system and, the PEM Project.
+
+In the example below it is assumed that you are running the following within a new R project.
+
+
+## Project Set up. 
+
+1) Set up a new R studio project for your PEM modelling. 
+2) For each study area we will generate a folder and associated folder structure.
+3) Example we will create an example project called "CanyonCreek"
+
+
+```{r}
+# set up the folder structure and define folder names in object fid
+fid <- setup_folders("CanyonCreek")
+
+```
+
+
+# Folder setup
+
+Data for the project can quickly become difficult to manage.  To facilitate ease of data management
+a standard set of folders for each area of interest. The following creates the needed folders for
+the area of interest: _CanyonCreek_. In addition, `fstr` stores a named list of the folders created
+which we will utilize later (e.g. to programmatically place results of functions in the correct place).
+
+_Note: if the folders have been generated previously this function will still return the list of
+folder names.
+
+
+
+
+Load the spatial data
+```{r}
+# Read in the aoi data from the test data 
+aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
+aoi_raw <- st_read(aoi_raw)
+
+
+# or read in local aoi 
+aoi_raw <- st_read(file.path("CanyonCreek", "00_raw_inputs", "vector", "aoi.gpkg"))
+
+sf::st_bbox(aoi_raw) ## note extent
+
+```
+
+One concern, with this _area-of-interest_ (`aoi`) is that the bounding box
+or geographic extent of the area ends with very random numbers (output above).  Using this extent will cause significant problems later when we attempt to stack numerous rasters.
+
+
+## Snap the extent
+
+Here the `aoi` is snapped to an extent divisible by 100.  This will facilitate the generation of rasters data that all fits this grid extent and thereby can be stacked with relative ease.
+
+```{r}
+# snap the aoi to a standard extent (expand or shrink)
+aoi <- aoi_snap(aoi_raw, "expand")
+aoi_shrink <- aoi_snap(aoi_raw, "shrink")
+
+mapview::mapview(aoi)
+mapview::mapview(aoi_shrink)
+
+sf::st_bbox(aoi)
+sf::st_bbox(aoi_shrink)
+
+# write out (this will be added to function later on)
+sf::st_write(aoi, file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
+
+```
+
+
+## Raster templates
+
+The snapped `aoi` can now be used to create a raster template.  In the example below a 25m^2^ raster template is created.
+
+```{r}
+
+# create a blank raster template
+r5 <- create_template(aoi, 5)
+r10 <- create_template(aoi, 10)
+r25 <- create_template(aoi, 25)
+
+```
+
+# Generation of covariates
+
+Here we generate the terrain derived covariates.  This is powered by [SAGA-GIS](https://saga-gis.sourceforge.io/en/index.html).  Covariates are generated at multiple resolutions, for example 5, 10, and 25m^2^.
+
+Steps to create the covariates
+
+1. load a digital terrain model (`dtm`).  Generally, this will be a high resolution model derived from lidar.
+2. align the `dtm` to the template.  resample the `dtm` to the desired resolution -- here we demonstrate using the 25m^2^ templated created above.
+3. create the covariates
+
+## Import the terrain model
+
+```{r}
+
+# read in base DEM and align the dEM
+dem <- system.file("extdata", "DTM.tif",package = "PEMprepr")
+dem <- terra::rast(dem)
+
+# or alternate  get external TRIM data for DEM
+library(bcmaps)
+trim <- cded_raster(aoi)
+# Still to do: convert to crs and align
+
+```
+
+```{r, eval=FALSE, include=FALSE}
+## Invisible -- use this manually to create the graphic
+library(tidyterra) ## ggplot with rasters
+
+g <- ggplot() +
+  geom_spatraster(data = dem) +
+  scale_fill_whitebox_c(palette = "high_relief") +
+  geom_sf(data = aoi, colour = "red", lwd = 1.5, fill = NA) +
+  labs(title = "Study area",
+       fill = "Elevation") +
+  theme(axis.text = element_text(size = 6))
+
+#ggsave("./vignettes/aleza_aoi_dtm.png", dpi = 150,
+#       height = 4, width = 5.2)
+```
+
+```{r dtm-and-aoi, echo=FALSE, fig.cap="A raw digital terrain model with the area-of-interest noted in red. All processed rasters will align with the aoi."}
+
+#knitr::include_graphics("./aleza_aoi_dtm.png")
+
+```
+
+
+## Align the raster
+
+```{r}
+# align the DEM file with a 25m template raster
+dem_25 <- align_raster(iraster = dem, rtemplate = r25)
+
+```
+
+## Create the covariates
+
+Note that the pre-defined output directory `fid$cov_dir_1020[2]`, created using `setup_folders()`, is used to ensure generated covariates are saved to the correct location. Rasters are also saved into subfolders of the same resolution.
+
+
+```{r, eval=FALSE}
+
+layer_options <- c("filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_curve",
+               "tcatchment", "tca", "scatchment", "twi", "channelsnetwork",
+               "overlandflow", "overlandflow2", "multiresflatness", "multiresflatness2",
+               "multiresflatness3", "tri", "convergence", "openness",
+               "dah", "tpi", "ridgevalley", "mrn", "flowaccumulation",
+               "slopelength", "flowaccumulation2", "flowaccumulation3",
+               "flowpathlength", "flowpathlength2", "flowpathlength3", "lsfactor",
+               "solarrad", "convexity", "vertdistance", "tci_low",
+               "swi", "windexp", "texture", "protection", "vrm",
+               "mbi", "mscale_tpi", "relposition", "slopecurvatures",
+               "steepestslope", "upslopearea")
+
+# run a test covariate
+create_covariates(dtm = dem_25,           ## raster created above
+                  SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
+                  output = fid$cov_dir_1020[2], ## from the setup_folders above
+                  layers = "filled_sinks")        ## test one is working 
+
+# run all covariates 
+create_covariates(dtm = dem_25,           ## raster created above
+                  SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
+                  output = fid$cov_dir_1020[2], ## from the setup_folders above
+                  layers = c( "steepestslope", "upslopearea"))       ## use all or one of the above
+
+```
+
+
+check the list of covariates. Notes these are saved in sdat format.
+
+<center>
+_Note: As SAGA-GIS is used the files resulting files are all saved in `.sdat` format -- this is read/writable by `terra::rast`_
+</center>
+
+
+```{r, eval=FALSE}
+l <- list.files(path = fid$cov_dir_1020[2], pattern = ".sdat$",
+                recursive = TRUE)
+
+l 
+
+```
+
+
+
+
+
+
+
+# Creation of the multi-resolution raster stack
+
+Generation of the covariates above is repeated for each resolution in the multi-resolution model.  In order to make all of the rasters stackable, necessary for model and map generation, they must all have the same extent and resolution.
+
+The process above ensures they all have the same extent.
+
+Next the coarse resolution rasters are _disaggregated_ to a fine scale resolution.  This means that the data in the resulting raster is the data of the coarse-raster but in a fine scale format.
+
+<center>
+_Note: it is highly recommended to use `full.names = TRUE` to list the files._
+</center>
+
+```{r, eval=FALSE}
+## we can use the list of files from above
+l <- list.files(path = fstr$cov_dir,
+                pattern = ".sdat",
+                full.names = TRUE, ## Use TRUE
+                recursive = TRUE)
+l <- l[!grepl("xml",l)]
+
+
+create_fine_res(inputFileList = l[1:5],     ## using the list of files above
+                output = fstr$cov_dir, ## from setup_folders())
+                targetRes = 5)
+
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/aspect.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/aspect_25.sdat"
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/cnetwork.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/cnetwork_25.sdat"
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/convergence.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/convergence_25.sdat"
+#> ...
+```
+
+This script is a wrapper for `terra::disaggregate`.
+
+
+
+# Collection of vector data
+
+A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package
+
+
+```{r, eval=FALSE}
+create_base_vectors(in_aoi = aoi,
+                    out_path = fstr$shape_raw_dir)
+```
+
+files are saved in _geopackage_ format.
