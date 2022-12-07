@@ -770,7 +770,7 @@ create_covariates <- function(dtm, SAGApath = "",
 
      sysCMD = paste(saga_cmd, "ta_hydrology 26",
                    "-DEM", sinksfilled,               # input DEM
-                   "-FLOW", flowaccum,                # output Flow Accumulation
+                   "-FLOW", flowaccumft,                # output Flow Accumulation
                    "-SLOPE_MIN", 0,
                    "-SLOPE_MAX", 5,
                    "-B_FLOW", 0
