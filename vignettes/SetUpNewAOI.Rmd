@@ -24,13 +24,14 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message=FALSE, warning=FALSE}
-devtools::load_all("D:\\PEM_DATA\\PEMsamplr")
+#devtools::load_all("D:\\PEM_DATA\\PEMsamplr")
 devtools::load_all("D:\\PEM_DATA\\PEMprepr")
 
 library(PEMprepr)
 library(ggplot2)
 library(sf)
 library(terra)
+
 ```
 
 `PEMprepr`, short for _Predictive Ecosystem Mapping -- Preparation_ is the first of a
@@ -172,6 +173,7 @@ g <- ggplot() +
 
 ```{r}
 # align the DEM file with a 25m template raster
+
 dem_25 <- align_raster(iraster = dem, rtemplate = r25)
 
 ```
@@ -229,12 +231,17 @@ l
 
 # Collection of vector data
 
-A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package
-
+A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package. Files are saved in _geopackage_ format.
 
 ```{r, eval=FALSE}
 create_base_vectors(in_aoi = aoi,
                     out_path = fid$shape_dir_0010[1])
+
+v <- list.files(path = fid$shape_dir_0010[1], pattern = ".gpkg",
+                recursive = TRUE)
+
+v
+
 ```
 
 files are saved in _geopackage_ format.
