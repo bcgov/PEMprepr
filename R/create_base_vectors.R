@@ -49,10 +49,9 @@
 #'
 create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
-
   # # testing
-  # #in_aoi <- st_read(file.path('temp', "aoi.gpkg"))
-  # #out_path = shape_raw_dir <- file.path('temp')
+  in_aoi <- aoi
+  out_path = shape_raw_dir <- fid$shape_dir_1010[1]
   #
   #
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
@@ -89,13 +88,14 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   # Adjust max download size based on AOI
   ## PROBLEMATIC -- should not be done globally -----------------
   ## see: https://r-pkgs.org/code.html#sec-code-r-landscape section 7.6.1
-  withr::local_options(
-    options(bcdata.max_geom_pred_size = as.numeric(st_area(in_aoi)) + 10)
-  )
-  #
+  # withr::local_options(
+  #   options(bcdata.max_geom_pred_size = as.numeric(st_area(in_aoi)) + 10)
+  # )
+
+  # #
   ## CALL all the subfunctions --------------
   get_BEC(in_aoi, out_path)     ## works
-  get_VRI(in_aoi, out_path)     ## works
+  get_VRI(in_aoi, out_path)     ## works # not working for GEN
   get_harvest(in_aoi, out_path) ## works
   get_TEM(in_aoi, out_path)     ## works
   get_water(in_aoi, out_path)   ## works
@@ -111,12 +111,9 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
 
 
-
-
 ## 1) Get_BEC ----------------------------
 get_BEC <- function(in_aoi, out_path) {
   message("\rDownloading BEC layers")
-
 
   # # 1) BEC Biogeographical linework
   bec <- bcdc_query_geodata("f358a53b-ffde-4830-a325-a5a03ff672c3") %>%
@@ -220,8 +217,6 @@ get_harvest <- function(in_aoi, out_path) {
 
 
 
-
-
 ## 5) TEM -----------------------------
 get_TEM <- function(in_aoi, out_path) {
   message("\rDownloading TEM layers")
@@ -272,8 +267,6 @@ get_water <- function(in_aoi, out_path) {
   }
   st_write(all_water, file.path(out_path, "water.gpkg"), append = FALSE)
 }
-
-
 
 
 
@@ -431,49 +424,5 @@ get_transmission_lines <- function(in_aoi, out_path) {
   }
 
 }
-
-
-
-
-
-# ## Overview
-#
-# This script downloads the relevant spatial data for BEC zones, VRI, TEM, waterbodies and the road network used in stage 1 of PEM processing. Data is downloaded directly from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca/dataset?download_audience=Public) using the [bcdata](https://github.com/bcgov/bcdata) package.
-#
-# ### Datasets to download
-#
-# * BEC - [Biogeoclimatic Ecosystems Classification](https://catalogue.data.gov.bc.ca/dataset/bec-map) are used to define and/or select specific "subzones" within a defined study area. Note this can be also pointed to different file where more updated version is available.
-#
-# * Vegetation Resource Inventory (VRI) - This layer includes a variety of vegetation measure, including cutblock age, TEM data and ..... Detailed data standards can be found [here](https://www2.gov.bc.ca/gov/content/industry/forestry/managing-our-forest-resources/forest-inventory/data-management-and-access/vri-data-standards).
-#
-# * Freshwater Atlas -  The atlas is separated into the different types of waterbodies (lakes, rivers, wetlands, streams, man made, etc.), which requires a seperate download per type. Alternatively a single combined layer can be downloaded by is limited to linear data type. A parameter within the function can be set to "polygon" (the default option) or "linear".
-#
-# * Road network THIS STILL NEEEDS WORK
-#
-# * Road network - In previous works, the [raw road network](https://catalogue.data.gov.bc.ca/dataset/digital-road-atlas-dra-master-partially-attributed-roads) was found to be too detailed. The raw road network is filtered to only keep named roads, and then the up to date [Forest Service Road (FSR) layer](https://catalogue.data.gov.bc.ca/dataset/forest-tenure-road-segment-lines) is downloaded and merged with the filtered road network to produce a really good representation of where roads are actually located on the landscape.
-#
-# * Fire - Fire and fire intensity are used used to assist in identifying areas where a high cost is applied to reduce sampling. This includes:
-# -[current](https://catalogue.data.gov.bc.ca/dataset/fire-perimeters-current)
-# -[historical](https://catalogue.data.gov.bc.ca/dataset/fire-perimeters-historical) polygons.
-# -[severity](https://catalogue.data.gov.bc.ca/dataset/c58a54e5-76b7-4921-94a7-b5998484e697).
-#
-# * Accessing the [consolidated cutblock layer](https://catalogue.data.gov.bc.ca/dataset/harvested-areas-of-bc-consolidated-cutblocks-) using the bcdata package. The FTen layer is also used to identify very recent cutblocks ()
-#
-# Note the detailed
-# Tenure (private ownership) 	WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_FA_SVW	BCGW
-# Detailed roads layers. In some cases regionally specific roads are available through other collaborative projects (cummulative effects). These are not firectly available through the BCGW.
-
-
-# inputs: aoi_snapped (shapefile)
-# output filenames:
-
-
-
-
-
-# library(sf)
-# library(bcdata)
-# library(dplyr)
-# library(foreach)
 
 
