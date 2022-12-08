@@ -227,48 +227,6 @@ l
 
 
 
-
-
-
-
-# Creation of the multi-resolution raster stack
-
-Generation of the covariates above is repeated for each resolution in the multi-resolution model.  In order to make all of the rasters stackable, necessary for model and map generation, they must all have the same extent and resolution.
-
-The process above ensures they all have the same extent.
-
-Next the coarse resolution rasters are _disaggregated_ to a fine scale resolution.  This means that the data in the resulting raster is the data of the coarse-raster but in a fine scale format.
-
-<center>
-_Note: it is highly recommended to use `full.names = TRUE` to list the files._
-</center>
-
-```{r, eval=FALSE}
-## we can use the list of files from above
-l <- list.files(path = fstr$cov_dir,
-                pattern = ".sdat",
-                full.names = TRUE, ## Use TRUE
-                recursive = TRUE)
-l <- l[!grepl("xml",l)]
-
-
-create_fine_res(inputFileList = l[1:5],     ## using the list of files above
-                output = fstr$cov_dir, ## from setup_folders())
-                targetRes = 5)
-
-#> [1] "Processing: aleza/10_clean_inputs/covariates/25/aspect.sdat"
-#> [1] "Created: aleza/10_clean_inputs/covariates/5/aspect_25.sdat"
-#> [1] "Processing: aleza/10_clean_inputs/covariates/25/cnetwork.sdat"
-#> [1] "Created: aleza/10_clean_inputs/covariates/5/cnetwork_25.sdat"
-#> [1] "Processing: aleza/10_clean_inputs/covariates/25/convergence.sdat"
-#> [1] "Created: aleza/10_clean_inputs/covariates/5/convergence_25.sdat"
-#> ...
-```
-
-This script is a wrapper for `terra::disaggregate`.
-
-
-
 # Collection of vector data
 
 A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package
@@ -276,7 +234,7 @@ A standard set of Vector data is used for subsequent sample planning and is base
 
 ```{r, eval=FALSE}
 create_base_vectors(in_aoi = aoi,
-                    out_path = fstr$shape_raw_dir)
+                    out_path = fid$shape_dir_0010[1])
 ```
 
 files are saved in _geopackage_ format.
