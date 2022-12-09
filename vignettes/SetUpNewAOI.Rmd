@@ -77,7 +77,7 @@ aoi_raw <- st_read(aoi_raw)
 
 
 # or read in local aoi 
-aoi_raw <- st_read(file.path("CanyonCreek", "00_raw_inputs", "vector", "aoi.gpkg"))
+#aoi_raw <- st_read(file.path("CanyonCreek", "00_raw_inputs", "vector", "aoi.gpkg"))
 
 sf::st_bbox(aoi_raw) ## note extent
 
@@ -108,20 +108,60 @@ sf::st_write(aoi, file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
 ```
 
 
+
+# Collection of vector data
+
+A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package. Files are saved in _geopackage_ format.
+
+```{r, eval=FALSE}
+aoi <- st_read(file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
+#aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
+
+create_base_vectors(in_aoi = aoi,
+                    out_path = fid$shape_dir_0010[1])
+
+v <- list.files(path = fid$shape_dir_0010[1], pattern = ".gpkg",
+                recursive = TRUE)
+
+v
+
+```
+
+files are saved in _geopackage_ format.
+
+Once the vector data is reviewed and edited where appropriate we can save a final version in the "clean input data folder". 
+
+```{r}
+
+origindir <- fid$shape_dir_0010[1]
+filestocopy <- list.files(path = fid$shape_dir_0010[1], pattern = ".gpkg",recursive = TRUE)
+
+targetdir <- fid$shape_dir_1010[1]
+
+lapply(filestocopy, function(x) file.copy(paste (origindir, x , sep = "/"),  
+          paste (targetdir,x, sep = "/"), recursive = FALSE,  copy.mode = TRUE))
+
+#file.remove(filestocopy)
+
+```
+
+
+## Prepare raster outputs 
+
 ## Raster templates
 
-The snapped `aoi` can now be used to create a raster template.  In the example below a 25m^2^ raster template is created.
+The snapped `aoi` can be used to create a raster template.  In the example below a 25m^2^ raster template is created.
 
 ```{r}
 
 # create a blank raster template
 r5 <- create_template(aoi, 5)
-r10 <- create_template(aoi, 10)
+#r10 <- create_template(aoi, 10)
 r25 <- create_template(aoi, 25)
 
 ```
 
-# Generation of covariates
+# Generation of raster covariates
 
 Here we generate the terrain derived covariates.  This is powered by [SAGA-GIS](https://saga-gis.sourceforge.io/en/index.html).  Covariates are generated at multiple resolutions, for example 5, 10, and 25m^2^.
 
@@ -139,10 +179,10 @@ Steps to create the covariates
 dem <- system.file("extdata", "DTM.tif",package = "PEMprepr")
 dem <- terra::rast(dem)
 
-# or alternate  get external TRIM data for DEM
-library(bcmaps)
-trim <- cded_raster(aoi)
-# Still to do: convert to crs and align
+## or alternate  get external TRIM data for DEM
+#library(bcmaps)
+#trim <- cded_raster(aoi)
+## Still to do: convert to crs and align
 
 ```
 
@@ -207,7 +247,7 @@ create_covariates(dtm = dem_25,           ## raster created above
 create_covariates(dtm = dem_25,           ## raster created above
                   SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
                   output = fid$cov_dir_1020[2], ## from the setup_folders above
-                  layers = c( "steepestslope", "upslopearea"))       ## use all or one of the above
+                  layers = c( "all"))       ## use all or one of the above
 
 ```
 
@@ -220,6 +260,7 @@ _Note: As SAGA-GIS is used the files resulting files are all saved in `.sdat` fo
 
 
 ```{r, eval=FALSE}
+
 l <- list.files(path = fid$cov_dir_1020[2], pattern = ".sdat$",
                 recursive = TRUE)
 
@@ -228,20 +269,54 @@ l
 ```
 
 
+Create a bec raster to match the template sizes 
 
-# Collection of vector data
+```{r}
 
-A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package. Files are saved in _geopackage_ format.
+bec_sf <- sf::st_read(file.path(fid$shape_dir_1010[1], "bec.gpkg")) %>%
+  sf::st_cast(., "MULTIPOLYGON") 
 
-```{r, eval=FALSE}
-create_base_vectors(in_aoi = aoi,
-                    out_path = fid$shape_dir_0010[1])
+bec_code <- bec_sf %>% st_drop_geometry()  %>% dplyr::select(MAP_LABEL) %>%
+    unique() 
 
-v <- list.files(path = fid$shape_dir_0010[1], pattern = ".gpkg",
-                recursive = TRUE)
+bec_code <- bec_code %>% 
+    mutate(bgc_unique_code = seq(1, length(bec_code$MAP_LABEL),1))
 
-v
+bec_sf <- dplyr::left_join(bec_sf, bec_code)
+
+
+# define the raster sizes at which to generate the BEC rasters
+res <- c(5,25)
+
+
+for (re in res) {
+  
+# select resolution of raster 
+  rtemplate <- stars::read_stars(file.path(cov_dir, paste0(re,"m"), "template.tif"), proxy = FALSE)
+
+  out <- stars::st_rasterize(bec_sf["bgc_unique_code"],
+                           template = rtemplate)
+  st_crs(out) = st_crs(rtemplate)
+
+ # mapview::mapview(out)
+
+  stars::write_stars(out,
+                   file.path(cov_dir, paste0(re,"m"), "bgc.tif")) #tile name
+   stars::write_stars(out,
+                   file.path(cov_dir, paste0(re,"m_trim"), "bgc.tif")) #tile name
+  
+  ## for very large raster (5m boundary dataset we need to use another method)
+  
+  #rtemplate <- raster::raster(file.path(cov_dir, paste0(re,"m"), "dem.tif"))
+  #out <- fasterize(bec_sf, rtemplate, field = "BGC_no")
+  #raster::writeRaster(out,
+  #                 file.path(cov_dir, paste0(re,"m"), "bgc.tif")) #tile name
+
+ 
+}
+
 
 ```
 
-files are saved in _geopackage_ format.
+
+
