@@ -50,8 +50,10 @@
 create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
   # # testing
-  in_aoi <- aoi
-  out_path = shape_raw_dir <- fid$shape_dir_1010[1]
+  #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
+
+  #in_aoi <- aoi
+  #out_path = shape_raw_dir <- fid$shape_dir_0010[1]
   #
   #
   if(missing(in_aoi)) stop("'aoi' is missing with no default")
@@ -81,9 +83,7 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
       stop("There was a problem retrieving the EPSG code from the in_aoi. Is it assigned properly?")
   }
 
-  # Get largest bbox for downloading layers using the pemgeneratr function to match the raster inputs
-  #box <- sf::st_bbox(in_aoi)
-  epsg <- st_crs(in_aoi)
+   epsg <- st_crs(in_aoi)
 
   # Adjust max download size based on AOI
   ## PROBLEMATIC -- should not be done globally -----------------
@@ -92,10 +92,10 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   #   options(bcdata.max_geom_pred_size = as.numeric(st_area(in_aoi)) + 10)
   # )
 
-  # #
+
   ## CALL all the subfunctions --------------
   get_BEC(in_aoi, out_path)     ## works
-  get_VRI(in_aoi, out_path)     ## works # not working for GEN
+  get_VRI(in_aoi, out_path)     ## works
   get_harvest(in_aoi, out_path) ## works
   get_TEM(in_aoi, out_path)     ## works
   get_water(in_aoi, out_path)   ## works
@@ -107,7 +107,8 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   get_transmission_lines(in_aoi, out_path) ## works
 
   return(print(paste("Layers have been downloaded and saved to", out_path)))
-}
+
+  }
 
 
 
@@ -119,17 +120,16 @@ get_BEC <- function(in_aoi, out_path) {
   bec <- bcdc_query_geodata("f358a53b-ffde-4830-a325-a5a03ff672c3") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::collect() %>%
+    dplyr::select(MAP_LABEL) %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
   st_write(bec, file.path(out_path, "bec.gpkg"), append = FALSE)
-
 
 }
 
 ## 2) Download VRI -----------------------
 get_VRI <- function(in_aoi, out_path) {
   message("\rDownloading VRI layers")
-
 
   vri <- bcdc_query_geodata("2ebb35d8-c82f-4a17-9c96-612ac3532d55") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
@@ -138,7 +138,6 @@ get_VRI <- function(in_aoi, out_path) {
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
   st_write(vri, file.path(out_path, "vri.gpkg"), append = FALSE)
-
 
   # post process VRI data into classes:
   # Depending on the study area we want to focus on sampling in older areas - class 4 (60-80) or 5 (80 + )
@@ -239,35 +238,26 @@ get_water <- function(in_aoi, out_path) {
                      "f7dac054-efbf-402f-ab62-6fc4b32a619e", # rivers
                      "93b413d8-1840-4770-9629-641d74bd1cc6") # wetlands
 
-  # water_names <- c("w_lakes.gpkg",
-  #                  "w_rivers.gpkg",
-  #                  "w_wetlands.gpkg")
-
   for (i in 1:length(water_records)) {
 
-    waterbodies <- bcdata::bcdc_query_geodata(water_records[i]) %>% #, crs = st_crs(in_aoi)) %>%
+    waterbodies <- bcdata::bcdc_query_geodata(water_records[i]) %>%
       bcdata::filter(INTERSECTS(in_aoi)) %>%
       bcdata::collect()
 
-    if(nrow(waterbodies) > 0) {  ## If there are records ... process them
+    if(nrow(waterbodies) > 0) {
         waterbodies <- sf::st_intersection(waterbodies, in_aoi)
 
         waterbodies_sf <- waterbodies %>%
           dplyr::select(id, WATERBODY_TYPE, AREA_HA)
 
-
-        ## create a consolidated record
         if (i == 1) {
           all_water <- waterbodies_sf } else {
             all_water <- rbind(all_water, waterbodies_sf)
           }
-
-      # st_write(waterbodies_sf, file.path(out_path, water_names[i]), append = FALSE)
     }
   }
   st_write(all_water, file.path(out_path, "water.gpkg"), append = FALSE)
 }
-
 
 
 # 7) Download road network --------------------
@@ -277,30 +267,33 @@ get_roads <- function(in_aoi, out_path) {
 
   message("\rDownloading Road network")
   roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
-    bcdata::filter(
-      BBOX(st_bbox(in_aoi))) %>%#,
-    #ROAD_NAME_ID > 0) %>%
+    bcdata::filter(BBOX(st_bbox(in_aoi))) %>% # slightly larger extent
+    bcdata::select(id, ROAD_NAME_FULL, ROAD_CLASS, ROAD_SURFACE, FEATURE_LENGTH_M) %>%
     collect() %>%
-    dplyr::select(id, ROAD_NAME_FULL, FEATURE_LENGTH_M) %>%
-    dplyr::rename(NAME = ROAD_NAME_FULL) %>%
-    {if(nrow(.) > 0) {
+    dplyr::select(id, ROAD_NAME_FULL,ROAD_SURFACE, ROAD_CLASS,FEATURE_LENGTH_M) %>%
+       {if(nrow(.) > 0) {
       st_intersection(., in_aoi) %>%
-        st_cast("MULTILINESTRING")
+       st_cast("MULTILINESTRING")
     } else .}
 
   fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
     bcdata::filter(
-      BBOX(st_bbox(in_aoi)),
-      LIFE_CYCLE_STATUS_CODE == "ACTIVE") %>%
+      BBOX(st_bbox(in_aoi))) %>%
     collect() %>%
-    dplyr::select(id, MAP_LABEL, FEATURE_LENGTH_M) %>%
-    dplyr::rename(NAME = MAP_LABEL) %>%
+    dplyr::select(id, FILE_TYPE_DESCRIPTION, FEATURE_LENGTH_M) %>%
+    dplyr::rename(ROAD_CLASS = FILE_TYPE_DESCRIPTION) %>%
+    dplyr::mutate(ROAD_CLASS = dplyr::case_when(
+      ROAD_CLASS == "Forest Service Road" ~ "resource",
+      ROAD_CLASS == "Road Permit" ~ "unclassifed")) %>%
+    dplyr::mutate(ROAD_SURFACE = dplyr::case_when(
+    ROAD_CLASS == "resource" ~ "loose",
+    ROAD_CLASS == "unclassifed" ~ "rough")) %>%
     {if(nrow(.) > 0) {
       st_intersection(., in_aoi) %>%
         st_cast("MULTILINESTRING")
     } else .}
 
-  road_merge <- rbind(roads, fsr)
+  road_merge <- dplyr::bind_rows(roads, fsr)
 
   st_write(road_merge, file.path(out_path, "road_network.gpkg"), append = FALSE)
 }
@@ -309,7 +302,7 @@ get_roads <- function(in_aoi, out_path) {
 
 # 8 Major Towns ---------------------------------
 get_towns <- function(in_aoi, out_path) {
-  message("\rDownloading Town locations")
+  message("\rDownloading major towns")
 
   towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
     bcdata::collect()
@@ -327,10 +320,7 @@ get_fires <- function(in_aoi, out_path) {
 
   fires_all <- NA ## placeholder
 
-
   for (i in 1:length(fire_records)) {
-
-
       fires <- bcdata::bcdc_query_geodata(fire_records[i]) %>%
         bcdata::filter(INTERSECTS(in_aoi)) %>%
         collect() %>%
@@ -365,7 +355,6 @@ get_fires <- function(in_aoi, out_path) {
 get_fire_severity <- function(in_aoi, out_path) {
   message("\rDownloading burn severity layer")
 
-
   fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::select(c("FIRE_YEAR", "BURN_SEVERITY_RATING")) %>% # Treed sites
@@ -382,7 +371,6 @@ get_fire_severity <- function(in_aoi, out_path) {
 # 11) BC parks and National parks-----------------
 get_parks <- function(in_aoi, out_path) {
   message("\rDownloading Parks")
-
 
   parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
@@ -409,7 +397,7 @@ get_parks <- function(in_aoi, out_path) {
 
 # 13) transmission lines -------------------------------
 get_transmission_lines <- function(in_aoi, out_path) {
-  message("\rDownloading Parks")
+  message("\rDownloading transmission lines")
 
   #bcdc_search("transmission")
   trans_line <-  bcdc_query_geodata("384d551b-dee1-4df8-8148-b3fcf865096a") %>%
