@@ -111,7 +111,6 @@ create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
   }
 
 
-
 ## 1) Get_BEC ----------------------------
 get_BEC <- function(in_aoi, out_path) {
   message("\rDownloading BEC layers")
