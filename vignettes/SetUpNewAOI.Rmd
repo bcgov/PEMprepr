@@ -180,9 +180,12 @@ dem <- system.file("extdata", "DTM.tif",package = "PEMprepr")
 dem <- terra::rast(dem)
 
 ## or alternate  get external TRIM data for DEM
-#library(bcmaps)
-#trim <- cded_raster(aoi)
-## Still to do: convert to crs and align
+library(bcmaps)
+trim_raw <- cded_raster(aoi_landscape)
+
+# convert the trim to matching raster 
+trim <- terra::rast(trim_raw)
+trim <- terra::project(trim, t25)
 
 ```
 
@@ -285,38 +288,24 @@ bec_code <- bec_code %>%
 bec_sf <- dplyr::left_join(bec_sf, bec_code)
 
 
-# define the raster sizes at which to generate the BEC rasters
-res <- c(5,25)
+bec_vec <- terra::vect(bec_sf)
 
+# generate a 25m raster
 
-for (re in res) {
-  
-# select resolution of raster 
-  rtemplate <- stars::read_stars(file.path(cov_dir, paste0(re,"m"), "template.tif"), proxy = FALSE)
+bec_ras25 <- terra::rasterize(bec_vec, r25, field = "MAP_LABEL")
 
-  out <- stars::st_rasterize(bec_sf["bgc_unique_code"],
-                           template = rtemplate)
-  st_crs(out) = st_crs(rtemplate)
-
- # mapview::mapview(out)
-
-  stars::write_stars(out,
-                   file.path(cov_dir, paste0(re,"m"), "bgc.tif")) #tile name
-   stars::write_stars(out,
-                   file.path(cov_dir, paste0(re,"m_trim"), "bgc.tif")) #tile name
-  
-  ## for very large raster (5m boundary dataset we need to use another method)
-  
-  #rtemplate <- raster::raster(file.path(cov_dir, paste0(re,"m"), "dem.tif"))
-  #out <- fasterize(bec_sf, rtemplate, field = "BGC_no")
-  #raster::writeRaster(out,
-  #                 file.path(cov_dir, paste0(re,"m"), "bgc.tif")) #tile name
-
- 
-}
-
+terra::writeRaster(bec_ras25, file.path(fid$cov_dir_1020[2], "25m", "bec.tif"), overwrite = TRUE)
 
 ```
 
 
+
+# Create the suplementary data. 
+## Create fuzzy matrix 
+
+```{r}
+
+#create_fuzzy_matrix()
+
+```
 
