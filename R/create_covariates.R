@@ -40,24 +40,6 @@
 create_covariates <- function(dtm, SAGApath = "",
                               output = "./cv-rasters",
                               layers = "all"){
-  ## testing
-   #dtm <- terra::rast(system.file("extdata", "DTM.tif", package = "PEMprepr")) # this raster is not correct size
-
-  # # get a base raster that is correct size
-  #  aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
-  #  aoi_raw <- sf::st_read(aoi_raw)
-  #  aoi <- PEMprepr::aoi_snap(aoi_raw, "shrink")
-  #  t25 <- create_template(aoi, 25)
-  #  library(bcmaps)
-  #  trim_raw <- cded_raster(aoi)
-  #  trim <- terra::rast(trim_raw)
-  #  dtm <- terra::project(trim, t25)
-  #
-  #
-  # # dtm <- dat2
-  #  layers <- "all"
-  #  output <-  filelist$cov_dir_1020[[2]]
-  #  SAGApath <- "C:/SAGA/saga-7.7.0_x64/"
 
   ### In future this would be good to set as a lookup table and then have a single
   # sub-function that uses the table parameters
@@ -192,7 +174,7 @@ create_covariates <- function(dtm, SAGApath = "",
   modcatchmentarea = paste(saga_tmp_files, "swi_area_mod.sgrd", sep = fns)
   topowetindex = paste(saga_tmp_files, "swi_twi.sgrd", sep = fns)
   windexp = paste(saga_tmp_files, "wind_exp_index.sgrd", sep = fns)
-  Texture = paste(saga_tmp_files, "texture.sgrd", sep = fns)
+  texture = paste(saga_tmp_files, "texture.sgrd", sep = fns)
   protection = paste(saga_tmp_files, "protection.sgrd", sep = fns)
   vrm = paste(saga_tmp_files, "vrm.sgrd", sep = fns)
   mbi = paste(saga_tmp_files, "mbi.sgrd", sep = fns)
@@ -915,11 +897,11 @@ create_covariates <- function(dtm, SAGApath = "",
   #### >> 30 -- Terrain Surface Texture -----------------------------
   # http://www.saga-gis.org/saga_tool_doc/7.6.0/ta_morphometry_20.html
 
-  if ("Texture" %in% layers) {
+  if ("texture" %in% layers) {
 
     sysCMD = paste(saga_cmd, "ta_morphometry 20",
                    "-DEM", sinksfilled,                      # input DEM
-                   "-TEXTURE", Texture,                      # output Terrain Surface Texture
+                   "-TEXTURE", texture,                      # output Terrain Surface Texture
                    "-EPSILON", 1,
                    "-SCALE", 10,
                    "-METHOD", 1,
@@ -984,9 +966,9 @@ create_covariates <- function(dtm, SAGApath = "",
       sysCMD = paste(saga_cmd, "ta_morphometry 28",
                    "-DEM", sinksfilled,                # input DEM
                    "-TPI", tpi,                        # output tpi
-                   "SCALE_MIN", 1,
-                   "SCALE_MAX", 8,
-                   "SCALE_NUM", 3
+                   "-SCALE_MIN", 1,
+                   "-SCALE_MAX", 8,
+                   "-SCALE_NUM", 3
     )
     system(sysCMD)
   }
