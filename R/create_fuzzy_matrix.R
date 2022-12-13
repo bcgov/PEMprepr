@@ -7,13 +7,14 @@
 #' @import data.table
 #'
 #' @export
+#' @examples
+#' create_fuzzy_matrix(map_unit ="SBSdk",edatopic = eda, neighbours = nbrs)
+#
 
-#' create_fuzzy_matrix("SBSdk",edatopic = eda, neighbours = nbrs)
-
-library(data.table)
-edatopic <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/Edatopic_v12_12_sbsmc.csv")
-neighbours <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/edatopic_neighbours.csv")
-map_unit <- "SBSmc2"
+# library(data.table)
+# edatopic <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/Edatopic_v12_12_sbsmc.csv")
+# neighbours <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/edatopic_neighbours.csv")
+# map_unit <- "SBSmc2"
 
 
 create_fuzzy_matrix <- function(map_unit, edatopic, neighbours){
