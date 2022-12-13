@@ -11,18 +11,25 @@
 #' create_fuzzy_matrix("SBSdk",edatopic = eda, neighbours = nbrs)
 
 library(data.table)
-edatopic <- fread("D:/PEM_DATA/BEC_DevExchange_Work/_data_allBC/Edatopic_v12_11.csv")
+edatopic <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/Edatopic_v12_12_sbsmc.csv")
+neighbours <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/edatopic_neighbours.csv")
 map_unit <- "SBSmc2"
 
 
 create_fuzzy_matrix <- function(map_unit, edatopic, neighbours){
-   #unit <- "SBSmc2"
-   #nbrs <- fread("./fuzzy_metrics/edatopic_neighbours.csv")
-   #eda <- fread("./fuzzy_metrics/Edatopic_v12_11.csv")
+
+#   library(tidyverse)
+#   edatopic = as.data.frame(edatopic)
+#   eda_sub <- edatopic %>% dplyr::filter( BGC == map_unit) %>% select(Edatopic, SS_NoSpace)
+#   eda_same <- left_join(eda_sub, eda_sub, by = "Edatopic")
+#   eda_sum <- eda_same %>% group_by(SS_NoSpace.x, SS_NoSpace.y) %>%
+#     mutate(NumSame = n())%>% select(-Edatopic) %>% distinct()
+#
+#   eda_sum <- eda_same[,.(NumSame = .N), by = .(SS_NoSpace.x,SS_NoSpace.y)]
 
   nbrs <- neighbours
   eda_sub <- edatopic[BGC == map_unit,.(SS_NoSpace,Edatopic)]
-  all_ss <- unique(eda_sub$SS_NoSpace)
+  #all_ss <- unique(eda_sub$SS_NoSpace)
   eda_same <- merge(eda_sub, eda_sub, by = "Edatopic", all = T, allow.cartesian = T)
   setorder(eda_same, SS_NoSpace.x, SS_NoSpace.y)
   eda_sum <- eda_same[,.(NumSame = .N), by = .(SS_NoSpace.x,SS_NoSpace.y)]
@@ -51,12 +58,33 @@ create_fuzzy_matrix <- function(map_unit, edatopic, neighbours){
   eda_join[is.na(NumNb.x), NumNb.x := 0]
   eda_join[is.na(NumNb.y), NumNb.y := 0]
 
-  eda_join[,FMetric := NumSame * 0.05 + NumNb.x * 0.025 + NumNb.y * 0.025]
+  #eda_join[,FMetric := NumSame * 0.05 + NumNb.x * 0.025 + NumNb.y * 0.025]
+  eda_join[,FMetric := NumSame * 0.1 + NumNb.x * 0.05 + NumNb.y * 0.05]
   eda_join[SS_NoSpace.x == SS_NoSpace.y, FMetric := 1]
 
   mat <- dcast(eda_join, SS_NoSpace.x ~ SS_NoSpace.y, value.var = "FMetric")
   mat[is.na(mat)] <- 0
+
   return(mat)
 }
+
+
+
+#
+#   library(tidyverse)
+#   edatopic = as.data.frame(edatopic)
+#   neighbours <- as.data.frame(fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/edatopic_neighbours.csv"))
+#   map_unit <- "SBSmc2"
+#
+#   eda_sub <- edatopic %>% dplyr::filter( BGC == map_unit) %>% select(Edatopic, SS_NoSpace)
+#    eda_same <- left_join(eda_sub, eda_sub, by = "Edatopic")
+#   eda_sum <- eda_same %>% group_by(SS_NoSpace.x, SS_NoSpace.y) %>%
+#     mutate(NumSame = n())%>% select(-Edatopic) %>% distinct()
+#
+#   eda_sum <- eda_same[,.(NumSame = .N), by = .(SS_NoSpace.x,SS_NoSpace.y)]
+
+
+
+
 
 
