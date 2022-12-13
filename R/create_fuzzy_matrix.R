@@ -5,7 +5,6 @@
 #' @param neighbours data.table of neighbours
 #' @return Matrix of fuzziness
 #' @import data.table
-#'
 #' @export
 #' @examples
 #' create_fuzzy_matrix(map_unit, edatopic, neighbours )
