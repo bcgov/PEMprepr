@@ -8,7 +8,7 @@
 #'
 #' @export
 #' @examples
-#' create_fuzzy_matrix(map_unit ="SBSdk",edatopic = eda, neighbours = nbrs)
+#' create_fuzzy_matrix("SBSdk", edatopic, neighbours )
 #
 
 # library(data.table)
