@@ -8,8 +8,8 @@
 #' @export
 #' @examples
 #' create_fuzzy_matrix(map_unit, edatopic, neighbours )
+# #
 #
-
 # library(data.table)
 # edatopic <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/Edatopic_v12_12_sbsmc.csv")
 # neighbours <- fread("D:/PEM_DATA/PEMprepr/temp/fuzzy_data/edatopic_neighbours.csv")
@@ -58,8 +58,8 @@ create_fuzzy_matrix <- function(map_unit, edatopic, neighbours){
   eda_join[is.na(NumNb.x), NumNb.x := 0]
   eda_join[is.na(NumNb.y), NumNb.y := 0]
 
-  #eda_join[,FMetric := NumSame * 0.05 + NumNb.x * 0.025 + NumNb.y * 0.025]
-  eda_join[,FMetric := NumSame * 0.1 + NumNb.x * 0.05 + NumNb.y * 0.05]
+ # eda_join[,FMetric := NumSame * 0.05 + NumNb.x * 0.025 + NumNb.y * 0.025]
+  eda_join[,FMetric := NumSame * 0.05 + NumNb.x * 0.05 + NumNb.y * 0.05]
   eda_join[SS_NoSpace.x == SS_NoSpace.y, FMetric := 1]
 
   mat <- dcast(eda_join, SS_NoSpace.x ~ SS_NoSpace.y, value.var = "FMetric")
