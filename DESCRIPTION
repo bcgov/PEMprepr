@@ -20,4 +20,9 @@ Imports:
     terra,
     sf,
     bcdata,
-    magrittr
+    magrittr,
+    purrr,
+    dplyr
+Depends: 
+    R (>= 2.10)
+LazyData: true
