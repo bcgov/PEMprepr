@@ -71,96 +71,9 @@ recursive_layers_call <- function(layers, moddir = PEMprepr::moddir, artifact = 
   return(layers_to_call)
 
 }
-####--- parallel processing of tiles to generate SAGA metrics ---####
-
-parallel_create_covariates <- function(files,
-                                       layers,
-                                       cores,
-                                       output,
-                                       SAGApath = "",
-                                       fx = PEMprepr::create_covariates){
-
-  pb <- utils::txtProgressBar(max = length(files)*length(layers), style = 3)
-  progress <- function(n) utils::setTxtProgressBar(pb, n)
-  opts <- list(progress = progress)
-
-  cores = cores
-  cl <- snow::makeCluster(spec = cores, type = "SOCK")
-  doSNOW::registerDoSNOW(cl)
-
-  loop <- foreach::foreach(f = layers, .packages = c("terra","PEMprepr"), .options.snow = opts) %:%
-
-    foreach::foreach(i = files) %dopar% {
-
-      fx(dtm = i, SAGApath = SAGApath, output = output, layers = f)
-
-    }
-
-  close(pb)
-
-  #--- End parallel ---#
-  snow::stopCluster(cl)
-
-}
 
 
-####--- mosaic SAGA tiles into seamless rasters ---####
-mosaic_metrics <- function(dir, output, poly, tmp){
 
-  #--- make output and tmp if it doesnt already exist ---#
-
-  dir.create(output, recursive = TRUE)
-  dir.create(tmp, recursive = TRUE)
-
-  #--- read in poly vector ---#
-  poly <- terra::vect(poly)
-
-  #--- list file directory rasters to mosaic ---#
-  f <- list.files(dir, pattern = ".sdat$")
-
-  #--- filter unique metric names in files ---#
-  l <- unique(unlist(stringr::str_split(f,pattern = "\\s*([[:digit:]]+)_")))
-
-  l1 <- l[!l %in% "tile_"]
-
-  #--- mosaic metrics ---#
-  for(i in 1:length(l1)){
-
-    f <- list.files(dir, pattern = paste0(l1[i],"$"), full.names = TRUE)
-
-    #--- define output mosaic name ---#
-    out <- paste0(output,tools::file_path_sans_ext(basename(l1[i])),".tif")
-
-    #--- write mosaiced outputs ---#
-
-    if(!file.exists(out)){
-
-      #--- read and crop overlapping tiles to polygon extent ---#
-
-      walk(.x = f, .f = read_crop, poly = poly, tmp = tmp)
-
-      tmpf <- list.files(tmp, full.names = TRUE, pattern = ".sdat$")
-
-      v <- terra::vrt(tmpf)
-
-      message(paste0("mosaicing -- ",l1[i]))
-
-      terra::writeRaster(v, paste0(output,tools::file_path_sans_ext(basename(l1[i])),".tif"))
-
-      #--- delete tmp directory files ---#
-      do.call(file.remove, list(list.files(tmp, full.names = TRUE)))
-
-    } else {
-
-      message("exists")
-    }
-  }
-
-  #--- delete temp directory ---#
-
-  unlink(tmp, recursive = TRUE)
-
-}
 
 ####--- read in overlapping tiles and crop using tile extents ---####
 read_crop <- function(f, poly, tmp){
@@ -234,7 +147,7 @@ covariate_file_names <- function(outputdir, nm){
   catchmentslope <- paste0(outputdir,"/swi/",nm,"_swi_slope.sgrd")
   modcatchmentarea <- paste0(outputdir,"/swi/",nm,"_swi_area_mod.sgrd")
   topowetindex <- paste0(outputdir,"/swi/",nm,"_swi_twi.sgrd")
-  windexp <- paste0(outputdir,"/windexp",nm,"_wind_exp_index.sgrd")
+  windexp <- paste0(outputdir,"/windexp/",nm,"_wind_exp_index.sgrd")
   texture <- paste0(outputdir,"/texture/",nm,"_texture.sgrd")
   protection <- paste0(outputdir,"/protection/",nm,"_protection.sgrd")
   vrm <- paste0(outputdir,"/vrm/",nm,"_vrm.sgrd")
