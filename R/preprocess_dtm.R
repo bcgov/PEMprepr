@@ -11,10 +11,12 @@
 #' @param tilebuffer Numeric. Distance (in dtm units) to buffer tiles if desired
 #' @param writeoutputs Logical. Write outputs to disk if \code{TRUE}
 #' @param overwrite Logical. Overwrite previous files
+#'
+#' @export
 
 
 preprocess_dtm <- function(dtm,
-                           template,
+                           template = NULL,
                            odir,
                            tile = FALSE,
                            ncol = 5,
@@ -33,14 +35,16 @@ preprocess_dtm <- function(dtm,
 
   }
 
-  if(is.character(template) & file.exists(template)){
+  if(!(is.null(template))){
+    if(is.character(template) & file.exists(template)){
 
-    template <- terra::rast(x = template)
+      template <- terra::rast(x = template)
 
-  } else if(!inherits(template,"SpatRaster")){
+    } else if(!inherits(template,"SpatRaster")){
 
-    stop(paste0(template," needs to be a valid file path or a an image readable with terra::rast()"), call. = FALSE)
+      stop(paste0(template," needs to be a valid file path or a an image readable with terra::rast()"), call. = FALSE)
 
+    }
   }
 
   if(!is.character(odir)){
@@ -90,13 +94,18 @@ preprocess_dtm <- function(dtm,
 
   if(!file.exists(odirinputs)) dir.create(odirinputs, recursive = TRUE)
 
-  message("aligning DEM to template.")
-  dtma <- align_raster(iraster = dtm, rtemplate = template)
+  #--- align to template ---#
+  if(!is.null(template)){
 
-  if(isTRUE(writeoutputs)){
-    terra::writeRaster(dtma, file.path(odirinputs,"dtm_aligned.tif"), overwrite = overwrite)
+    message("aligning DEM to template.")
+    dtma <- align_raster(iraster = dtm, rtemplate = template)
+
+    if(isTRUE(writeoutputs)){
+      terra::writeRaster(dtma, file.path(odirinputs,"dtm_aligned.tif"), overwrite = overwrite)
+    }
   }
 
+  #--- tile dtm ---#
   if(!is.null(tilebuffer)){
     message("tileing.")
     ####--- tile dtm with overlap for faster efficient processing ---####
