@@ -22,7 +22,11 @@ Imports:
     bcdata,
     magrittr,
     purrr,
-    dplyr
+    dplyr,
+    snow,
+    doSNOW,
+    foreach,
+    parallel
 Depends: 
     R (>= 2.10)
 LazyData: true

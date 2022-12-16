@@ -7,13 +7,17 @@
 create_covariates(dtm, SAGApath = "", output = "./cv-rasters", layers = "all")
 }
 \arguments{
-\item{dtm}{is a dtm \code{SpatRaster} object (i.e. loaded via \code{terra::rast})}
+\item{dtm}{file.path Path to raster file.}
 
-\item{SAGApath}{Is the location of SAGA on your system.  On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
+\item{SAGApath}{file.path SAGA directory on system.
+On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 
-\item{output}{Location of where rasters will be saved.}
+\item{output}{file.path Directory where covariates will be written.}
 
-\item{layers}{The covariates that will be generated.  A full list of covariates is listed at: ADD}
+\item{layers}{character vector Covariates to be created. Default is \code(\code{all})
+\itemize{
+\item call \code(\code{PEMprepr::layer_options}) for full list
+}}
 }
 \description{
 \emph{This is an update of cov_dtm.R replacing the processing with 02a} from  BEC_DevExchange_Work_
@@ -25,9 +29,9 @@ Depending on your system the path to \code{saga_cmd} may need to be specified.
 }
 \examples{
 ##
-create_covariates(dtm,                ## the dtm (loaded by raster() )
-        SAGApath = "C:/SAGA/"         ## specify location of SAGA on your machine
-        output   = "c:/dtm-derived" ) ## specify output folder
+create_covariates(dtm,                ## path to dtm file
+        SAGApath = "C:/SAGA/"         ## path to saga directory
+        output   = "c:/dtm-derived" ) ## path to desired output directory
 }
 \keyword{SAGA,}
 \keyword{covariates,}
