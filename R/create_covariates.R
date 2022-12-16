@@ -14,14 +14,13 @@
 #' @param layers character vector Covariates to be created. Default is \code(`all`)
 #'  - call \code(`PEMprepr::layer_options`) for full list
 #' @keywords SAGA, covariates, predictors, raster
-#' @export
 #' @examples
 #' ##
 #' create_covariates(dtm,                ## path to dtm file
 #'         SAGApath = "C:/SAGA/"         ## path to saga directory
 #'         output   = "c:/dtm-derived" ) ## path to desired output directory
 
-
+#' @export
 
 # # get a base raster that is correct size
 #  aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
@@ -43,6 +42,10 @@ create_covariates <- function(dtm,
                               output = "./cv-rasters",
                               layers = "all"){
 
+  data("layer_options", envir=environment())
+  data("moddir", envir=environment())
+  data("artifacts", envir=environment())
+
   #--- error handling ---#
 
   #--- dtm ---#
@@ -52,11 +55,14 @@ create_covariates <- function(dtm,
 
   }
 
+  #--- load dtm ---#
+  dtmr <- terra::rast(x = dtm)
+
   #--- SAGA ---#
 
-  if(!file.exists(SAGA)){
+  if(!dir.exists(SAGApath)){
 
-    stop(paste0("`SAGA` must be the path to an existing SAGA directory"), call. = FALSE)
+    stop(paste0("`SAGApath` must be the path to an existing SAGA directory"), call. = FALSE)
 
   }
 
@@ -68,7 +74,7 @@ create_covariates <- function(dtm,
     fns      <- "/" ### file name separator
 
   }  ;
-  z<- system(paste(saga_cmd, "-v"), intern = TRUE)  ## prints that SAGA version number -- confirming it works.
+  z <- system(paste(saga_cmd, "-v"), intern = TRUE)  ## prints that SAGA version number -- confirming it works.
   z <- print(z)
   v <- suppressWarnings(as.numeric(unlist(strsplit(z, "[[:punct:][:space:]]+")[1])))
   v <- v[!is.na(v)][1:2]
@@ -95,7 +101,7 @@ create_covariates <- function(dtm,
   }
 
   if (isTRUE(layers == "all")) {  ## currently gives warning ... but functions as expected.
-    layers <- PEMprepr::layer_options
+    layers <- layer_options
   }
 
   ####### Error handling -- unspecified layers ############
@@ -117,14 +123,11 @@ create_covariates <- function(dtm,
 
   nm <- tools::file_path_sans_ext(basename(dtm))
 
-  #--- load dtm ---#
-  dtm <- terra::rast(dtm)
-
   #--- check input layers for recursive requirements ---#
-  layers <- recursive_layers_call(layers = layers)
+  # layers <- recursive_layers_call(layers = layers, moddir = moddir, artifact = artifacts)
 
   #--- get resolution of dtm ---#
-  rn <- terra::res(dtm)[1]
+  rn <- terra::res(x = dtmr)[1]
 
   # OUTPUTS: ------------------------------------------------------------
 
@@ -150,7 +153,7 @@ create_covariates <- function(dtm,
 
   if(!file.exists(sDTM)){
 
-    terra::writeRaster(dtm, sDTM, overwrite = TRUE)
+    terra::writeRaster(dtmr, sDTM, overwrite = TRUE)
 
     message(paste0(basename(sDTM))," written to temp folder.")
 
