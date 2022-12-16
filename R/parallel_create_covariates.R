@@ -1,6 +1,6 @@
 #' Create covariates in parallel
 #'
-#' @inheritParams calculate_covariates
+#' @inheritParams create_covariates
 #'
 #' @param files file paths. Vector of file paths derived using \code{file.path} of tiles to be processed
 #' @param cores Numeric. Number of cores to use
@@ -35,11 +35,20 @@ parallel_create_covariates <- function(files,
   cl <- snow::makeCluster(spec = cores, type = "SOCK")
   doSNOW::registerDoSNOW(cl)
 
-  loop <- foreach::foreach(f = layers, .packages = c("terra","PEMprepr"), .options.snow = opts) %:%
+  parallel::clusterExport(cl, 'covariate_file_names')
+  parallel::clusterExport(cl, 'recursive_layers_call')
 
-    foreach::foreach(i = files) %dopar% {
+  `%dopar%` <- foreach::`%dopar%`
+  `%:%` <- foreach::`%:%`
 
-      create_covariates(dtm = i, SAGApath = SAGApath, output = output, layers = f)
+  create_covariates <- create_covariates
+
+
+  loop <- foreach::foreach(i = layers, .options.snow = opts) %:%
+
+    foreach::foreach(j = files) %dopar% {
+
+      create_covariates(dtm = j, SAGApath = SAGApath, output = output, layers = i)
 
     }
 
