@@ -90,7 +90,7 @@ preprocess_dtm <- function(dtm,
   }
 
   #--- check outputs ---#
-  odirinputs <- file.path(odir,"inputs","processed")
+  odirinputs <- file.path(odir,"lidar")
 
   if(!file.exists(odirinputs)) dir.create(odirinputs, recursive = TRUE)
 
@@ -115,14 +115,16 @@ preprocess_dtm <- function(dtm,
     tv <- terra::as.polygons(t)
 
     #--- check outputs ---#
-    dir.create(file.path(odir,"tiles"))
+    tilesdir <- file.path(odir,"lidar","tiles")
 
-    tv |> terra::writeVector(file.path(odir,"tiles","tile_extent.shp"))
+    dir.create(tilesdir, recursive = TRUE)
 
-    tp <- terra::as.polygons(t) |> buffer(tilebuffer)
+    tv |> terra::writeVector(file.path(tilesdir,"tile_extent.shp"), overwrite = overwrite)
+
+    tp <- terra::as.polygons(t) |> terra::buffer(tilebuffer)
 
     #--- check outputs ---#
-    terra::makeTiles(x = dtma, y = tp, file.path(odir,"tiles","tile_.tif"))
+    terra::makeTiles(x = dtma, y = tp, file.path(tilesdir,"tile_.tif"))
   }
 
 }
