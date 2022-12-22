@@ -586,6 +586,14 @@ create_covariates <- function(dtm, SAGApath = "",
   ##### >> 13 -- Topographic Position Index --------------------------------
   # http://www.saga-gis.org/saga_tool_doc/7.2.0/ta_morphometry_18.html
 
+  # Note "ta_morphology 18" -DW_IDW_OFFSET no longer a parameter in SAGA v8.4.1 (newest stable release).
+  # add an if else statement
+
+# if (v < 8.4.1 ) {
+#    warning("SAGA-GIS is less that 7.6.  Not all covariates will generate.  Upgrade your SAGA, visit https://sourceforge.net/projects/saga-gis/files/")
+#  }
+
+
   if ("tpi" %in% layers) {
 
     sysCMD <- paste(saga_cmd, "ta_morphometry 18", "-DEM",
