@@ -266,7 +266,7 @@ get_roads <- function(in_aoi, out_path) {
 
   message("\rDownloading Road network")
   roads <- bcdc_query_geodata("bb060417-b6e6-4548-b837-f9060d94743e") %>%
-    bcdata::filter(BBOX(st_bbox(in_aoi))) %>% # slightly larger extent
+    bcdata::filter(BBOX(local(st_bbox(in_aoi)))) %>% # slightly larger extent
     bcdata::select(id, ROAD_NAME_FULL, ROAD_CLASS, ROAD_SURFACE, FEATURE_LENGTH_M) %>%
     collect() %>%
     dplyr::select(id, ROAD_NAME_FULL,ROAD_SURFACE, ROAD_CLASS,FEATURE_LENGTH_M) %>%
@@ -277,7 +277,7 @@ get_roads <- function(in_aoi, out_path) {
 
   fsr <- bcdc_query_geodata("9e5bfa62-2339-445e-bf67-81657180c682") %>%
     bcdata::filter(
-      BBOX(st_bbox(in_aoi))) %>%
+      BBOX(local(st_bbox(in_aoi)))) %>%
     collect() %>%
     dplyr::select(id, FILE_TYPE_DESCRIPTION, FEATURE_LENGTH_M) %>%
     dplyr::rename(ROAD_CLASS = FILE_TYPE_DESCRIPTION) %>%
