@@ -1082,11 +1082,11 @@ create_covariates <- function(dtm,
 
   if ("mscale_tpi" %in% layers) {
 
-    if(!file.exists(lyr$tpi)){
+    if(!file.exists(lyr$mscale_tpi)){
 
       sysCMD = paste(saga_cmd, "ta_morphometry 28",
                      "-DEM", lyr$sinksfilled,                # input DEM
-                     "-TPI", lyr$tpi,                        # output tpi
+                     "-TPI", lyr$mscale_tpi,                        # output tpi
                      "-SCALE_MIN", 1,
                      "-SCALE_MAX", 8,
                      "-SCALE_NUM", 3

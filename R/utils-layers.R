@@ -160,7 +160,7 @@ covariate_file_names <- function(outputdir, nm){
   protection <- paste0(outputdir,"/protection/",nm,"_protection.sgrd")
   vrm <- paste0(outputdir,"/vrm/",nm,"_vrm.sgrd")
   mbi <- paste0(outputdir,"/mbi/",nm,"_mbi.sgrd")
-  tpi <- paste0(outputdir,"/tpi/",nm,"_tpi.sgrd")
+  mscale_tpi <- paste0(outputdir,"/mscale_tpi/",nm,"_mscale_tpi.sgrd")
   slopeheight <- paste0(outputdir,"/relposition/",nm,"_slope_height.sgrd")
   valleydepth <- paste0(outputdir,"/relposition/",nm,"_valleydepth.sgrd") #don't need this as created above?
   normheight <- paste0(outputdir,"/relposition/",nm,"_norm_height.sgrd")
