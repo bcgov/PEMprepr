@@ -16,26 +16,26 @@
 #' @keywords SAGA, covariates, predictors, raster
 #' @examples
 #' \dontrun{
-#' create_covariates(dtm,                ## path to dtm file
-#'         SAGApath = "C:/SAGA/"         ## path to saga directory
-#'         output   = "c:/dtm-derived" ) ## path to desired output directory
+#' #--- load in dtm and write to tempfile ---#
+#' aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
+#' aoi_raw <- sf::st_read(aoi_raw)
+#' aoi <- PEMprepr::aoi_snap(aoi_raw, "shrink")
+#' t25 <- create_template(aoi, 25)
+#' trim_raw <- cded_raster(aoi)
+#' trim <- terra::rast(trim_raw)
+#' dtm <- terra::project(trim, t25)
+#' tmp <- tempfile(fileext = ".tif")
+#' writeRaster(dtm, tmp)
+#'
+#' #--- global vars ---#
+#' dir <- "" #desired base output folder
+#' SAGApath <- "" #change SAGA path to your own
+#'
+#' #--- create all SAGA covariates ---#
+#' create_covariates(dtm = tmp, layers = "all", output = dir, SAGApath = SAGApath)
 #' }
+#'
 #' @export
-
-# # get a base raster that is correct size
-#  aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
-#  aoi_raw <- sf::st_read(aoi_raw)
-#  aoi <- PEMprepr::aoi_snap(aoi_raw, "shrink")
-#  t25 <- create_template(aoi, 25)
-#  library(bcmaps)
-#  trim_raw <- cded_raster(aoi)
-#  trim <- terra::rast(trim_raw)
-#  dtm <- terra::project(trim, t25)
-#
-# PEMprepr::create_covariates (dtm, layers = "all",
-#                              output =  filelist$cov_dir_1020[[2]],
-#                              SAGApath ="C:/SAGA/saga-7.7.0_x64/")
-
 
 create_covariates <- function(dtm,
                               SAGApath = "",
