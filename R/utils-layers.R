@@ -62,7 +62,7 @@ recursive_layers_call <- function(layers, moddir = moddir, artifact = artifacts)
 
     if(length(artifact_layers) != 0){
 
-      warning(paste0(artifact_layers, collapse = ", ")," -- produce artifacts during tiled processing.")
+      warning(paste0(artifact_layers, collapse = ", ")," -- produce artifacts during tiled processing.", call. = FALSE)
 
     }
 
@@ -137,13 +137,13 @@ covariate_file_names <- function(outputdir, nm){
   accummaterial <- paste0(outputdir,"/flowaccumulation/",nm,"_accummaterial.sgrd")
   slopelength <- paste0(outputdir,"/slopelength/",nm,"_slength.sgrd")
   flowaccump <- paste0(outputdir,"/flowaccumulation2/",nm,"_flow_accum_p.sgrd")
-  flowaccum <- paste0(outputdir,"/flowpathlength3/",nm,"_flow_accum.sgrd")
   flowaccumtd <- paste0(outputdir,"/flowaccumulation3/",nm,"_flow_accum_td.sgrd")
   meanovcatchTD <- paste0(outputdir,"/flowaccumulation3/",nm,"_meanovcatchTD.sgrd")
   accummaterialTD <- paste0(outputdir,"/flowaccumulation3/",nm,"_accummaterialTD.sgrd")
   flowpathlenTD <- paste0(outputdir,"/flowaccumulation3/",nm,"_flowpathlenTD.sgrd")
   flowpathlength <- paste0(outputdir,"/flowpathlength/",nm,"_max_fp_l.sgrd")
-  flowpathlength1 <- paste0(outputdir,"/flowpathlength2/",nm,"_max_fp_l1.sgrd")
+  flowpathlength2 <- paste0(outputdir,"/flowpathlength2/",nm,"_max_fp_l2.sgrd")
+  flowpathlength3 <- paste0(outputdir,"/flowpathlength3/",nm,"_max_fp_l3.sgrd")
   #FloOwAccum <- paste0(outputdir,"/slope_lts_fa/",nm,"_slope_lts_fa.sgrd") isnt called in create_covariates()
   lsfactor <- paste0(outputdir,"/lsfactor/",nm,"_ls_factor.sgrd")
   DirInsol <- paste0(outputdir,"/solarrad/",nm,"_direinso.sgrd")
@@ -160,7 +160,7 @@ covariate_file_names <- function(outputdir, nm){
   protection <- paste0(outputdir,"/protection/",nm,"_protection.sgrd")
   vrm <- paste0(outputdir,"/vrm/",nm,"_vrm.sgrd")
   mbi <- paste0(outputdir,"/mbi/",nm,"_mbi.sgrd")
-  tpi <- paste0(outputdir,"/mscale_tpi/",nm,"_mscale_tpi.sgrd")
+  tpi <- paste0(outputdir,"/tpi/",nm,"_tpi.sgrd")
   slopeheight <- paste0(outputdir,"/relposition/",nm,"_slope_height.sgrd")
   valleydepth <- paste0(outputdir,"/relposition/",nm,"_valleydepth.sgrd") #don't need this as created above?
   normheight <- paste0(outputdir,"/relposition/",nm,"_norm_height.sgrd")

@@ -12,7 +12,7 @@ create_covariates(dtm, SAGApath = "", output = "./cv-rasters", layers = "all")
 \item{SAGApath}{file.path SAGA directory on system.
 On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 
-\item{output}{file.path Directory where covariates will be written.}
+\item{output}{file.path Directory where covariates will be written. If files already exist they will NOT be overwritten.}
 
 \item{layers}{character vector Covariates to be created. Default is \code(\code{all})
 \itemize{
