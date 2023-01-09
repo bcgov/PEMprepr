@@ -7,16 +7,16 @@
 create_covariates(dtm, SAGApath = "", output = "./cv-rasters", layers = "all")
 }
 \arguments{
-\item{dtm}{file.path Path to raster file.}
+\item{dtm}{file.path. Path to raster file.}
 
-\item{SAGApath}{file.path SAGA directory on system.
+\item{SAGApath}{file.path. SAGA directory on system.
 On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 
-\item{output}{file.path Directory where covariates will be written. If files already exist they will NOT be overwritten.}
+\item{output}{file.path. Directory where covariates will be written. If files already exist they will NOT be overwritten.}
 
-\item{layers}{character vector Covariates to be created. Default is \code(\code{all})
+\item{layers}{character vector. Covariates to be created. Default is \code(\code{all})
 \itemize{
-\item call \code(\code{PEMprepr::layer_options}) for full list
+\item call \code(\code{PEMprepr::layer_options}) for full list.
 }}
 }
 \description{
@@ -24,14 +24,30 @@ On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 }
 \details{
 Takes a dtm and via SAGA GIS generates the covariates embeded in this function.
-This script has been tested with SAGA 7.3 on Windows and Ubuntu 18.
+This script has been tested with SAGA 8.4.1 on Windows.
 Depending on your system the path to \code{saga_cmd} may need to be specified.
 }
 \examples{
-##
-create_covariates(dtm,                ## path to dtm file
-        SAGApath = "C:/SAGA/"         ## path to saga directory
-        output   = "c:/dtm-derived" ) ## path to desired output directory
+\dontrun{
+#--- load in dtm and write to tempfile ---#
+aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
+aoi_raw <- sf::st_read(aoi_raw)
+aoi <- PEMprepr::aoi_snap(aoi_raw, "shrink")
+t25 <- create_template(aoi, 25)
+trim_raw <- cded_raster(aoi)
+trim <- terra::rast(trim_raw)
+dtm <- terra::project(trim, t25)
+tmp <- tempfile(fileext = ".tif")
+writeRaster(dtm, tmp)
+
+#--- global vars ---#
+dir <- "" #desired base output folder
+SAGApath <- "" #change SAGA path to your own
+
+#--- create all SAGA covariates ---#
+create_covariates(dtm = tmp, layers = "all", output = dir, SAGApath = SAGApath)
+}
+
 }
 \keyword{SAGA,}
 \keyword{covariates,}

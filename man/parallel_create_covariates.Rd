@@ -7,20 +7,38 @@
 parallel_create_covariates(files, layers, cores, output, SAGApath = "")
 }
 \arguments{
-\item{files}{file paths. Vector of file paths derived using \code{file.path} of tiles to be processed}
+\item{files}{file paths. Vector of file paths derived using \code{file.path} of files to be processed in parallel.}
 
-\item{layers}{character vector Covariates to be created. Default is \code(\code{all})
+\item{layers}{character vector. Covariates to be created. Default is \code(\code{all})
 \itemize{
-\item call \code(\code{PEMprepr::layer_options}) for full list
+\item call \code(\code{PEMprepr::layer_options}) for full list.
 }}
 
-\item{cores}{Numeric. Number of cores to use}
+\item{cores}{Numeric. Number of cores to use.}
 
-\item{output}{Character. Path to output directory}
+\item{output}{Character. Path to output directory.}
 
-\item{SAGApath}{file.path SAGA directory on system.
+\item{SAGApath}{file.path. SAGA directory on system.
 On linux systems with SAGA GIS installed Use \code{SAGApath = ""}}
 }
 \description{
 Create covariates in parallel
+}
+\examples{
+\dontrun{
+
+#--- list tiles to process in parallel ---#
+
+fs <- list.files("", pattern = ".tif$", full.names = TRUE)
+
+
+#--- global vars ---#
+dir <- "" #desired base output folder
+SAGApath <- "" #change SAGA path to your own
+
+#--- run in parallel ---#
+parallel_create_covariates(files = fs, layers = "all",  cores = 2,
+output = dir, SAGApath = SAGApath)
+
+}
 }

@@ -6,6 +6,23 @@
 #' @param cores Numeric. Number of cores to use.
 #' @param output Character. Path to output directory.
 #'
+#' @examples
+#' \dontrun{
+#'
+#' #--- list tiles to process in parallel ---#
+#'
+#' fs <- list.files("", pattern = ".tif$", full.names = TRUE)
+#'
+#'
+#' #--- global vars ---#
+#' dir <- "" #desired base output folder
+#' SAGApath <- "" #change SAGA path to your own
+#'
+#' #--- run in parallel ---#
+#' parallel_create_covariates(files = fs, layers = "all",  cores = 2,
+#' output = dir, SAGApath = SAGApath)
+#'
+#' }
 #' @export
 
 parallel_create_covariates <- function(files,
