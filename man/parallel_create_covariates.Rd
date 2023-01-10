@@ -29,8 +29,7 @@ Create covariates in parallel
 
 #--- list tiles to process in parallel ---#
 
-fs <- list.files("", pattern = ".tif$", full.names = TRUE)
-
+fs <- list.files("", pattern = "", full.names = TRUE)
 
 #--- global vars ---#
 dir <- "" #desired base output folder

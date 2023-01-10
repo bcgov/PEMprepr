@@ -15,6 +15,7 @@
 #'  - call \code(`PEMprepr::layer_options`) for full list.
 #' @keywords SAGA, covariates, predictors, raster
 #' @examples
+#'
 #' \dontrun{
 #' #--- load in dtm and write to tempfile ---#
 #' aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
