@@ -68,13 +68,11 @@ folder names.
 
 
 
-
 Load the spatial data
 ```{r}
 # Read in the aoi data from the test data 
 aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")
 aoi_raw <- st_read(aoi_raw)
-
 
 # or read in local aoi 
 #aoi_raw <- st_read(file.path("CanyonCreek", "00_raw_inputs", "vector", "aoi.gpkg"))
@@ -106,7 +104,6 @@ sf::st_bbox(aoi_shrink)
 sf::st_write(aoi, file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
 
 ```
-
 
 
 # Collection of vector data
@@ -180,44 +177,18 @@ dem <- system.file("extdata", "DTM.tif",package = "PEMprepr")
 dem <- terra::rast(dem)
 
 ## or alternate  get external TRIM data for DEM
+
 library(bcmaps)
-trim_raw <- cded_raster(aoi_landscape)
+#trim_raw <- cded_raster(aoi_landscape)
+trim_raw <- cded_raster(aoi)
 
 # convert the trim to matching raster 
 trim <- terra::rast(trim_raw)
-trim <- terra::project(trim, t25)
+trim <- terra::project(trim, r25)
 
-```
-
-```{r, eval=FALSE, include=FALSE}
-## Invisible -- use this manually to create the graphic
-library(tidyterra) ## ggplot with rasters
-
-g <- ggplot() +
-  geom_spatraster(data = dem) +
-  scale_fill_whitebox_c(palette = "high_relief") +
-  geom_sf(data = aoi, colour = "red", lwd = 1.5, fill = NA) +
-  labs(title = "Study area",
-       fill = "Elevation") +
-  theme(axis.text = element_text(size = 6))
-
-#ggsave("./vignettes/aleza_aoi_dtm.png", dpi = 150,
-#       height = 4, width = 5.2)
-```
-
-```{r dtm-and-aoi, echo=FALSE, fig.cap="A raw digital terrain model with the area-of-interest noted in red. All processed rasters will align with the aoi."}
-
-#knitr::include_graphics("./aleza_aoi_dtm.png")
-
-```
-
-
-## Align the raster
-
-```{r}
-# align the DEM file with a 25m template raster
-
-dem_25 <- align_raster(iraster = dem, rtemplate = r25)
+# 5m resolution option 
+trim <- terra::rast(trim_raw)
+trim5 <- terra::project(trim, r5)
 
 ```
 
@@ -241,13 +212,13 @@ layer_options <- c("filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_cur
                "steepestslope", "upslopearea")
 
 # run a test covariate
-create_covariates(dtm = dem_25,           ## raster created above
+create_covariates(dtm = trim5,           ## raster created above
                   SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
                   output = fid$cov_dir_1020[2], ## from the setup_folders above
                   layers = "filled_sinks")        ## test one is working 
 
 # run all covariates 
-create_covariates(dtm = dem_25,           ## raster created above
+create_covariates(dtm = trim5,           ## raster created above
                   SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
                   output = fid$cov_dir_1020[2], ## from the setup_folders above
                   layers = c( "all"))       ## use all or one of the above
@@ -268,7 +239,6 @@ l <- list.files(path = fid$cov_dir_1020[2], pattern = ".sdat$",
                 recursive = TRUE)
 
 l 
-
 ```
 
 
@@ -295,6 +265,13 @@ bec_vec <- terra::vect(bec_sf)
 bec_ras25 <- terra::rasterize(bec_vec, r25, field = "MAP_LABEL")
 
 terra::writeRaster(bec_ras25, file.path(fid$cov_dir_1020[2], "25m", "bec.tif"), overwrite = TRUE)
+
+
+# generate a 5m raster 
+
+bec_ras5 <- terra::rasterize(bec_vec, r5, field = "MAP_LABEL")
+
+terra::writeRaster(bec_ras5, file.path(fid$cov_dir_1020[2], "5m", "bec.tif"), overwrite = TRUE)
 
 ```
 
