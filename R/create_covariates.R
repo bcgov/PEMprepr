@@ -49,11 +49,11 @@ create_covariates <- function(dtm,
 
   #--- error handling ---#
   #--- dtm ---#
-  if(!is.character(dtm) || !file.exists(dtm)){
-
-    stop(paste0("`dtm` must be the path to an existing file."), call. = FALSE)
-
-  }
+  # if(!is.character(dtm) || !file.exists(dtm)){
+  #
+  #   stop(paste0("`dtm` must be the path to an existing file."), call. = FALSE)
+  #
+  # }
 
   #--- load dtm ---#
   dtmr <- terra::rast(x = dtm)
