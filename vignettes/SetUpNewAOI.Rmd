@@ -190,6 +190,10 @@ trim <- terra::project(trim, r25)
 trim <- terra::rast(trim_raw)
 trim5 <- terra::project(trim, r5)
 
+# need to save and then input filepath rather than the actual Dem
+
+
+
 ```
 
 ## Create the covariates
@@ -199,7 +203,7 @@ Note that the pre-defined output directory `fid$cov_dir_1020[2]`, created using 
 
 ```{r, eval=FALSE}
 
-layer_options <- c("filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_curve",
+layer_options <- c("sinksfilled", "sinkroute", "dem_preproc", "slope_aspect_curve",
                "tcatchment", "tca", "scatchment", "twi", "channelsnetwork",
                "overlandflow", "overlandflow2", "multiresflatness", "multiresflatness2",
                "multiresflatness3", "tri", "convergence", "openness",
@@ -215,7 +219,7 @@ layer_options <- c("filled_sinks", "sinkroute", "dem_preproc", "slope_aspect_cur
 create_covariates(dtm = trim5,           ## raster created above
                   SAGApath = "C:/SAGA/saga-7.7.0_x64/", ## Where SAGA GIS is installed
                   output = fid$cov_dir_1020[2], ## from the setup_folders above
-                  layers = "filled_sinks")        ## test one is working 
+                  layers = "sinksfilled")        ## test one is working 
 
 # run all covariates 
 create_covariates(dtm = trim5,           ## raster created above
