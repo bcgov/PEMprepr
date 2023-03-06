@@ -337,14 +337,14 @@ get_fires <- function(in_aoi, out_path) {
         ## bind results of loops
         if (i == 1) {
             fires_all <- fires } else { ## i > 1
-              if (is.na(fires_all)) {fires_all <- fires } else {fires_all <- rbind(fires_all, fires)}
+              if(all(is.na(fires_all))) {fires_all <- fires } else {fires_all <- rbind(fires_all, fires)}
               }
         } #else {print("No fires in layer queried") }
 
      # rm(fires)
     } ## end loop
 
-  if (is.na(fires_all) || nrow(fires_all) == 0) {
+  if (all(is.na(fires_all)) || nrow(fires_all) == 0) {
     print("No recent fire disturbance in area of interest") } else {
     sf::st_write(fires_all, file.path(out_path, "fire.gpkg"), append = FALSE)
   }
@@ -404,7 +404,7 @@ get_transmission_lines <- function(in_aoi, out_path) {
     collect()%>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
-  if(nrow(trans_line > 0)) {
+  if(nrow(trans_line) > 0) {
     st_write(trans_line, file.path(out_path, "translines.gpkg"), append = FALSE)
   } else {
     print("No transmission lines in area of interest")
