@@ -50,9 +50,9 @@
 create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
   # # testing
-  aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
+  #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
 
-  in_aoi <- aoi
+  #in_aoi <- aoi
   #out_path = shape_raw_dir <- fid$shape_dir_0010[1]
   #
   #
