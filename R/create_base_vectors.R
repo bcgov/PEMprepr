@@ -50,9 +50,9 @@
 create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
   # # testing
-  #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
+  aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
 
-  #in_aoi <- aoi
+  in_aoi <- aoi
   #out_path = shape_raw_dir <- fid$shape_dir_0010[1]
   #
   #
@@ -122,7 +122,16 @@ get_BEC <- function(in_aoi, out_path) {
     dplyr::select(MAP_LABEL) %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .}
 
+  if(sf::st_crs(in_aoi) == st_crs(bec)){
+
   st_write(bec, file.path(out_path, "bec.gpkg"), append = FALSE)
+
+  } else {
+    # add conversion
+    message("convert or setting crs for bec data download")
+
+
+  }
 
 }
 
