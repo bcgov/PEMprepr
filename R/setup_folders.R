@@ -75,6 +75,7 @@ setup_folders <- function(aoi_name){
 
 
   sample_dir_0030 <- file.path(AOI_dir, "30_model")
+  model_inputs0310 <- file.path(AOI_dir, "30_model", "10_model_inputs")
 
 
   ## set up folders if not already exist
@@ -87,7 +88,7 @@ setup_folders <- function(aoi_name){
                               samplingplan_201020 ,  samplingplan_clhs,samplingplan_vrp,  samplingplan_review,
                               sample_dir_0030,  sampleplan_final_transect, sampleplan_final_maps,
                               trainpts_201040 ,trainpts_transect, trainpts_maps,
-                              remoteplan_201020 ,trans_review2030,trainpts_att)
+                              remoteplan_201020 ,trans_review2030,trainpts_att,model_inputs0310)
 
   # generate absolute paths
   folder_set_up_all <- rbind(folder_set_up, R.utils::getAbsolutePath(folder_set_up))
