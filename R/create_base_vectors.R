@@ -1,15 +1,3 @@
-## Original GP notes at bottome
-## ISSUES
-## - fixed: TEM download not working
-## - fixed: using withr --  options call ... change to global env.
-## - fixed: review look for water ... overwriting issue?
-## - fixed ??? fires appears to be working ... but no fires > 20 years are recorded for example area.
-## - fixed sf::st_write syntax update... replace delete_dsn with append = FALSE
-## - Towns is -- all towns in BC ... is that the intent?
-## make it BEC label?
-
-
-
 #' Retrieves essential base vectors
 #'
 #' Collects vector data from the [BC Data Catelog](https://catalogue.data.gov.bc.ca) for a spcified area of interest.
@@ -50,7 +38,7 @@
 create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
 
   # # testing
-  #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
+  #aoi <- sf::st_read("D:/PEM_DATA/BEC_DevExchange_Work/Arrow_AOI/Arrow_AOI/0_raw_inputs/base_layers/aoi.gpkg")
 
   #in_aoi <- aoi
   #out_path = shape_raw_dir <- fid$shape_dir_0010[1]

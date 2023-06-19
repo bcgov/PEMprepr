@@ -68,12 +68,6 @@ knitr::include_graphics("aleza.png")
 ```
 
 
-
-
-
-
-
-
 # Workflow
 
 The following provides a standard workflow for preparing data for subsequent 
@@ -101,8 +95,7 @@ folder names.
 
 ```{r, results='hold'}
 # creates dirs and returns a named list
-fstr <- setup_folders("aleza",            
-                      full_names = FALSE) # relative or full path
+fstr <- setup_folders("aleza") # relative or full path
 
 str(fstr[1:5]) ## first 5 in the list. 
 ```
