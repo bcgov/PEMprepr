@@ -1,50 +1,64 @@
-
-
-# creates a aoi template at a larger scale for use in landscape covariates.
-# set to a watershed boundary
-
-#library(sf)
-# library(bcdata)
-# import(magrittr)
-
-#library(dplyr)
-#library(foreach)
-
-# testing
-#in_aoi <- sf::st_read(file.path('temp', "aoi.gpkg"))
-#out_path = shape_raw_dir <- file.path('temp')
-
-
-#' AOI Snap to landscape
+#' Snap Area of Interest
 #'
-#' Creates a watershed based area of interest.  Does this by querying _BCData's_
-#' _Freshwater Atlas_
+#' Adjusts the area of interest to the nearest 100m.
+#' Note that this package assumes to data is in a metric equal area projection.
 #'
-#' @param in_aoi `sf` polygon as the Area of Interest. Needs to be a meters based projection (e.g. Albers, UTM)
-#' @param preview Boolean.  `TRUE` will provide a mapview preview of the resulting aoi, the input aoi, and the Freshwater Atlas Watersheds that intersect.
+#' This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregate'd back to the lowest resolution.
+#' Having the aoi set 100m break-points facilitates this.
 #'
-#' @return sf polygon
-#'
-#' @import magrittr
+#' @param aoi is a sf object (e.g. polygon). The bounding box of the shape will be used to create rectangular shape.
+#' @param method Options are _shrink_ or _expand_. _Shrink_ will snap the aoi in to the nearest 100m. _Expand_ will snap the aoi out to the nearest 100m.
+#' @return a sf polygon
+#' @keywords AOI, polygon
 #' @export
-#'
 #' @examples
-#' aoi_snap_landscape(aoi) ### add more
-#'
+#' ## Load sf object
+#' aoi_raw <- sf::st_read(dsn = "../data/Block_aoi.gpkg", quiet = TRUE)
+#' ## snap aoi to nearest 100m
+#' aoi_snap(aoi_raw)
+#' ##
+#' ## [1] "initial extent is:"
+#' ## xmin      ymin      xmax      ymax
+#' ## 559691.2 5994955.0  560687.0 5995832.5
+#' ## [1] "Expanded extent is:"
+#' ## xmin    ymin    xmax    ymax
+#' ## 559600 5994900  560700 5995900
 
-aoi_snap_landscape <- function(in_aoi, preview = TRUE){
 
-  watershed <- bcdata::bcdc_query_geodata("3ee497c4-57d7-47f8-b030-2e0c03f8462a") %>%
-    bcdata::filter(INTERSECTS(in_aoi)) %>%
-    bcdata::collect()
+aoi_snap <- function(aoi, method=c("expand","shrink")){
+  ## testing
+  # setwd("e:/workspace/2019/PEM_2020/PEMWorkFlow/")
+  # aoi <- sf::st_read("../data/Block_aoi.gpkg")
+  bb <- sf::st_bbox(aoi)
 
-  box <- PEMprepr::aoi_snap(watershed, "expand")
+  ## Function
+  print("initial extent is:")
+  print(bb)
 
-  if (preview == TRUE) {
-      print(mapview::mapview(list(box, in_aoi, watershed)))
+  if (method == "expand") {
+    ## Generate expanded bbox -- expands to neared 100m
+    xmin <- floor(bb$xmin / 100)*100 -5000
+    xmax <- ceiling(bb["xmax"] / 100) * 100 +5000
+    ymin <- floor((bb$ymin / 100)*100) - 5000
+    ymax <- ceiling((bb["ymax"] / 100) * 100) + 5000
+
+  } else if (method == "shrink") {
+
+    xmin <- ceiling(bb$xmin / 100)*100
+    xmax <- floor(bb["xmax"] / 100) * 100
+    ymin <- ceiling(bb$ymin / 100)*100
+    ymax <- floor(bb["ymax"] / 100) * 100
+
   }
 
+  box <- matrix(c(xmin, ymin, xmin, ymax, xmax, ymax, xmax, ymin, xmin, ymin), ncol = 2, byrow = TRUE)
+  box <- sf::st_polygon(list(box))
+  box <- sf::st_sfc(box, crs=sf::st_crs(aoi))
+  box <- sf::st_as_sf(box)
+
+  ## Report and Return
+  print("Extent is:")
+  print(sf::st_bbox(box))
   return(box)
 
 }
-
