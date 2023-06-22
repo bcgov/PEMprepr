@@ -38,9 +38,9 @@
 #'
 #' @export
 
-create_covariates <- function(dtm,
-                              SAGApath = "",
-                              output = "./cv-rasters",
+create_covariates <- function(dtm = dem,
+                              SAGApath = sagapath,
+                              output = fid$cov_dir_1020[2],
                               layers = "all"){
 
   data("layer_options", envir=environment())
@@ -132,7 +132,7 @@ create_covariates <- function(dtm,
   # OUTPUTS: ------------------------------------------------------------
 
   #--- check outputs ---#
-  outputdir <- file.path(output,rn,"modules")
+  outputdir <- file.path(output,paste0(rn,"m"), "modules")
 
   if(any(!dir.exists(file.path(outputdir,layers)))){
 
@@ -141,7 +141,7 @@ create_covariates <- function(dtm,
   }
 
   #--- check outputs ---#
-  saga_tmp_files <- file.path(output,rn,"SAGA")
+  saga_tmp_files <- file.path(output, paste0(rn,"m"),"SAGA")
   if(!dir.exists(file.path(saga_tmp_files))){
 
     dir.create(saga_tmp_files, recursive = TRUE)
@@ -635,9 +635,9 @@ create_covariates <- function(dtm,
   # Note "ta_morphology 18" -DW_IDW_OFFSET no longer a parameter in SAGA v8.4.1 (newest stable release).
   # add an if else statement
 
-# if (v < 8.4.1 ) {
-#    warning("SAGA-GIS is less that 7.6.  Not all covariates will generate.  Upgrade your SAGA, visit https://sourceforge.net/projects/saga-gis/files/")
-#  }
+  # if (v < 8.4.1 ) {
+  #    warning("SAGA-GIS is less that 7.6.  Not all covariates will generate.  Upgrade your SAGA, visit https://sourceforge.net/projects/saga-gis/files/")
+  #  }
 
 
   if ("tpi" %in% layers) {
