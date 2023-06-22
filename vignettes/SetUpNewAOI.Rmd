@@ -3,9 +3,9 @@ title: "Set up new study area"
 subtitle: "Example workflow #2"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{PEMprepr}
-%\VignetteEncoding{UTF-8}
-%\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Set up new study area}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
 editor_options:
   chunk_output_type: console
 ---
@@ -16,7 +16,6 @@ editor_options:
 ## knitting the report
 ## i.e. ones that generate graphics.
 
-
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -25,7 +24,7 @@ knitr::opts_chunk$set(
 
 ```{r setup, message=FALSE, warning=FALSE}
 #devtools::load_all("D:\\PEM_DATA\\PEMsamplr")
-devtools::load_all("D:\\PEM_DATA\\PEMprepr")
+#devtools::load_all("D:\\PEM_DATA\\PEMprepr")
 
 library(PEMprepr)
 library(ggplot2)

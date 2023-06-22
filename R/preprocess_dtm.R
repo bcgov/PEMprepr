@@ -14,7 +14,6 @@
 #'
 #' @export
 
-
 preprocess_dtm <- function(dtm,
                            template = NULL,
                            odir,

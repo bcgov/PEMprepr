@@ -39,7 +39,6 @@ setup_folders <- function(aoi_name){
   chm_dir_00  <- file.path(raw_dir_00, "40_chm")
   sat_dir_00  <- file.path(raw_dir_00, "30_satellite")
 
-
   cov_dir_10 <- file.path(AOI_dir, "10_clean_inputs")
   shape_dir_1010 <- file.path(cov_dir_10, "10_vector")
   cov_dir_1020 <- file.path(cov_dir_10, "20_covariates")
@@ -69,17 +68,15 @@ setup_folders <- function(aoi_name){
   trainpts_201040 <- file.path( out_path_2010, "40_transect_data")
   trainpts_transect <- file.path(trainpts_201040  , "raw_field_data")
   trainpts_maps <- file.path(trainpts_201040 , "clean_field_data")
-  trainpts_att <- file.path(trainpts_201040 , "attributed_field_data")
+  trainpts_attrib <- file.path(trainpts_201040 , "attributed_field_data")
   remoteplan_201020 <- file.path(sample_dir_20, "20_remote_sample")
 
   trans_review2030 <- file.path(sample_dir_20, "30_transect_review")
-
 
   sample_dir_0030 <- file.path(AOI_dir, "30_model")
   model_inputs0310 <- file.path(AOI_dir, "30_model", "10_model_inputs")
   model_draft <- file.path(AOI_dir, "30_model", "20_model_draft")
   model_final<- file.path(AOI_dir, "30_model", "30_model_final")
-
 
   sample_dir_0030 <- file.path(AOI_dir, "30_model")
   model_inputs0310 <- file.path(AOI_dir, "30_model", "10_model_inputs")
@@ -94,9 +91,8 @@ setup_folders <- function(aoi_name){
                               sampling_input_exclusion, sampling_input_review,
                               samplingplan_201020 ,  samplingplan_clhs,samplingplan_vrp,  samplingplan_review,
                               sample_dir_0030,  sampleplan_final_transect, sampleplan_final_maps,
-                              trainpts_201040 ,trainpts_transect, trainpts_maps,
-                              remoteplan_201020 ,trans_review2030,trainpts_att,model_inputs0310,
-                              model_draft, model_final)
+                              trainpts_201040 ,trainpts_transect, trainpts_maps,trainpts_attrib,
+                              remoteplan_201020 ,trans_review2030, model_inputs0310, model_draft, model_final)
 
   # generate absolute paths
   folder_set_up_all <- rbind(folder_set_up, R.utils::getAbsolutePath(folder_set_up))

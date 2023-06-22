@@ -4,7 +4,7 @@
 \alias{create_template}
 \title{Create a raster template from AOI}
 \usage{
-create_template(aoi, res)
+create_template(aoi, res, outpath = fid$cov_dir_1020[2])
 }
 \arguments{
 \item{aoi}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}

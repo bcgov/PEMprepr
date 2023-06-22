@@ -28,6 +28,7 @@ This script has been tested with SAGA 8.4.1 on Windows.
 Depending on your system the path to \code{saga_cmd} may need to be specified.
 }
 \examples{
+
 \dontrun{
 #--- load in dtm and write to tempfile ---#
 aoi_raw <- system.file("extdata", "aoi.gpkg", package ="PEMprepr")

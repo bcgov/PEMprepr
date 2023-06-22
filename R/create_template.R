@@ -27,9 +27,7 @@
 ## ------------------
 
 
-create_template <- function(aoi, res#, dropped saving for now
-                            #outpath = c(NULL, "default", "yourpath")
-                            ){
+create_template <- function(aoi, res, outpath = fid$cov_dir_1020[2]){
   if (class(aoi)[1] == "sf") {
     aoi <- terra::vect(aoi)
   }
@@ -37,18 +35,17 @@ create_template <- function(aoi, res#, dropped saving for now
   template <- terra::rast(aoi, resolution = res)
   terra::values(template) <- 0
 
-  # outpath <- file.path(outpath, res)
-  # if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
+  outpath <- file.path(outpath, paste0(res, 'm'))
+  if(!exists(outpath)) {dir.create(outpath, recursive = TRUE) }
 
 
-  # if (is.null(outpath)) {
-  # terra::writeRaster(template, file.path(outpath, "template.tif"), overwrite = TRUE)
-  # }
-
+  # write out
+  terra::writeRaster(template, file.path(outpath, "template21.tif"), overwrite = TRUE)
 
   # print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
   return(template)
 }
+
 
 
 ## -----------------------------------
