@@ -16,7 +16,7 @@ create_aoi <- function(aoi_dir = file.path(fid$shape_dir_0010[2]),
   aoi <- sf::st_read(file.path(aoi_dir, aoi_vec))
   aoi_bb <- aoi_snap(aoi, method = "expand")
   aoi <- sf::st_read(file.path(aoi_dir, aoi_vec))
-  aoi_ls <- aoi_snap_landscape(aoi, "expand")
+  aoi_ls <- aoi_snap_watershed(aoi, "expand")
   #sf::st_write(aoi, file.path(out_dir,"aoi.gpkg"), append = FALSE)
   sf::st_write(aoi_bb, file.path(out_dir,"aoi_snapped.gpkg"), append = FALSE)
   sf::st_write(aoi_ls, file.path(out_dir,"aoi_ls_snap.gpkg"), append = FALSE)
