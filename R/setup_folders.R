@@ -72,12 +72,10 @@ setup_folders <- function(aoi_name){
 
   trans_review2030 <- file.path(sample_dir_20, "30_transect_review")
 
-
   sample_dir_0030 <- file.path(AOI_dir, "30_model")
   model_inputs0310 <- file.path(AOI_dir, "30_model", "10_model_inputs")
   model_draft <- file.path(AOI_dir, "30_model", "20_model_draft")
   model_final<- file.path(AOI_dir, "30_model", "30_model_final")
-
 
   sample_dir_0030 <- file.path(AOI_dir, "30_model")
   model_inputs0310 <- file.path(AOI_dir, "30_model", "10_model_inputs")
@@ -93,8 +91,7 @@ setup_folders <- function(aoi_name){
                               samplingplan_201020 ,  samplingplan_clhs,samplingplan_vrp,  samplingplan_review,
                               sample_dir_0030,  sampleplan_final_transect, sampleplan_final_maps,
                               trainpts_201040 ,trainpts_transect, trainpts_maps,trainpts_attrib,
-                              remoteplan_201020 ,trans_review2030, model_inputs0310,
-                              model_draft, model_final)
+                              remoteplan_201020 ,trans_review2030, model_inputs0310, model_draft, model_final)
 
   # generate absolute paths
   folder_set_up_all <- rbind(folder_set_up, R.utils::getAbsolutePath(folder_set_up))
