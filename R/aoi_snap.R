@@ -28,7 +28,7 @@
 aoi_snap <- function(aoi, method=c("expand","shrink")){
   ## testing
   # setwd("e:/workspace/2019/PEM_2020/PEMWorkFlow/")
-  # aoi <- sf::st_read("../data/Block_aoi.gpkg")
+  #aoi <- sf::st_read("../data/Block_aoi.gpkg")
   bb <- sf::st_bbox(aoi)
 
   ## Function
