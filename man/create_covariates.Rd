@@ -4,7 +4,12 @@
 \alias{create_covariates}
 \title{Covariate raster generation from input dtm.}
 \usage{
-create_covariates(dtm, SAGApath = "", output = "./cv-rasters", layers = "all")
+create_covariates(
+  dtm = dem,
+  SAGApath = sagapath,
+  output = fid$cov_dir_1020[2],
+  layers = "all"
+)
 }
 \arguments{
 \item{dtm}{file.path. Path to raster file.}
