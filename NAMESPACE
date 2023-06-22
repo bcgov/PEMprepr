@@ -3,6 +3,7 @@
 export(align_raster)
 export(aoi_snap)
 export(aoi_snap_landscape)
+export(copy_clean_vectors)
 export(covariate_file_names)
 export(create_aoi)
 export(create_base_vectors)
