@@ -47,12 +47,13 @@
 #' @examples
 #' create_base_vectors <- function(in_aoi = your_polygon, out_path = "00_raw_inputs/vector")
 #'
-create_base_vectors <- function(in_aoi, out_path = "00_raw_inputs/vector"){
+create_base_vectors <- function(in_aoi = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg")
+                                , out_path = fid$shape_dir_0010[1]){
 
   # # testing
   #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
 
-  #in_aoi <- aoi
+  in_aoi <- st_read(in_aoi)
   #out_path = shape_raw_dir <- fid$shape_dir_0010[1]
   #
   #
@@ -418,7 +419,7 @@ get_transmission_lines <- function(in_aoi, out_path) {
   } else {
     print("No transmission lines in area of interest")
   }
-
 }
+
 
 
