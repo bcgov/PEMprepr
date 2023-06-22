@@ -1,20 +1,3 @@
-
-
-# creates a aoi template at a larger scale for use in landscape covariates.
-# set to a watershed boundary
-
-#library(sf)
-# library(bcdata)
-# import(magrittr)
-
-#library(dplyr)
-#library(foreach)
-
-# testing
-#in_aoi <- sf::st_read(file.path('temp', "aoi.gpkg"))
-#out_path = shape_raw_dir <- file.path('temp')
-
-
 #' AOI Snap to landscape
 #'
 #' Creates a watershed based area of interest.  Does this by querying _BCData's_
