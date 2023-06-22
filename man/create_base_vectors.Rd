@@ -4,7 +4,10 @@
 \alias{create_base_vectors}
 \title{Retrieves essential base vectors}
 \usage{
-create_base_vectors(in_aoi, out_path = "00_raw_inputs/vector")
+create_base_vectors(
+  in_aoi = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
+  out_path = fid$shape_dir_0010[1]
+)
 }
 \arguments{
 \item{in_aoi}{\code{sf} polygon}
