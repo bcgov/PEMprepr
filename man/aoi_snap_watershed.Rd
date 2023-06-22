@@ -2,7 +2,7 @@
 % Please edit documentation in R/aoi_snap_watershed.R
 \name{aoi_snap_watershed}
 \alias{aoi_snap_watershed}
-\title{AOI Snap to landscape}
+\title{AOI Snap to watershed}
 \usage{
 aoi_snap_watershed(in_aoi, preview = TRUE)
 }
@@ -19,5 +19,5 @@ Creates a watershed based area of interest.  Does this by querying \emph{BCData'
 \emph{Freshwater Atlas}
 }
 \examples{
-aoi_snap_landscape(aoi) ### add more
+aoi_snap_watershed(aoi) ### add more
 }
