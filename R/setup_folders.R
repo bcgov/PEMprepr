@@ -22,6 +22,7 @@ setup_folders <- function(aoi_name){
   # Testing ---------------
   # aoi_name <- "e:/workRspace/tmp/apple123/apple" ## full path example
   #aoi_name <- "carrot1"  ## relative example
+  #working_dir <- getwd()
   ## END TESTING ----------
 
   #base directory
@@ -36,7 +37,7 @@ setup_folders <- function(aoi_name){
   trim_dir_00 <- file.path(dem_dir_00 , "trim")
 
   chm_dir_00  <- file.path(raw_dir_00, "40_chm")
-  sat_dir_00  <- file.path(raw_dir_00, "30_satelitte")
+  sat_dir_00  <- file.path(raw_dir_00, "30_satellite")
 
 
   cov_dir_10 <- file.path(AOI_dir, "10_clean_inputs")
