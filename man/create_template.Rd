@@ -5,8 +5,8 @@
 \title{Create a raster template from AOI}
 \usage{
 create_template(
-  aoi_bb = file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"),
-  res,
+  aoi_bb = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
+  res = 25,
   outpath = fid$cov_dir_1020[2],
   filename = "template.tif"
 )

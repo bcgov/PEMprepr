@@ -17,13 +17,11 @@
 #' @examples
 #' create_template(aoi_bb = file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"), res = 10, outpath = fid$cov_dir_1020[2], filename = "template.tif")
 
-
-create_template <- function(aoi_bb = file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"),
-                            res, outpath = fid$cov_dir_1020[2],
+create_template <- function(aoi_bb = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
+                            res = 25, outpath = fid$cov_dir_1020[2],
                             filename = "template.tif"){
-  if (class(aoi)[1] == "sf") {
-    aoi_bb  <- terra::vect(aoi)
-  }
+
+  aoi_bb  <- terra::vect(aoi_bb)
 
   template <- terra::rast(aoi_bb , resolution = res)
   terra::values(template) <- 0
@@ -38,5 +36,4 @@ create_template <- function(aoi_bb = file.path(fid$shape_dir_1010[1], "aoi_snapp
   # print(paste("Template raster create and saved as:", file.path(outpath, "template.tif")))
   return(template)
 
-  }
-
+}
