@@ -12,7 +12,7 @@ create_bgc_template(
 )
 }
 \arguments{
-\item{bec_sf}{sf object with bec linework}
+\item{bec_sf}{sf object with bec linework ro filepath}
 
 \item{field}{field within in sf object which will be used to assign raster value}
 

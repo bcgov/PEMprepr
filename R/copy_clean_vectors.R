@@ -2,7 +2,6 @@
 #'
 #' @param origindir text filepath of raw vectors
 #' @param targetdir text filepath of clean vectors
-#'
 #' @return TRUE
 #' @export
 #'

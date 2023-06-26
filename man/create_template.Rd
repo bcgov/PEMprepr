@@ -4,17 +4,24 @@
 \alias{create_template}
 \title{Create a raster template from AOI}
 \usage{
-create_template(aoi, res, outpath = fid$cov_dir_1020[2])
+create_template(
+  aoi_bb = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
+  res = 25,
+  outpath = fid$cov_dir_1020[2],
+  filename = "template.tif"
+)
 }
 \arguments{
-\item{aoi}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}
+\item{aoi_bb}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}
 
 \item{res}{desired resolution of the raster (in meters)}
 
 \item{outpath}{output path.  Note that the results will be placed in a subfolder labelled with the resolution.}
+
+\item{filename}{text name of the output file ie: template.tif}
 }
 \value{
-a terra raster.  \emph{NOT CURRENTLY} saving raster objects
+a terra raster and saves in correct filepath
 }
 \description{
 Sets the baseline raster template to align and standardize all raster predictor layers
@@ -25,11 +32,8 @@ This is an essential first step.  As subsequent co-variate layers will be genera
 Having the aoi set 100m break-points facilitates this.
 }
 \examples{
-
-create_template(aoi, 10)
+create_template(aoi_bb = file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"), res = 10, outpath = fid$cov_dir_1020[2], filename = "template.tif")
 }
-\keyword{align}
 \keyword{aoi,}
-\keyword{crop,}
 \keyword{raster,}
-\keyword{template,}
+\keyword{template}

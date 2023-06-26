@@ -1,4 +1,4 @@
-#' AOI Snap to landscape
+#' AOI Snap to watershed
 #'
 #' Creates a watershed based area of interest.  Does this by querying _BCData's_
 #' _Freshwater Atlas_
@@ -12,7 +12,7 @@
 #' @export
 #'
 #' @examples
-#' aoi_snap_landscape(aoi) ### add more
+#' aoi_snap_watershed(aoi) ### add more
 
 #in_aoi = aoi
 
