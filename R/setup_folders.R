@@ -51,6 +51,9 @@ setup_folders <- function(aoi_name){
   sampling_input_2010 <- file.path(out_path_2010, "10_input_raster")
   sampling_input_landscape <- file.path(out_path_2010, "10_input_raster", "landscape_covariates")
   sampling_input_exclusion <- file.path(out_path_2010, "10_input_raster", "exclusion")
+  sampling_input_exclusion_bgc <- file.path(out_path_2010, "10_input_raster", "exclusion", "bgc")
+  sampling_input_exclusion_raster <- file.path(out_path_2010, "10_input_raster", "exclusion", "raster")
+  sampling_input_exclusion_vector <- file.path(out_path_2010, "10_input_raster", "exclusion", "vector")
   sampling_input_review <- file.path(out_path_2010, "10_input_raster", "review")
 
 
@@ -88,7 +91,8 @@ setup_folders <- function(aoi_name){
                               lidar_dir_00, trim_dir_00, chm_dir_00, sat_dir_00,
                               cov_dir_10,shape_dir_1010, cov_dir_1020, training_data_1030,
                               sample_dir_20 , out_path_2010, sampling_input_2010, sampling_input_landscape,
-                              sampling_input_exclusion, sampling_input_review,
+                              sampling_input_exclusion, sampling_input_exclusion_bgc, sampling_input_exclusion_vector, sampling_input_exclusion_raster,
+                              sampling_input_review,
                               samplingplan_201020 ,  samplingplan_clhs,samplingplan_vrp,  samplingplan_review,
                               sample_dir_0030,  sampleplan_final_transect, sampleplan_final_maps,
                               trainpts_201040 ,trainpts_transect, trainpts_maps,trainpts_attrib,
