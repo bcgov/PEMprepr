@@ -36,7 +36,7 @@
 #' @examples
 #'
 
-test_create_base_vectors <- function(in_aoi = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
+create_base_vectors <- function(in_aoi = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
                                 out_path = file.path(fid$shape_dir_0010[2])){
 
   ## Check that AOI is valid
@@ -70,26 +70,26 @@ test_create_base_vectors <- function(in_aoi = file.path(fid$shape_dir_1010[2], "
 
 
   ## CALL all the subfunctions --------------
-  test_get_BEC(in_aoi, out_path)     ## works
-  test_get_VRI(in_aoi, out_path)     ## works
-  test_get_harvest(in_aoi, out_path) ## works
-  # test_get_TEM(in_aoi, out_path)     ## works
-  # test_get_water(in_aoi, out_path)   ## works
-  # test_get_roads(in_aoi, out_path)   ## works
-  # test_get_towns(in_aoi, out_path)   ## works
-  # test_get_fires(in_aoi, out_path)   ## works, but test on area with recent fire
-  # test_get_fire_severity(in_aoi, out_path)      ## works
-  # test_get_parks(in_aoi, out_path)              ## works
-  # test_get_transmission_lines(in_aoi, out_path) ## works
+  get_BEC(in_aoi, out_path)     ## works
+  get_VRI(in_aoi, out_path)     ## works
+  get_harvest(in_aoi, out_path) ## works
+  get_TEM(in_aoi, out_path)     ## works
+  get_water(in_aoi, out_path)   ## works
+  get_roads(in_aoi, out_path)   ## works
+  get_towns(in_aoi, out_path)   ## works
+  get_fires(in_aoi, out_path)   ## works, but test on area with recent fire
+  get_fire_severity(in_aoi, out_path)      ## works
+  get_parks(in_aoi, out_path)              ## works
+  get_transmission_lines(in_aoi, out_path) ## works
 
   return(print(paste("Layers have been downloaded and saved to", out_path)))
 
   }
 
 
-## 1) test_get_BEC ----------------------------
+## 1) get_BEC ----------------------------
 ### 1) BEC Zones, Subzones, and Variants
-test_get_BEC <- function(in_aoi, out_path) {
+get_BEC <- function(in_aoi, out_path) {
 
   message("\rDownloading BEC layers")
 
@@ -114,7 +114,7 @@ test_get_BEC <- function(in_aoi, out_path) {
 
 ## 2) Download VRI -----------------------
 ### 2)
-test_get_VRI <- function(in_aoi, out_path) {
+get_VRI <- function(in_aoi, out_path) {
 
   message("\rDownloading VRI layers")
 
@@ -176,7 +176,7 @@ test_get_VRI <- function(in_aoi, out_path) {
 
 
 ## 3) Get harvest history and FTEN --------------------------------
-test_get_harvest <- function(in_aoi, out_path) {
+get_harvest <- function(in_aoi, out_path) {
 
   # 3) Download recent cutblocks (within last 20 years)
   message("\rDownloading cutblock layers")
@@ -232,7 +232,7 @@ dplyr::bind_rows(st_read(file.path(out_path, "cutblocks.gpkg")), st_read(file.pa
 
 
 ## 5) TEM -----------------------------
-test_get_TEM <- function(in_aoi, out_path) {
+get_TEM <- function(in_aoi, out_path) {
 
   message("\rDownloading TEM layers")
 
@@ -248,7 +248,7 @@ test_get_TEM <- function(in_aoi, out_path) {
 }
 
 ## 6) Water (Lakes, Rivers, Wetlands) --------------------------------------
-test_get_water <- function(in_aoi, out_path) {
+get_water <- function(in_aoi, out_path) {
 
   message("\rDownloading lake, river, and wetland layers")
   # Use foreach in parallel to efficiently download multiple water layers
@@ -279,7 +279,7 @@ test_get_water <- function(in_aoi, out_path) {
 
 
 # 7) Download road network --------------------
-test_get_roads <- function(in_aoi, out_path) {
+get_roads <- function(in_aoi, out_path) {
   # The main road network layer has too many roads in it. Filter it down to only
   # include named roads and combine those with actual mapped FSR's
 
@@ -319,7 +319,7 @@ test_get_roads <- function(in_aoi, out_path) {
 
 
 # 8 Major Towns ---------------------------------
-test_get_towns <- function(in_aoi, out_path) {
+get_towns <- function(in_aoi, out_path) {
   message("\rDownloading major towns")
 
   towns <- bcdc_query_geodata("b678c432-c5c1-4341-88db-0d6befa0c7f8") %>%
@@ -330,7 +330,7 @@ test_get_towns <- function(in_aoi, out_path) {
 
 
 # 9) Fire polygons  ---------------------------------
-test_get_fires <- function(in_aoi, out_path) {
+get_fires <- function(in_aoi, out_path) {
   message("\rDownloading recent fire disturbance (<20 years)")
 
   fire_records <- c("cdfc2d7b-c046-4bf0-90ac-4897232619e1",
@@ -370,7 +370,7 @@ test_get_fires <- function(in_aoi, out_path) {
 }
 
 # 10. fire severity -------------------------------------
-test_get_fire_severity <- function(in_aoi, out_path) {
+get_fire_severity <- function(in_aoi, out_path) {
   message("\rDownloading burn severity layer")
 
   fire_int <- bcdc_query_geodata("c58a54e5-76b7-4921-94a7-b5998484e697") %>%
@@ -387,7 +387,7 @@ test_get_fire_severity <- function(in_aoi, out_path) {
 
 
 # 11) BC parks and National parks-----------------
-test_get_parks <- function(in_aoi, out_path) {
+get_parks <- function(in_aoi, out_path) {
   message("\rDownloading Parks")
 
   parks <- bcdc_query_geodata("1130248f-f1a3-4956-8b2e-38d29d3e4af7") %>%
@@ -414,7 +414,7 @@ test_get_parks <- function(in_aoi, out_path) {
 
 
 # 13) transmission lines -------------------------------
-test_get_transmission_lines <- function(in_aoi, out_path) {
+get_transmission_lines <- function(in_aoi, out_path) {
   message("\rDownloading transmission lines")
 
   #bcdc_search("transmission")
