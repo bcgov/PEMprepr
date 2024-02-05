@@ -10,11 +10,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 ## NOTE to regenerate all of the results of this Rmd
 ## some chunks will need to be run manually prior to
 ## knitting the report
 ## i.e. ones that generate graphics.
+
+require(PEMprepr)
+require(ggplot2)
+require(sf)
+require(terra)
+require(tidyverse)
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -22,38 +28,18 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, message=FALSE, warning=FALSE}
-#devtools::load_all("D:\\PEM_DATA\\PEMsamplr")
-#devtools::load_all("D:\\PEM_DATA\\PEMprepr")
-
-library(PEMprepr)
-library(ggplot2)
-library(sf)
-library(terra)
-
-```
-
-`PEMprepr`, short for _Predictive Ecosystem Mapping -- Preparation_ is the first of a
-series of packages supporting the British Columbia Biogeoecosystem Classification's
+`PEMprepr`, short for _Predictive Ecosystem Mapping -- Preparation_, is the first of a
+series of packages supporting the British Columbia Biogeoclimatic Ecosystem Classification's
 Predictive Ecosystem Mapping (PEM) project.  See [BC-BEC](https://www.for.gov.bc.ca/HRE/becweb/index.html)
 and [`PEMr`](https://github.com/bcgov/PEMr) on _GitHub_for details about the BC BEC classification system and, the PEM Project.
 
 In the example below it is assumed that you are running the following within a new R project.
 
-
 ## Project Set up. 
 
-1) Set up a new R studio project for your PEM modelling. 
-2) For each study area we will generate a folder and associated folder structure.
+1) Set up a new R Studio project. This will be used to contain all of the scripts and data for your PEM models, so ensure there is adequate space on the drive where the project is created.
+2) For each study area, we will generate a folder and associated folder structure.
 3) Example we will create an example project called "CanyonCreek"
-
-
-```{r}
-# set up the folder structure and define folder names in object fid
-fid <- setup_folders("CanyonCreek")
-
-```
-
 
 # Folder setup
 
@@ -65,6 +51,13 @@ which we will utilize later (e.g. to programmatically place results of functions
 _Note: if the folders have been generated previously this function will still return the list of
 folder names.
 
+```{r folder-setup}
+
+# Set up the folder structure and define folder names in object fid
+
+fid <- setup_folders("CanyonCreek")
+
+```
 
 
 Load the spatial data
@@ -110,10 +103,10 @@ sf::st_write(aoi, file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
 A standard set of Vector data is used for subsequent sample planning and is based on the `aoi`.  This script collects numerous vector layers from the [BC Data Catalogue](https://catalogue.data.gov.bc.ca) making use of the [`bcdata`](https://github.com/bcgov/bcdata) package. Files are saved in _geopackage_ format.
 
 ```{r, eval=FALSE}
-aoi <- st_read(file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg"))
+aoi <- file.path(fid$shape_dir_1010[1], "aoi_snapped.gpkg")
 #aoi <- st_read("D:/PEM_DATA/BEC_DevExchange_Work/DateCreek_AOI/0_raw_inputs/base_layers/aoi.gpkg")
 
-create_base_vectors(in_aoi = aoi,
+test_create_base_vectors(in_aoi = aoi,
                     out_path = fid$shape_dir_0010[1])
 
 v <- list.files(path = fid$shape_dir_0010[1], pattern = ".gpkg",
