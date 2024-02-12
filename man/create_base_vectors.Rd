@@ -6,16 +6,16 @@
 \usage{
 create_base_vectors(
   in_aoi = file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"),
-  out_path = fid$shape_dir_0010[1]
+  out_path = file.path(fid$shape_dir_0010[2])
 )
 }
 \arguments{
-\item{in_aoi}{\code{sf} polygon}
+\item{in_aoi}{character string that points the location of the AOI. Default is the snapped AOI from previous steps, \verb{file.path(fid$shape_dir_1010[2], "aoi_snapped.gpkg"}}
 
 \item{out_path}{character string that points the output location}
 }
 \description{
-Collects vector data from the \href{https://catalogue.data.gov.bc.ca}{BC Data Catelog} for a spcified area of interest.
+Collects vector data from the \href{https://catalogue.data.gov.bc.ca}{BC Data Catalog} for a specified area of interest.
 }
 \details{
 This script downloads the relevant spatial data for BEC zones, VRI, TEM,
@@ -42,8 +42,4 @@ Note the detailed
 Tenure (private ownership) 	WHSE_CADASTRE.PMBC_PARCEL_FABRIC_POLY_FA_SVW	BCGW
 
 Detailed roads layers. In some cases regionally specific roads are available through other collaborative projects (cumulative effects). These are not directly available through the BCGW.
-}
-\examples{
-create_base_vectors <- function(in_aoi = your_polygon, out_path = "00_raw_inputs/vector")
-
 }
