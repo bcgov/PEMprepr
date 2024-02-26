@@ -106,7 +106,7 @@ get_BEC <- function(in_aoi, out_path) {
   bcdata::bcdc_query_geodata(record = url, crs = sf::st_crs(in_aoi)$epsg) %>% ## Query dataset
     bcdata::filter(INTERSECTS(in_aoi)) %>% ## Pull all polygons which intersect with the provided AOI
     bcdata::collect() %>% ## Download specified dataset
-    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols
+    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols if defined
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>% ## Crop to AOI extent
     st_write(file.path(out_path, out_name), append = FALSE) ## Write to output file path
 
@@ -134,7 +134,7 @@ get_VRI <- function(in_aoi, out_path) {
   bcdata::bcdc_query_geodata(record = url, crs = sf::st_crs(in_aoi)$epsg) %>% ## Query dataset
     bcdata::filter(INTERSECTS(in_aoi)) %>% ## Pull all polygons which intersect with the provided AOI
     bcdata::collect() %>% ## Download specified dataset
-    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols
+    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols if defined
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>% ## Crop to AOI extent
     st_write(file.path(out_path, out_name), append = FALSE) ## Write to output file path
 
@@ -166,7 +166,8 @@ get_VRI <- function(in_aoi, out_path) {
   # # STILL TO DO - for areas with deciduous leading (AT, EP) Aspen and paper burch these should be seperated using the code "SPECIES_CD_1" == AT|EP.
   # # ie important in Date Creek
 
-  decid_codes = c("AC", "AT", "AX", "DG", "EA", "EP", "MB") ### https://www2.gov.bc.ca/gov/content/industry/forestry/managing-our-forest-resources/tree-seed/tree-seed-centre/seed-testing/codes
+  decid_codes = c("AC", "AT", "AX", "DG", "EA", "EP", "MB")
+  ### See code dictionary: https://www2.gov.bc.ca/gov/content/industry/forestry/managing-our-forest-resources/tree-seed/tree-seed-centre/seed-testing/codes
 
   vri %>%
     dplyr::filter(SPECIES_CD_1 %in% decid_codes) %>% # note might need to adjust for some areas of interest
@@ -196,7 +197,7 @@ get_harvest <- function(in_aoi, out_path) {
   bcdata::bcdc_query_geodata(record = url, crs = sf::st_crs(in_aoi)$epsg) %>% ## Query dataset
     bcdata::filter(INTERSECTS(in_aoi) & HARVEST_YEAR >= 2000) %>% ## Pull all polygons which intersect with the provided AOI + special filter
     bcdata::collect() %>% ## Download specified dataset
-    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols
+    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols if defined
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>% ## Crop to AOI extent
     st_write(file.path(out_path, out_name), append = FALSE) ## Write to output file path
 
@@ -219,7 +220,7 @@ get_harvest <- function(in_aoi, out_path) {
   bcdata::bcdc_query_geodata(record = url, crs = sf::st_crs(in_aoi)$epsg) %>% ## Query dataset
     bcdata::filter(INTERSECTS(in_aoi) & ISSUE_DATE > as.Date("2000-01-01")) %>% ## Pull all polygons which intersect with the provided AOI + special filter
     bcdata::collect() %>% ## Download specified dataset
-    dplyr::select(all_of(rel_cols)) %>% ## Select relevant cols
+    ifelse(length(rel_cols) > 0, dplyr::select(., all_of(rel_cols)), .) %>% ## Select relevant cols
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>% ## Crop to AOI extent
     st_write(file.path(out_path, out_name), append = FALSE) ## Write to output file path
 
@@ -239,9 +240,17 @@ get_TEM <- function(in_aoi, out_path) {
   ## URL for warehouse download
   url = "https://catalogue.data.gov.bc.ca/dataset/0a83163b-a62f-4ce6-a9a1-21c228b0c0a3"
 
+  ## Name relevant columns to extract
+  rel_cols = c()
+
+  ## Name output geopackage
+  out_name = "tem.gpkg"
+
+
   bcdata::bcdc_query_geodata(url) %>%
     bcdata::filter(INTERSECTS(in_aoi)) %>%
     bcdata::collect() %>%
+    ifelse(length(rel_cols) > 0, dplyr::select(., all_of(rel_cols))) %>%
     {if(nrow(.) > 0) st_intersection(., in_aoi) else .} %>%
     st_write(file.path(out_path, "tem.gpkg"), append = FALSE)
 
