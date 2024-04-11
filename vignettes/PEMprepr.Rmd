@@ -1,6 +1,6 @@
 ---
-title: "PEMprepr"
-subtitle: "Example workflow"
+title: "Introduction to PEMprepr"
+subtitle: ""
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{PEMprepr}

@@ -1,0 +1,26 @@
+---
+title: "Vignette Figures"
+output: html_notebook
+---
+
+```{r aleza-map}
+
+aleza <- sf::st_read(system.file("extdata/aleza.gpkg", 
+                                 package = "PEMprepr"), 
+                     quiet = TRUE)
+
+aoi <- sf::st_read(system.file("extdata/aleza_nw.gpkg", 
+                               package = "PEMprepr"), 
+                   quiet = TRUE)
+
+g <- ggplot() + geom_sf() +
+  geom_sf(data = aleza, colour = "green", fill = "darkgreen") + 
+  geom_sf(data = aoi, colour = "coral1", lwd = 2, fill = NA) + 
+  # labs(title = "Aleza Lake Research Forest - Northwest Quadrant") +
+  theme(axis.text = element_text(size = 6))
+
+ggsave(plot = g, "vignettes/aleza.png", dpi = 150,
+       width = 4, height = 3.75)
+
+```
+
