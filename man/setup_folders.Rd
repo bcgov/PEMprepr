@@ -16,13 +16,9 @@ a named list of the folders created
 Sets up the default folder structure for all analysis and modelling
 }
 \details{
-Folder structure contains all the raw data, covariates generated, and
-subsequent models, and predicted map rasters. \emph{Note} if directories have
-been created this function can be used to generate a list of the folder_id
-and associated file paths.
+Folder structure contains all the raw data, covariates generated, subsequent models, and predicted map rasters. \emph{Note} if directories have been created this function can be used to generate a list of the folder_id and associated file paths.
 }
 \examples{
 ## add more
-setupfolder("AppleValley")
-list.dir
+setup_folders("AppleValley")
 }

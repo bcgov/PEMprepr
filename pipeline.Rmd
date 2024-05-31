@@ -1,0 +1,74 @@
+---
+title: "PEMprepr Pipeline"
+output: html_notebook
+---
+
+This is the PEMprepr instalment of the PEM Production Pipeline.
+
+Download this template to wherever you keep your R scripts and save it with the name of your AOI (e.g., pipeline_prepr_Kitimat.Rmd) or in a folder named after the AOI. We recommend starting with a fresh template for each AOI.If this is your first (or second, or third) time using the pipeline, we recommend running the chunks one at a time and checking that the intermediate objects and outputs are what you expect. Some of them are printed to the console automatically, some are not.
+
+IMPORTANT NOTES:
+1. Chunks were user inputs are required will be explicitly named. Otherwise, production is automated.
+2. DO NOT change the variable names. Many of the intermediate outputs are written to file and this is done by checking the variable name against a set of file paths.
+
+
+```{r setup, include = FALSE, message = FALSE, warning = FALSE}
+
+## These should all be installed as dependencies for the PEMprepr package
+require(ggplot2)
+require(sf)
+require(terra)
+require(tidyverse)
+require(bcdata)
+require(magrittr)
+require(pbapply)
+require(future)
+require(parallel)
+require(arcgisbinding)
+require(lidR)
+require(suncalc)
+
+terra::terraOptions(overwrite = T, todisk = T, tempdir = tempdir())
+
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In the `set-user-inputs` chunk, you will need to provide three user inputs, listed below. You should only need to do this ONCE and not touch it again.
+1. `data.dir` (character vector): the "working directory" where all your PEM data will be generated and stored.
+2. `aoi.name`(character vector): the AOI name that will be used to name the folder where all your PEM data will be generated and stored.
+3. `aoi`(character vector): the path to the desired AOI.
+
+```{r set-user-inputs}
+
+data.dir <- "E:/Test_AOI"
+aoi.name <- "Kitimat"
+aoi.loc <- "E:/Test_AOI/Kitimat_PEM_AOI.shp"
+
+# data.dir <- "E:/Path/To/Data/Drive"
+# aoi.name <- ""
+# aoi.loc <- st_read("Path/to/AOI")
+
+```
+
+The `setup-folder-structure` chunk creates (if not already done) the folders within your specific data directory using the name of the provided AOI. You can check out the folder structure at the path name specified in the printed output.
+
+```{r setup-folder-structure}
+
+f.ids <- PEMprepr::setup_folders2(aoi.name = aoi.name, data.dir = data.dir)
+
+print(f.ids[["dir_0_AOI"]])
+
+```
+
+```{r create-aoi-templates}
+
+aoi.orig <- st_read(aoi.loc)
+sf::st_write(aoi.orig, dsn = stringr::str_c(f.ids[["dir_0010_vector"]][2], "/AOI_original.gpkg"), append = F)
+aoi.snapped <- PEMprepr::aoi_snap(aoi.orig, method = "expand")
+
+t25 <- PEMprepr::create_template(aoi.snapped, 25)
+
+```

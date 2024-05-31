@@ -2,10 +2,7 @@
 #'
 #' Sets up the default folder structure for all analysis and modelling
 #'
-#' Folder structure contains all the raw data, covariates generated, and
-#' subsequent models, and predicted map rasters. _Note_ if directories have
-#' been created this function can be used to generate a list of the folder_id
-#' and associated file paths.
+#' Folder structure contains all the raw data, covariates generated, subsequent models, and predicted map rasters. _Note_ if directories have been created this function can be used to generate a list of the folder_id and associated file paths.
 #'
 #' @param aoi_name A character string to name the main data folder
 #'
@@ -13,30 +10,25 @@
 #' @export
 #' @examples
 #' ## add more
-#' setupfolder("AppleValley")
-#' list.dir
+#' setup_folders("AppleValley")
 
 
 setup_folders <- function(aoi_name){
-
-  # Testing ---------------
-  # aoi_name <- "e:/workRspace/tmp/apple123/apple" ## full path example
-  #aoi_name <- "carrot1"  ## relative example
-  #working_dir <- getwd()
-  ## END TESTING ----------
 
   #base directory
   AOI_dir <- file.path(paste0(aoi_name))
 
   # generate folders
   raw_dir_00 <- file.path(AOI_dir, "00_raw_inputs")
-  dem_dir_00 <- file.path(raw_dir_00, "20_dem")
+  lidar_dir_00 <- file.path(raw_dir_00, "20_lidar")
   shape_dir_0010 <- file.path(raw_dir_00, "10_vector")
+  dem_dir_00 <- file.path(lidar_dir_00, "dem")
+  dem_tile_dir_00  <- file.path(lidar_dir_00, "dem/by_tile")
+  trim_dir_00 <- file.path(lidar_dir_00 , "trim")
+  chm_dir_00  <- file.path(lidar_dir_00, "chm")
+  chm_tile_dir_00  <- file.path(lidar_dir_00, "chm/by_tile")
+  las_dir_00  <- file.path(lidar_dir_00, "las")
 
-  lidar_dir_00 <- file.path(dem_dir_00, "lidar")
-  trim_dir_00 <- file.path(dem_dir_00 , "trim")
-
-  chm_dir_00  <- file.path(raw_dir_00, "40_chm")
   sat_dir_00  <- file.path(raw_dir_00, "30_satellite")
 
   cov_dir_10 <- file.path(AOI_dir, "10_clean_inputs")
@@ -92,7 +84,7 @@ setup_folders <- function(aoi_name){
 
   ## set up folders if not already exist
   ## also used to create list of default directories
-  folder_set_up <- data.frame(AOI_dir, raw_dir_00,  dem_dir_00 , shape_dir_0010 ,
+  folder_set_up <- data.frame(AOI_dir, raw_dir_00,  lidar_dir_00 , shape_dir_0010 ,
                               lidar_dir_00, trim_dir_00, chm_dir_00, sat_dir_00,
                               cov_dir_10,shape_dir_1010, cov_dir_1020, training_data_1030,
                               sample_dir_20 , out_path_2010, sampling_input_2010, sampling_input_landscape,
@@ -135,3 +127,5 @@ setup_folders <- function(aoi_name){
   return(folder_id)
 
 }
+
+

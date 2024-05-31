@@ -12,12 +12,25 @@ editor_options:
 
 ```{r setup, include = FALSE, message = FALSE, warning = FALSE}
 
-require(PEMprepr)
-require(ggplot2)
-require(sf)
-require(terra)
-require(tidyverse)
-require(bcdata)
+## These will not be needed in the real package
+groundhog.library("github::bcgov/PEMprepr", date = "2023-06-01")
+groundhog.library(ggplot2, date = "2023-06-01")
+groundhog.library(sf, date = "2023-06-01")
+groundhog.library(terra, date = "2023-06-01")
+groundhog.library(tidyverse, date = "2023-06-01")
+groundhog.library(bcdata, date = "2023-06-01")
+groundhog.library(magrittr, date = "2023-06-01")
+groundhog.library(pbapply, date = "2023-06-01")
+groundhog.library(future, date = "2023-06-01")
+groundhog.library(parallel, date = "2023-06-01")
+groundhog.library(arcgisbinding, date = "2023-06-01")
+groundhog.library(lidR, date = "2023-06-01")
+groundhog.library(suncalc, date = "2023-06-01")
+
+## Set data directory. AGain, this will not be part of package documentation, but in the pipeline.
+data.dir <- "E:/Test_AOI"
+
+terra::terraOptions(overwrite = T, todisk = T, tempdir = tempdir())
 
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -33,7 +46,7 @@ Once you are familiar with the mechanics of the `PEMprepr` workflow, you can dow
 
 The key steps demonstrated below include:
 
-(1) Data folder set up
+(1) Data folder setup
 
 (2) Alignment of the area of interest
 
@@ -53,13 +66,14 @@ A portion of the [Aleza Lake Research Forest](www.aleza.unbc.ca), one of the pil
 
 ###  Folder Setup
 
-The data layers and standards required to execute PEM can quickly become difficult to manage. To facilitate ease of data management, a standard set of folders should be generated for each area of interest. The following function creates the needed folders for the area of interest: *aleza*. In addition, the named variable `fstr` stores a named list of the full and relative paths which we will utilize later to programmatically place results of functions in the correct place.
+The data layers and standards required to execute PEM can quickly become difficult to manage. To facilitate ease of data management, a standard set of folders should be generated for each area of interest. The following function creates the needed folders for the area of interest: *aleza*.
 
-\_Note: if the folders have been generated previously this function will
-still return the list of folder names.
+In addition, the named variable `fstr` stores a named list of the full and relative paths which we will utilize later to programmatically place results of functions in the correct place. The printed output shows the first five list items with relative `[1]` and full `[2]` directory paths stored.
+
+\_Note: if the folders have been generated previously this function will still return the list of folder names.
 
 
-```{r, results='hold'}
+```{r, setup-folders, results='hold'}
 
 fstr <- setup_folders("vignettes/aleza")
 
@@ -67,25 +81,239 @@ fstr[1:5]
 
 ```
 
-The printed output shows the first five list items with relative `[1]` and full `[2]` directory paths stored.
-
 
 ### Alignment of the area of interest
 
-One concern, with this *area-of-interest* (`aoi`) (red area) is that the
-bounding box or geographic extent of the area ends with very random
-numbers (output above). Using this extent will cause significant
-problems later when we attempt to stack numerous rasters.
+One concern with the Aleza *area-of-interest* (`aoi`) (red area) is that the bounding box or geographic extent of the area is an unusual shape or non-divisible numbers. To ensure we are capturing all the edges correctly and dividing the area up nicely into raster grids, we can snap the extent of the `aoi`. 
 
-#### Snap the extent
+Here, the `aoi` is snapped to an extent that is rounded to the nearest 100m. The method "shrink" rounds down, whereas the method "expand" rounds up ("expand" is preferred). This will facilitate the generation of raster data that fits nicely onto the grid extent and thereby can be stacked with relative ease. The snapped `aoi` can now be used to create a raster template. In the example below, a 25m^2^ raster template is created.
 
-Here the `aoi` is snapped to an extent divisible by 100. This will
-facilitate the generation of rasters data that all fits this grid extent
-and thereby can be stacked with relative ease.
+```{r aoi-templates}
 
-```{r}
 aoi <- sf::st_read(system.file("extdata/aleza_nw.gpkg", 
                                  package = "PEMprepr"), quiet = TRUE)
 
-aoi_snap(aoi, method = "shrink") ## or expand
+
+aoi.snapped <- PEMprepr::aoi_snap(aoi, method = "expand") ## or shrink, if desired.
+plot(aoi.snapped)
+
+t25 <- PEMprepr::create_template(aoi, 25)
+
 ```
+
+# Download of Lidar Data
+
+This next section details how to download pre-existing LiDAR data from the LidarBC open data catalogue. If you already have LiDAR data, you can dump all of it into the las folder
+
+At least once every six months, the index of available LiDAR files should be re-downloaded from the portal. The code chunk below will check the date of the most recent index and download a newer version if applicable and an ArcGIS license is available. It returns the file path of the relevant geopackage after this operation.
+
+If you need to update manually for some reason, the instructions to do this are as follows:
+
+1.  Navigate to LidarBC Map Grid
+    <https://governmentofbc.maps.arcgis.com/home/item.html?id=5f6a1f31212a4cb2826743d2e52ef02a>
+2.  Select `Open in ArcGIS Desktop` -\> `Open in ArcGIS Pro`
+3.   Double click `item.pitemx` file to open in ArcGIS. This is also
+    stored in the `las_index_files` folder.
+4.  Download point cloud index layer (eg
+    `Point Cloud Index - 1:2,500 Grid`)
+5.  Use "`Export Features`" tool and save to the `las_index_files`
+    folder using the following format: "`las_index_YYYY-MM-DD.shp`"
+6.  Read this shapefile in as your index. Optional: export as `.gpkg`.
+
+```{r get-lidar-layers}
+
+## Pull the AOI index
+index <- make_gpkg_index() %>% st_read()
+
+```
+
+Here, we query the LiDAR data to create an index of tiles to be downloaded. This function creates an index of tiles called `aoi_index` to be downloaded in the `download_lidarbc` function. This output is written and read from the data folder if you'd like to review it. You can use the `keep.geometry = TRUE` argument to retain the spatial features of the tile index. This is useful if you want to view the tile coverage, but it is dropped by default as it slows the download process.
+
+Next is the download of the tiles. The `download_lidarbc` function takes the output list of tiles for the area from `aoi_index` and downloads them. This function also checks the projection of each tile according to the UTM Zone stated in the metadata. If the projection is incorrect or missing, the function re-projects the tile and overwrites the downloaded one. You can set the number of cores in the `cores` variable, which defaults to 6. Depending on the number of downloaded tiles, this typically takes hours to days to complete.
+
+```{r query-download}
+
+# Query the LiDARBC database and create an index
+query_lidarbc(data.path = data.path, aoi = aoi, index = index)
+# Download the relevant tiles by reading from the index
+download_lidarbc(data.path = data.path)
+
+```
+
+We use the LAStools software to retile and normalize the data because it is the fastest and most efficient. The `setup_retile_file` and `setup_norm_file` functions create and execute a batch file from a series of LAStools templates to accomplish this. The `setup_DEM_file` and `setup_CHM_file` functions set up and execute batch files for creating DEM and CHM files. These surface models are computed for each tile at a 1m resolution and output as a raster; these rasters are then merged into one .tif file across the AOI at aggregate resolutions inputted by the user. Each function takes an integer vector of grid cell sizes in the `res` argument. The defaults are for 5m, 10m, and 20m rasters over the AOI. As before, the core argument can be specified for parallel processing, defaulting to 6.
+
+```{r lastools-process}
+
+target.epsg <- read.csv("projection_codes.csv") %>%
+  tibble() %>%
+  filter(projection == "utm09") %>%
+  pull(pcs.epsg)
+
+# Create and execute retile of point clouds
+setup_retile_file(data.path = data.path, cores = 12L) %>% shell.exec()
+# Create and execute normalization of point clouds
+setup_norm_file(data.path = data.path, cores = 12L) %>% shell.exec()
+# Create and execute DEM layer creation
+setup_DEM_file(data.path = data.path, epsg = target.epsg, create = F, res = 1, cores = 12L) %>% shell.exec()
+# Create and execute CHM layer creation
+setup_CHM_file(data.path = data.path, epsg = target.epsg, cores = 6L) %>% shell.exec()
+
+```
+
+
+# Generation of covariates
+
+Here we generate the terrain derived covariates. This is powered by
+[SAGA-GIS](https://saga-gis.sourceforge.io/en/index.html). Covariates
+are generated at multiple resolutions, for example 5, 10, and 25m^2^.
+
+Steps to create the covariates
+
+1.  load a digital terrain model (`dtm`). Generally, this will be a high
+    resolution model derived from lidar.
+2.  align the `dtm` to the template. resample the `dtm` to the desired
+    resolution -- here we demonstrate using the 25m^2^ templated created
+    above.
+3.  create the covariates
+
+## Import the terrain model
+
+```{r}
+dtm <- terra::rast(system.file("extdata/aleza_nw.tif",
+                               package = "PEMprepr"))
+dtm
+```
+
+```{r, eval=FALSE, include=FALSE}
+## Invisible -- use this manually to create the graphic
+library(tidyterra) ## ggplot with rasters 
+
+g <- ggplot() + 
+  geom_spatraster(data = dtm) +
+  scale_fill_whitebox_c(palette = "high_relief") +
+  geom_sf(data = aoi, colour = "red", lwd = 1.5, fill = NA) + 
+  labs(title = "Aleza Lake RF",
+       subtitle = "North-west corner",
+       fill = "Elevation") + 
+  theme(axis.text = element_text(size = 6))
+
+ggsave("./vignettes/aleza_aoi_dtm.png", dpi = 150, 
+       height = 4, width = 5.2)
+```
+
+```{r dtm-and-aoi, echo=FALSE, fig.cap="A raw digital terrain model with the area-of-interest noted in red. All processed rasters will align with the aoi."}
+
+knitr::include_graphics("./aleza_aoi_dtm.png")
+```
+
+## Align the raster
+
+```{r}
+dtm25 <- align_raster(dtm, t25)
+dtm25
+```
+
+## Create the covariates
+
+```{r, eval=FALSE}
+layer_options <- 
+  c("Filled_sinks", "sinkroute", "dem_preproc", 
+    "slope_aspect_curve", "tCatchment", "tca", "sCatchment", 
+    "twi", "channelsNetwork", "Distance2Water", 
+    "MultiResFlatness", "MultiResFlatness2",
+    "MultiResFlatness3", "TRI", "convergence", "Openness",
+    "dah", "TPI", "RidgeValley", "MRN", "FlowAccumulation",
+    "SlopeLength", "FlowAccumulation2", "FlowAccumulation3",
+    "FlowPathLength", "FlowPathLength2", "FlowPathLength3", 
+    "LSFactor", "SolarRad", "Convexity", "VertDistance", "TCI_low",
+    "SWI", "WindExp", "Texture", "Protection", "VRM",
+    "MBI", "mscale_TPI", "RelPosition", "SlopeCurvatures",
+    "SteepestSlope", "UpslopeArea")
+
+
+
+create_covariates(dtm = dtm25,           ## raster created above
+                  SAGApath = "c:/SAGA/", ## Where SAGA GIS is installed
+                  output = fstr$cov_dir, ## from the setup_folders above
+                  layers = "all")        ## use all or one of the above
+
+```
+
+Note that the pre-defined output directory `fstr$cov_dir`, created using
+`setup_folders()`, is used to ensure generated covariates are saved to
+the correct location. Rasters are also saved into subfolders of the same
+resolution.
+
+```{r, eval=FALSE}
+l <- list.files(path = fstr$cov_dir, pattern = ".sdat",
+                recursive = TRUE)
+l <- l[!grepl("xml",l)]
+
+## created covariates 
+head(l, 20)
+
+#>  [1] "25/aspect.sdat"              
+#>  [2] "25/cnetwork.sdat"            
+#>  [3] "25/convergence.sdat"         
+#>  [4] "25/convexity.sdat"           
+#>  [5] "25/dah.sdat"                 
+#>  [6] "25/dem_preproc.sdat"         
+#>  [7] "25/diffinso.sdat"            
+#>  [8] "25/direinso.sdat"            
+#>  [9] "25/down_curv.sdat"           
+#> [10] "25/dtm.sdat"                 
+#> [11] "25/Filled_sinks.sdat"        
+#> [12] "25/flow_accum_ft.sdat"       
+#> [13] "25/flow_accum_p.sdat"        
+#> [14] "25/flow_accum_td.sdat"       
+#> [15] "25/flowlength1.sdat"         
+#> [16] "25/FlowPathLenTD.sdat"       
+#> [17] "25/gencurve.sdat"            
+#> [18] "25/hdistnob.sdat"            
+#> [19] "25/local_curv.sdat"          
+#> [20] "25/local_downslope_curv.sdat"
+```
+
+<center>*Note: As SAGA-GIS is used the files resulting files are all
+saved in `.sdat` format -- this is read/writable by
+`terra::rast`*</center>
+
+# Creation of the multi-resolution raster stack
+
+Generation of the covariates above is repeated for each resolution in
+the multi-resolution model. In order to make all of the rasters
+stackable, necessary for model and map generation, they must all have
+the same extent and resolution.
+
+The process above ensures they all have the same extent.
+
+Next the coarse resolution rasters are *disaggregated* to a fine scale
+resolution. This means that the data in the resulting raster is the data
+of the coarse-raster but in a fine scale format.
+
+<center>*Note: it is highly recommended to use `full.names = TRUE` to
+list the files.*</center>
+
+```{r, eval=FALSE}
+## we can use the list of files from above
+l <- list.files(path = fstr$cov_dir,
+                pattern = ".sdat",
+                full.names = TRUE, ## Use TRUE
+                recursive = TRUE)
+l <- l[!grepl("xml",l)]
+
+
+create_fine_res(inputFileList = l[1:5],     ## using the list of files above  
+                output = fstr$cov_dir, ## from setup_folders())
+                targetRes = 5)
+
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/aspect.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/aspect_25.sdat"
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/cnetwork.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/cnetwork_25.sdat"
+#> [1] "Processing: aleza/10_clean_inputs/covariates/25/convergence.sdat"
+#> [1] "Created: aleza/10_clean_inputs/covariates/5/convergence_25.sdat"
+#> ...
+```
+
+This script is a wrapper for `terra::disaggregate`.

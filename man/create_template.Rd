@@ -25,10 +25,10 @@ a terra raster and saves in correct filepath
 }
 \description{
 Sets the baseline raster template to align and standardize all raster predictor layers
-This package assumes to data is in a metric equal area projection most likely BCAlbers
+This package assumes to data is in a metric equal area projection, most likely BCAlbers
 }
 \details{
-This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregate'd back to the lowest resolution.
+This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregated back to the lowest resolution.
 Having the aoi set 100m break-points facilitates this.
 }
 \examples{
