@@ -3,6 +3,8 @@
 .RData
 .Ruserdata
 inst/doc
+inst/extdata/~$folder_names.xlsx
+inst/extdata/~$output_list.xlsx
 
 
 # Colin's custom ignores

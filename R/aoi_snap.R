@@ -26,12 +26,12 @@
 #' ## 559600 5994900  560700 5995900
 
 
-aoi_snap <- function(aoi, method = c("expand","shrink"), buffer = 0){
+aoi_snap <- function(aoi, method = c("expand","shrink"), buffer = 0, ufl){
 
   bb <- sf::st_bbox(aoi)
 
   ## Function
-  print("initial extent is:")
+  print("Initial extent is:")
   print(bb)
 
   if (buffer > 0 & method == "expand") {
@@ -64,7 +64,7 @@ aoi_snap <- function(aoi, method = c("expand","shrink"), buffer = 0){
   box <- sf::st_as_sf(box)
 
   ## Report and Return
-  print("Extent is:")
+  print("Snapped extent is:")
   print(sf::st_bbox(box))
   return(box)
 

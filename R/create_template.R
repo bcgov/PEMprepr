@@ -6,7 +6,7 @@
 #' This is an essential first step.  As subsequent co-variate layers will be generated at multiple resolutions (e.g. 5, 10, 25m^2) and then disaggregated back to the lowest resolution.
 #' Having the aoi set 100m break-points facilitates this.
 #'
-#' @param aoi_bb is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection
+#' @param aoi_bb is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection.
 #' @param res desired resolution of the raster (in meters)
 #' @param filename text name of the output file ie: template.tif
 #' @param outpath output path.  Note that the results will be placed in a subfolder labelled with the resolution.

@@ -12,7 +12,7 @@ create_template(
 )
 }
 \arguments{
-\item{aoi_bb}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection}
+\item{aoi_bb}{is a sf or terra::vect object bounding box created expanded in aoi_snap function(e.g. polygon).  Should be a meter based projection.}
 
 \item{res}{desired resolution of the raster (in meters)}
 

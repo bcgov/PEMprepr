@@ -4,10 +4,12 @@
 \alias{setup_folders2}
 \title{Setup PEM folder structure}
 \usage{
-setup_folders2(aoi.name)
+setup_folders2(aoi.name, data.dir)
 }
 \arguments{
 \item{aoi.name}{A character string to name the main data folder. This will become the working directory for the entire project}
+
+\item{data.dir}{A character string specifying the desired data directory for this AOI. This SHOULD NOT BE WITHIN THE PACKAGE.}
 }
 \value{
 a named list of the folders created
@@ -20,7 +22,7 @@ Folder structure contains all the raw data, covariates generated, subsequent mod
 
 CLAIRE NOTES:
 -Need to ensure that the folder_names.xlsx is properly referenced from the package.
--How can we make sure the absolute paths being created are in the appropriate working folder? Is this set in the pipeline?
+-How can we make sure the absolute paths being created are in the appropriate working folder? Is this set in the pipeline? See param "data.dir"
 }
 \examples{
 setup_folders2("Kitimat")
