@@ -1791,10 +1791,9 @@ aoi.loc &lt;- \E:/Test_AOI/Kitimat_PEM_AOI.shp\
 # data.dir &lt;- \E:/Path/To/Data/Drive\
 # aoi.name &lt;- \\
 # aoi.loc &lt;- st_read(\Path/to/AOI\)
-
-
+</code></pre>
+<pre><code>
 &lt;!-- rnb-source-end --&gt;
-
 
 &lt;!-- rnb-chunk-end --&gt;
 
@@ -1827,8 +1826,8 @@ print(f.ids[[&quot;dir_0_AOI&quot;]])
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxucHVsbF9vdXRwdXQoXFxhb2kuc25hcHBlZFxcLCBmLmlkcyA9IGYuaWRzKVxuXG5gYGBcbmBgYCJ9 -->
 <pre class="r"><code>```r
 pull_output(\aoi.snapped\, f.ids = f.ids)
-
-
+</code></pre>
+<pre><code>
 &lt;!-- rnb-source-end --&gt;
 
 &lt;!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgQU9JX3NuYXBwZWQnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBFOlxcVGVzdF9BT0lcXEtpdGltYXRcXDEwX2NsZWFuX2lucHV0c1xcMTBfdmVjdG9yXFxBT0lfc25hcHBlZC5ncGtnJyBcbiAgdXNpbmcgZHJpdmVyIGBHUEtHJ1xuU2ltcGxlIGZlYXR1cmUgY29sbGVjdGlvbiB3aXRoIDEgZmVhdHVyZSBhbmQgMCBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IFBPTFlHT05cbkRpbWVuc2lvbjogICAgIFhZXG5Cb3VuZGluZyBib3g6ICB4bWluOiAtMjAwIHltaW46IDAgeG1heDogLTEwMCB5bWF4OiAxMDBcbkdlb2RldGljIENSUzogIFdHUyA4NFxuIn0= --&gt;
@@ -1837,11 +1836,297 @@ pull_output(\aoi.snapped\, f.ids = f.ids)
 <code>AOI_snapped&#39; from data source</code>E:_AOI\10_clean_inputs\10_vector_snapped.gpkg’
 using driver `GPKG’ Simple feature collection with 1 feature and 0
 fields Geometry type: POLYGON Dimension: XY Bounding box: xmin: -200
-ymin: 0 xmax: -100 ymax: 100 Geodetic CRS: WGS 84 ```</p>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
+ymin: 0 xmax: -100 ymax: 100 Geodetic CRS: WGS 84</p>
+<pre><code>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUEVNcHJlcHIgUGlwZWxpbmUiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgdGhlIFBFTXByZXByIGluc3RhbG1lbnQgb2YgdGhlIFBFTSBQcm9kdWN0aW9uIFBpcGVsaW5lLgoKRG93bmxvYWQgdGhpcyB0ZW1wbGF0ZSB0byB3aGVyZXZlciB5b3Uga2VlcCB5b3VyIFIgc2NyaXB0cyBhbmQgc2F2ZSBpdCB3aXRoIHRoZSBuYW1lIG9mIHlvdXIgQU9JIChlLmcuLCBwaXBlbGluZV9wcmVwcl9LaXRpbWF0LlJtZCkgb3IgaW4gYSBmb2xkZXIgbmFtZWQgYWZ0ZXIgdGhlIEFPSS4gV2UgcmVjb21tZW5kIHN0YXJ0aW5nIHdpdGggYSBmcmVzaCB0ZW1wbGF0ZSBmb3IgZWFjaCBBT0kuCgpJZiB0aGlzIGlzIHlvdXIgZmlyc3QgKG9yIHNlY29uZCwgb3IgdGhpcmQpIHRpbWUgdXNpbmcgdGhlIHBpcGVsaW5lLCB3ZSByZWNvbW1lbmQgcnVubmluZyB0aGUgY2h1bmtzIG9uZSBhdCBhIHRpbWUgYW5kIGNoZWNraW5nIHRoYXQgdGhlIGludGVybWVkaWF0ZSBvYmplY3RzIGFuZCBvdXRwdXRzIGFyZSB3aGF0IHlvdSBleHBlY3QuCgpSYXRoZXIgdGhhbiB3b3JraW5nIG9uIG9iamVjdHMgaW4gdGhlIGVudmlyb25tZW50LCBvdXRwdXRzIGFuZCBrZXkgaW50ZXJtZWRpYXRlIHByb2R1Y3RzIGFyZSB3cml0dGVuIGFuZCByZWFkIGZyb20gZmlsZXMuIEVhY2ggZnVuY3Rpb24gY2hlY2tzIGlmIGFuIG91dHB1dCBmaWxlIGFscmVhZHkgZXhpc3RzIGJlZm9yZSBwZXJmb3JtaW5nIHRoZSBmdW5jdGlvbi4gSWYgdGhlIGZpbGUgZXhpc3RzLCB0aGF0IGZpbGUgaXMgcmVhZCBpbiBhbmQgcHJvdmlkZWQgYXMgb3V0cHV0LiBJZiB0aGUgZmlsZSBkb2VzIG5vdCBleGlzdCwgdGhlIGZ1bmN0aW9uIGlzIHBlcmZvcm1lZCwgd3JpdGVzIHRvIGZpbGUsIGFuZCB0aGVuIG91dHB1dHMuIElmIHlvdSB3b3VsZCBsaWtlIHRvIG92ZXJ3cml0ZSB0aGUgZXhpc3Rpbmcgb3V0cHV0LCB5b3UgY2FuIHNldCB0aGUgYXJndW1lbnQgYHJlZG8gPSBUUlVFYCAoZGVmYXVsdGVkIHRvIEZBTFNFKQoKCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFfQoKIyMgVGhlc2Ugc2hvdWxkIGFsbCBiZSBpbnN0YWxsZWQgYXMgZGVwZW5kZW5jaWVzIGZvciB0aGUgUEVNcHJlcHIgcGFja2FnZQpyZXF1aXJlKGdncGxvdDIpCnJlcXVpcmUoc2YpCnJlcXVpcmUodGVycmEpCnJlcXVpcmUodGlkeXZlcnNlKQpyZXF1aXJlKGJjZGF0YSkKcmVxdWlyZShtYWdyaXR0cikKcmVxdWlyZShwYmFwcGx5KQpyZXF1aXJlKGZ1dHVyZSkKcmVxdWlyZShwYXJhbGxlbCkKcmVxdWlyZShhcmNnaXNiaW5kaW5nKQpyZXF1aXJlKGxpZFIpCnJlcXVpcmUoc3VuY2FsYykKcmVxdWlyZShkZXZ0b29scykKcmVxdWlyZSh1c2V0aGlzKQoKdGVycmE6OnRlcnJhT3B0aW9ucyhvdmVyd3JpdGUgPSBULCB0b2Rpc2sgPSBULCB0ZW1wZGlyID0gdGVtcGRpcigpKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KAogIGNvbGxhcHNlID0gVFJVRSwKICBjb21tZW50ID0gIiM+IgopCmBgYAoKSW4gdGhlIGBzZXQtdXNlci1pbnB1dHNgIGNodW5rLCB5b3Ugd2lsbCBuZWVkIHRvIHByb3ZpZGUgdGhyZWUgdXNlciBpbnB1dHMsIGxpc3RlZCBiZWxvdy4gWW91IHNob3VsZCBvbmx5IG5lZWQgdG8gZG8gdGhpcyBPTkNFIGFuZCBub3QgdG91Y2ggaXQgYWdhaW4uCjEuIGBkYXRhLmRpcmAgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgIndvcmtpbmcgZGlyZWN0b3J5IiB3aGVyZSBhbGwgeW91ciBQRU0gZGF0YSB3aWxsIGJlIGdlbmVyYXRlZCBhbmQgc3RvcmVkLgoyLiBgYW9pLm5hbWVgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgQU9JIG5hbWUgdGhhdCB3aWxsIGJlIHVzZWQgdG8gbmFtZSB0aGUgZm9sZGVyIHdoZXJlIGFsbCB5b3VyIFBFTSBkYXRhIHdpbGwgYmUgZ2VuZXJhdGVkIGFuZCBzdG9yZWQuCjMuIGBhb2lgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgcGF0aCB0byB0aGUgZGVzaXJlZCBBT0kuCgpgYGB7ciBzZXQtdXNlci1pbnB1dHN9CgojIyBUZXN0aW5nIGlucHV0cwpkYXRhLmRpciA8LSAiRDovQ0NBX1BFTS9UZXN0X0FPSSIKYW9pLm5hbWUgPC0gIktpdGltYXQiCmFvaS5sb2MgPC0gIkQ6L0NDQV9QRU0vVGVzdF9BT0kvS2l0aW1hdF9QRU1fQU9JLnNocCIKCiMjIFBpcGVsaW5lIGlucHV0cwojIGRhdGEuZGlyIDwtICJFOi9QYXRoL1RvL0RhdGEvRHJpdmUiCiMgYW9pLm5hbWUgPC0gIiIKIyBhb2kubG9jIDwtICJFOi9QYXRoL1RvL0FPSSIKCmBgYAoKVGhlIGBzZXR1cC1mb2xkZXItc3RydWN0dXJlYCBjaHVuayBjcmVhdGVzIChpZiBub3QgYWxyZWFkeSBkb25lKSB0aGUgZm9sZGVycyB3aXRoaW4geW91ciBzcGVjaWZpYyBkYXRhIGRpcmVjdG9yeSB1c2luZyB0aGUgbmFtZSBvZiB0aGUgcHJvdmlkZWQgQU9JLiBZb3UgY2FuIGNoZWNrIG91dCB0aGUgZm9sZGVyIHN0cnVjdHVyZSBhdCB0aGUgcGF0aCBuYW1lIHNwZWNpZmllZCBpbiB0aGUgcHJpbnRlZCBvdXRwdXQuCgpgYGB7ciBzZXR1cC1mb2xkZXItc3RydWN0dXJlfQoKZi5pZHMgPC0gUEVNcHJlcHI6OnNldHVwX2ZvbGRlcnMyKGFvaS5uYW1lID0gYW9pLm5hbWUsIGRhdGEuZGlyID0gZGF0YS5kaXIpCnByaW50KGYuaWRzW1siZGlyXzBfQU9JIl1dKQoKYGBgCgpgYGB7ciBjcmVhdGUtYW9pLXRlbXBsYXRlc30KCnN0X3JlYWQoYW9pLmxvYykgJT4lCiAgc3Rfd3JpdGUoLiwgZHNuID0gc3RyaW5ncjo6c3RyX2MoZi5pZHNbWyJkaXJfMDAxMF92ZWN0b3IiXV1bMl0sICIvQU9JX29yaWdpbmFsLmdwa2ciKSwgYXBwZW5kID0gRikKCmFvaV9zbmFwMihmLmlkcyA9IGYuaWRzLCBtZXRob2QgPSAiZXhwYW5kIikKcHVsbF9vdXRwdXQoImFvaS5zbmFwcGVkIiwgZi5pZHMgPSBmLmlkcykKY3JlYXRlX3RlbXBsYXRlMihmLmlkcywgMjUpCgpgYGAK</div>
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+## Download of Lidar Data
+
+This next section details how to download pre-existing LiDAR data from the LidarBC open data catalogue. If you already have LiDAR data, you can dump all of it into the las folder
+
+At least once every six months, the index of available LiDAR files should be re-downloaded from the portal. The code chunk below will check the date of the most recent index and download a newer version if applicable and an ArcGIS license is available. It returns the file path of the relevant geopackage after this operation.
+
+If you need to update manually for some reason, the instructions to do this are as follows:
+
+1.  Navigate to LidarBC Map Grid
+    &lt;https://governmentofbc.maps.arcgis.com/home/item.html?id=5f6a1f31212a4cb2826743d2e52ef02a&gt;
+2.  Select `Open in ArcGIS Desktop` -\&gt; `Open in ArcGIS Pro`
+3.   Double click `item.pitemx` file to open in ArcGIS. This is also
+    stored in the `las_index_files` folder.
+4.  Download point cloud index layer (eg
+    `Point Cloud Index - 1:2,500 Grid`)
+5.  Use &quot;`Export Features`&quot; tool and save to the `las_index_files`
+    folder using the following format: &quot;`las_index_YYYY-MM-DD.shp`&quot;
+6.  Read this shapefile in as your index. Optional: export as `.gpkg`.
+
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIyBQdWxsIHRoZSBBT0kgaW5kZXhcbmluZGV4IDwtIG1ha2VfZ3BrZ19pbmRleCgpICU+JSBzdF9yZWFkKClcblxuYGBgIn0= --&gt;
+
+```r
+
+## Pull the AOI index
+index &lt;- make_gpkg_index() %&gt;% st_read()
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Here, we query the LiDAR data to create an index of tiles to be
+downloaded. This function creates an index of tiles called
+<code>aoi_index</code> to be downloaded in the
+<code>download_lidarbc</code> function. This output is written and read
+from the data folder if you’d like to review it. You can use the
+<code>keep.geometry = TRUE</code> argument to retain the spatial
+features of the tile index. This is useful if you want to view the tile
+coverage, but it is dropped by default as it slows the download
+process.</p>
+<p>Next is the download of the tiles. The <code>download_lidarbc</code>
+function takes the output list of tiles for the area from
+<code>aoi_index</code> and downloads them. This function also checks the
+projection of each tile according to the UTM Zone stated in the
+metadata. If the projection is incorrect or missing, the function
+re-projects the tile and overwrites the downloaded one. You can set the
+number of cores in the <code>cores</code> variable, which defaults to 6.
+Depending on the number of downloaded tiles, this typically takes hours
+to days to complete.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFF1ZXJ5IHRoZSBMaURBUkJDIGRhdGFiYXNlIGFuZCBjcmVhdGUgYW4gaW5kZXhcbnF1ZXJ5X2xpZGFyYmMoZGF0YS5wYXRoID0gZGF0YS5wYXRoLCBhb2kgPSBhb2ksIGluZGV4ID0gaW5kZXgpXG4jIERvd25sb2FkIHRoZSByZWxldmFudCB0aWxlcyBieSByZWFkaW5nIGZyb20gdGhlIGluZGV4XG5kb3dubG9hZF9saWRhcmJjKGRhdGEucGF0aCA9IGRhdGEucGF0aClcblxuYGBgIn0= -->
+<pre class="r"><code>
+# Query the LiDARBC database and create an index
+query_lidarbc(data.path = data.path, aoi = aoi, index = index)
+# Download the relevant tiles by reading from the index
+download_lidarbc(data.path = data.path)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We use the LAStools software to retile and normalize the data because
+it is the fastest and most efficient. The <code>setup_retile_file</code>
+and <code>setup_norm_file</code> functions create and execute a batch
+file from a series of LAStools templates to accomplish this. The
+<code>setup_DEM_file</code> and <code>setup_CHM_file</code> functions
+set up and execute batch files for creating DEM and CHM files. These
+surface models are computed for each tile at a 1m resolution and output
+as a raster; these rasters are then merged into one .tif file across the
+AOI at aggregate resolutions inputted by the user. Each function takes
+an integer vector of grid cell sizes in the <code>res</code> argument.
+The defaults are for 5m, 10m, and 20m rasters over the AOI. As before,
+the core argument can be specified for parallel processing, defaulting
+to 6.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG50YXJnZXQuZXBzZyA8LSByZWFkLmNzdihcInByb2plY3Rpb25fY29kZXMuY3N2XCIpICU+JVxuICB0aWJibGUoKSAlPiVcbiAgZmlsdGVyKHByb2plY3Rpb24gPT0gXCJ1dG0wOVwiKSAlPiVcbiAgcHVsbChwY3MuZXBzZylcblxuIyBDcmVhdGUgYW5kIGV4ZWN1dGUgcmV0aWxlIG9mIHBvaW50IGNsb3Vkc1xuc2V0dXBfcmV0aWxlX2ZpbGUoZGF0YS5wYXRoID0gZGF0YS5wYXRoLCBjb3JlcyA9IDEyTCkgJT4lIHNoZWxsLmV4ZWMoKVxuIyBDcmVhdGUgYW5kIGV4ZWN1dGUgbm9ybWFsaXphdGlvbiBvZiBwb2ludCBjbG91ZHNcbnNldHVwX25vcm1fZmlsZShkYXRhLnBhdGggPSBkYXRhLnBhdGgsIGNvcmVzID0gMTJMKSAlPiUgc2hlbGwuZXhlYygpXG4jIENyZWF0ZSBhbmQgZXhlY3V0ZSBERU0gbGF5ZXIgY3JlYXRpb25cbnNldHVwX0RFTV9maWxlKGRhdGEucGF0aCA9IGRhdGEucGF0aCwgZXBzZyA9IHRhcmdldC5lcHNnLCBjcmVhdGUgPSBGLCByZXMgPSAxLCBjb3JlcyA9IDEyTCkgJT4lIHNoZWxsLmV4ZWMoKVxuIyBDcmVhdGUgYW5kIGV4ZWN1dGUgQ0hNIGxheWVyIGNyZWF0aW9uXG5zZXR1cF9DSE1fZmlsZShkYXRhLnBhdGggPSBkYXRhLnBhdGgsIGVwc2cgPSB0YXJnZXQuZXBzZywgY29yZXMgPSA2TCkgJT4lIHNoZWxsLmV4ZWMoKVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+target.epsg &lt;- read.csv(&quot;projection_codes.csv&quot;) %&gt;%
+  tibble() %&gt;%
+  filter(projection == &quot;utm09&quot;) %&gt;%
+  pull(pcs.epsg)
+
+# Create and execute retile of point clouds
+setup_retile_file(data.path = data.path, cores = 12L) %&gt;% shell.exec()
+# Create and execute normalization of point clouds
+setup_norm_file(data.path = data.path, cores = 12L) %&gt;% shell.exec()
+# Create and execute DEM layer creation
+setup_DEM_file(data.path = data.path, epsg = target.epsg, create = F, res = 1, cores = 12L) %&gt;% shell.exec()
+# Create and execute CHM layer creation
+setup_CHM_file(data.path = data.path, epsg = target.epsg, cores = 6L) %&gt;% shell.exec()
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>EVERYTHING BELOW THIS POINT IS FROM THE ORIGINAL TEMPLATE</p>
+<div id="generation-of-covariates" class="section level1">
+<h1>Generation of covariates</h1>
+<p>Here we generate the terrain derived covariates. This is powered by
+<a href="https://saga-gis.sourceforge.io/en/index.html">SAGA-GIS</a>.
+Covariates are generated at multiple resolutions, for example 5, 10, and
+25m<sup>2</sup>.</p>
+<p>Steps to create the covariates</p>
+<ol style="list-style-type: decimal">
+<li>load a digital terrain model (<code>dtm</code>). Generally, this
+will be a high resolution model derived from lidar.</li>
+<li>align the <code>dtm</code> to the template. resample the
+<code>dtm</code> to the desired resolution – here we demonstrate using
+the 25m<sup>2</sup> templated created above.</li>
+<li>create the covariates</li>
+</ol>
+<div id="import-the-terrain-model" class="section level2">
+<h2>Import the terrain model</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHRtIDwtIHRlcnJhOjpyYXN0KHN5c3RlbS5maWxlKFwiZXh0ZGF0YS9hbGV6YV9udy50aWZcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBwYWNrYWdlID0gXCJQRU1wcmVwclwiKSlcbmR0bVxuYGBgIn0= -->
+<pre class="r"><code>dtm &lt;- terra::rast(system.file(&quot;extdata/aleza_nw.tif&quot;,
+                               package = &quot;PEMprepr&quot;))
+dtm</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="align-the-raster" class="section level2">
+<h2>Align the raster</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZHRtMjUgPC0gYWxpZ25fcmFzdGVyKGR0bSwgdDI1KVxuZHRtMjVcbmBgYCJ9 -->
+<pre class="r"><code>dtm25 &lt;- align_raster(dtm, t25)
+dtm25</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="create-the-covariates" class="section level2">
+<h2>Create the covariates</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbImxheWVyX29wdGlvbnMgPC0gIiwiICBjKFwiRmlsbGVkX3NpbmtzXCIsIFwic2lua3JvdXRlXCIsIFwiZGVtX3ByZXByb2NcIiwgIiwiICAgIFwic2xvcGVfYXNwZWN0X2N1cnZlXCIsIFwidENhdGNobWVudFwiLCBcInRjYVwiLCBcInNDYXRjaG1lbnRcIiwgIiwiICAgIFwidHdpXCIsIFwiY2hhbm5lbHNOZXR3b3JrXCIsIFwiRGlzdGFuY2UyV2F0ZXJcIiwgIiwiICAgIFwiTXVsdGlSZXNGbGF0bmVzc1wiLCBcIk11bHRpUmVzRmxhdG5lc3MyXCIsIiwiICAgIFwiTXVsdGlSZXNGbGF0bmVzczNcIiwgXCJUUklcIiwgXCJjb252ZXJnZW5jZVwiLCBcIk9wZW5uZXNzXCIsIiwiICAgIFwiZGFoXCIsIFwiVFBJXCIsIFwiUmlkZ2VWYWxsZXlcIiwgXCJNUk5cIiwgXCJGbG93QWNjdW11bGF0aW9uXCIsIiwiICAgIFwiU2xvcGVMZW5ndGhcIiwgXCJGbG93QWNjdW11bGF0aW9uMlwiLCBcIkZsb3dBY2N1bXVsYXRpb24zXCIsIiwiICAgIFwiRmxvd1BhdGhMZW5ndGhcIiwgXCJGbG93UGF0aExlbmd0aDJcIiwgXCJGbG93UGF0aExlbmd0aDNcIiwgIiwiICAgIFwiTFNGYWN0b3JcIiwgXCJTb2xhclJhZFwiLCBcIkNvbnZleGl0eVwiLCBcIlZlcnREaXN0YW5jZVwiLCBcIlRDSV9sb3dcIiwiLCIgICAgXCJTV0lcIiwgXCJXaW5kRXhwXCIsIFwiVGV4dHVyZVwiLCBcIlByb3RlY3Rpb25cIiwgXCJWUk1cIiwiLCIgICAgXCJNQklcIiwgXCJtc2NhbGVfVFBJXCIsIFwiUmVsUG9zaXRpb25cIiwgXCJTbG9wZUN1cnZhdHVyZXNcIiwiLCIgICAgXCJTdGVlcGVzdFNsb3BlXCIsIFwiVXBzbG9wZUFyZWFcIikiLCIiLCIiLCIiLCJjcmVhdGVfY292YXJpYXRlcyhkdG0gPSBkdG0yNSwgICAgICAgICAgICMjIHJhc3RlciBjcmVhdGVkIGFib3ZlIiwiICAgICAgICAgICAgICAgICAgU0FHQXBhdGggPSBcImM6L1NBR0EvXCIsICMjIFdoZXJlIFNBR0EgR0lTIGlzIGluc3RhbGxlZCIsIiAgICAgICAgICAgICAgICAgIG91dHB1dCA9IGZzdHIkY292X2RpciwgIyMgZnJvbSB0aGUgc2V0dXBfZm9sZGVycyBhYm92ZSIsIiAgICAgICAgICAgICAgICAgIGxheWVycyA9IFwiYWxsXCIpICAgICAgICAjIyB1c2UgYWxsIG9yIG9uZSBvZiB0aGUgYWJvdmUiXX0= -->
+<pre class="r"><code>layer_options &lt;- 
+  c(&quot;Filled_sinks&quot;, &quot;sinkroute&quot;, &quot;dem_preproc&quot;, 
+    &quot;slope_aspect_curve&quot;, &quot;tCatchment&quot;, &quot;tca&quot;, &quot;sCatchment&quot;, 
+    &quot;twi&quot;, &quot;channelsNetwork&quot;, &quot;Distance2Water&quot;, 
+    &quot;MultiResFlatness&quot;, &quot;MultiResFlatness2&quot;,
+    &quot;MultiResFlatness3&quot;, &quot;TRI&quot;, &quot;convergence&quot;, &quot;Openness&quot;,
+    &quot;dah&quot;, &quot;TPI&quot;, &quot;RidgeValley&quot;, &quot;MRN&quot;, &quot;FlowAccumulation&quot;,
+    &quot;SlopeLength&quot;, &quot;FlowAccumulation2&quot;, &quot;FlowAccumulation3&quot;,
+    &quot;FlowPathLength&quot;, &quot;FlowPathLength2&quot;, &quot;FlowPathLength3&quot;, 
+    &quot;LSFactor&quot;, &quot;SolarRad&quot;, &quot;Convexity&quot;, &quot;VertDistance&quot;, &quot;TCI_low&quot;,
+    &quot;SWI&quot;, &quot;WindExp&quot;, &quot;Texture&quot;, &quot;Protection&quot;, &quot;VRM&quot;,
+    &quot;MBI&quot;, &quot;mscale_TPI&quot;, &quot;RelPosition&quot;, &quot;SlopeCurvatures&quot;,
+    &quot;SteepestSlope&quot;, &quot;UpslopeArea&quot;)
+
+
+
+create_covariates(dtm = dtm25,           ## raster created above
+                  SAGApath = &quot;c:/SAGA/&quot;, ## Where SAGA GIS is installed
+                  output = fstr$cov_dir, ## from the setup_folders above
+                  layers = &quot;all&quot;)        ## use all or one of the above</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Note that the pre-defined output directory <code>fstr$cov_dir</code>,
+created using <code>setup_folders()</code>, is used to ensure generated
+covariates are saved to the correct location. Rasters are also saved
+into subfolders of the same resolution.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbImwgPC0gbGlzdC5maWxlcyhwYXRoID0gZnN0ciRjb3ZfZGlyLCBwYXR0ZXJuID0gXCIuc2RhdFwiLCIsIiAgICAgICAgICAgICAgICByZWN1cnNpdmUgPSBUUlVFKSIsImwgPC0gbFshZ3JlcGwoXCJ4bWxcIixsKV0iLCIiLCIjIyBjcmVhdGVkIGNvdmFyaWF0ZXMgIiwiaGVhZChsLCAyMCkiLCIiLCIjPiAgWzFdIFwiMjUvYXNwZWN0LnNkYXRcIiAgICAgICAgICAgICAgIiwiIz4gIFsyXSBcIjI1L2NuZXR3b3JrLnNkYXRcIiAgICAgICAgICAgICIsIiM+ICBbM10gXCIyNS9jb252ZXJnZW5jZS5zZGF0XCIgICAgICAgICAiLCIjPiAgWzRdIFwiMjUvY29udmV4aXR5LnNkYXRcIiAgICAgICAgICAgIiwiIz4gIFs1XSBcIjI1L2RhaC5zZGF0XCIgICAgICAgICAgICAgICAgICIsIiM+ICBbNl0gXCIyNS9kZW1fcHJlcHJvYy5zZGF0XCIgICAgICAgICAiLCIjPiAgWzddIFwiMjUvZGlmZmluc28uc2RhdFwiICAgICAgICAgICAgIiwiIz4gIFs4XSBcIjI1L2RpcmVpbnNvLnNkYXRcIiAgICAgICAgICAgICIsIiM+ICBbOV0gXCIyNS9kb3duX2N1cnYuc2RhdFwiICAgICAgICAgICAiLCIjPiBbMTBdIFwiMjUvZHRtLnNkYXRcIiAgICAgICAgICAgICAgICAgIiwiIz4gWzExXSBcIjI1L0ZpbGxlZF9zaW5rcy5zZGF0XCIgICAgICAgICIsIiM+IFsxMl0gXCIyNS9mbG93X2FjY3VtX2Z0LnNkYXRcIiAgICAgICAiLCIjPiBbMTNdIFwiMjUvZmxvd19hY2N1bV9wLnNkYXRcIiAgICAgICAgIiwiIz4gWzE0XSBcIjI1L2Zsb3dfYWNjdW1fdGQuc2RhdFwiICAgICAgICIsIiM+IFsxNV0gXCIyNS9mbG93bGVuZ3RoMS5zZGF0XCIgICAgICAgICAiLCIjPiBbMTZdIFwiMjUvRmxvd1BhdGhMZW5URC5zZGF0XCIgICAgICAgIiwiIz4gWzE3XSBcIjI1L2dlbmN1cnZlLnNkYXRcIiAgICAgICAgICAgICIsIiM+IFsxOF0gXCIyNS9oZGlzdG5vYi5zZGF0XCIgICAgICAgICAgICAiLCIjPiBbMTldIFwiMjUvbG9jYWxfY3Vydi5zZGF0XCIgICAgICAgICAgIiwiIz4gWzIwXSBcIjI1L2xvY2FsX2Rvd25zbG9wZV9jdXJ2LnNkYXRcIiJdfQ== -->
+<pre class="r"><code>l &lt;- list.files(path = fstr$cov_dir, pattern = &quot;.sdat&quot;,
+                recursive = TRUE)
+l &lt;- l[!grepl(&quot;xml&quot;,l)]
+
+## created covariates 
+head(l, 20)
+
+#&gt;  [1] &quot;25/aspect.sdat&quot;              
+#&gt;  [2] &quot;25/cnetwork.sdat&quot;            
+#&gt;  [3] &quot;25/convergence.sdat&quot;         
+#&gt;  [4] &quot;25/convexity.sdat&quot;           
+#&gt;  [5] &quot;25/dah.sdat&quot;                 
+#&gt;  [6] &quot;25/dem_preproc.sdat&quot;         
+#&gt;  [7] &quot;25/diffinso.sdat&quot;            
+#&gt;  [8] &quot;25/direinso.sdat&quot;            
+#&gt;  [9] &quot;25/down_curv.sdat&quot;           
+#&gt; [10] &quot;25/dtm.sdat&quot;                 
+#&gt; [11] &quot;25/Filled_sinks.sdat&quot;        
+#&gt; [12] &quot;25/flow_accum_ft.sdat&quot;       
+#&gt; [13] &quot;25/flow_accum_p.sdat&quot;        
+#&gt; [14] &quot;25/flow_accum_td.sdat&quot;       
+#&gt; [15] &quot;25/flowlength1.sdat&quot;         
+#&gt; [16] &quot;25/FlowPathLenTD.sdat&quot;       
+#&gt; [17] &quot;25/gencurve.sdat&quot;            
+#&gt; [18] &quot;25/hdistnob.sdat&quot;            
+#&gt; [19] &quot;25/local_curv.sdat&quot;          
+#&gt; [20] &quot;25/local_downslope_curv.sdat&quot;</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<center>
+<em>Note: As SAGA-GIS is used the files resulting files are all saved in
+<code>.sdat</code> format – this is read/writable by
+<code>terra::rast</code></em>
+</center>
+</div>
+</div>
+<div id="creation-of-the-multi-resolution-raster-stack" class="section level1">
+<h1>Creation of the multi-resolution raster stack</h1>
+<p>Generation of the covariates above is repeated for each resolution in
+the multi-resolution model. In order to make all of the rasters
+stackable, necessary for model and map generation, they must all have
+the same extent and resolution.</p>
+<p>The process above ensures they all have the same extent.</p>
+<p>Next the coarse resolution rasters are <em>disaggregated</em> to a
+fine scale resolution. This means that the data in the resulting raster
+is the data of the coarse-raster but in a fine scale format.</p>
+<center>
+<em>Note: it is highly recommended to use <code>full.names = TRUE</code>
+to list the files.</em>
+</center>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbIiMjIHdlIGNhbiB1c2UgdGhlIGxpc3Qgb2YgZmlsZXMgZnJvbSBhYm92ZSIsImwgPC0gbGlzdC5maWxlcyhwYXRoID0gZnN0ciRjb3ZfZGlyLCIsIiAgICAgICAgICAgICAgICBwYXR0ZXJuID0gXCIuc2RhdFwiLCIsIiAgICAgICAgICAgICAgICBmdWxsLm5hbWVzID0gVFJVRSwgIyMgVXNlIFRSVUUiLCIgICAgICAgICAgICAgICAgcmVjdXJzaXZlID0gVFJVRSkiLCJsIDwtIGxbIWdyZXBsKFwieG1sXCIsbCldIiwiIiwiIiwiY3JlYXRlX2ZpbmVfcmVzKGlucHV0RmlsZUxpc3QgPSBsWzE6NV0sICAgICAjIyB1c2luZyB0aGUgbGlzdCBvZiBmaWxlcyBhYm92ZSAgIiwiICAgICAgICAgICAgICAgIG91dHB1dCA9IGZzdHIkY292X2RpciwgIyMgZnJvbSBzZXR1cF9mb2xkZXJzKCkpIiwiICAgICAgICAgICAgICAgIHRhcmdldFJlcyA9IDUpIiwiIiwiIz4gWzFdIFwiUHJvY2Vzc2luZzogYWxlemEvMTBfY2xlYW5faW5wdXRzL2NvdmFyaWF0ZXMvMjUvYXNwZWN0LnNkYXRcIiIsIiM+IFsxXSBcIkNyZWF0ZWQ6IGFsZXphLzEwX2NsZWFuX2lucHV0cy9jb3ZhcmlhdGVzLzUvYXNwZWN0XzI1LnNkYXRcIiIsIiM+IFsxXSBcIlByb2Nlc3Npbmc6IGFsZXphLzEwX2NsZWFuX2lucHV0cy9jb3ZhcmlhdGVzLzI1L2NuZXR3b3JrLnNkYXRcIiIsIiM+IFsxXSBcIkNyZWF0ZWQ6IGFsZXphLzEwX2NsZWFuX2lucHV0cy9jb3ZhcmlhdGVzLzUvY25ldHdvcmtfMjUuc2RhdFwiIiwiIz4gWzFdIFwiUHJvY2Vzc2luZzogYWxlemEvMTBfY2xlYW5faW5wdXRzL2NvdmFyaWF0ZXMvMjUvY29udmVyZ2VuY2Uuc2RhdFwiIiwiIz4gWzFdIFwiQ3JlYXRlZDogYWxlemEvMTBfY2xlYW5faW5wdXRzL2NvdmFyaWF0ZXMvNS9jb252ZXJnZW5jZV8yNS5zZGF0XCIiLCIjPiAuLi4iXX0= -->
+<pre class="r"><code>## we can use the list of files from above
+l &lt;- list.files(path = fstr$cov_dir,
+                pattern = &quot;.sdat&quot;,
+                full.names = TRUE, ## Use TRUE
+                recursive = TRUE)
+l &lt;- l[!grepl(&quot;xml&quot;,l)]
+
+
+create_fine_res(inputFileList = l[1:5],     ## using the list of files above  
+                output = fstr$cov_dir, ## from setup_folders())
+                targetRes = 5)
+
+#&gt; [1] &quot;Processing: aleza/10_clean_inputs/covariates/25/aspect.sdat&quot;
+#&gt; [1] &quot;Created: aleza/10_clean_inputs/covariates/5/aspect_25.sdat&quot;
+#&gt; [1] &quot;Processing: aleza/10_clean_inputs/covariates/25/cnetwork.sdat&quot;
+#&gt; [1] &quot;Created: aleza/10_clean_inputs/covariates/5/cnetwork_25.sdat&quot;
+#&gt; [1] &quot;Processing: aleza/10_clean_inputs/covariates/25/convergence.sdat&quot;
+#&gt; [1] &quot;Created: aleza/10_clean_inputs/covariates/5/convergence_25.sdat&quot;
+#&gt; ...</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This script is a wrapper for <code>terra::disaggregate</code>.</p>
+</div>
+<div id="collection-of-vector-data" class="section level1">
+<h1>Collection of vector data</h1>
+<p>A standard set of Vector data is used for subsequent sample planning
+and is based on the <code>aoi</code>. This script collects numerous
+vector layers from the <a href="https://catalogue.data.gov.bc.ca">BC
+Data Catalogue</a> making use of the <a href="https://github.com/bcgov/bcdata"><code>bcdata</code></a>
+package</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjpbImNyZWF0ZV9iYXNlX3ZlY3RvcnMoaW5fYW9pID0gYW9pLCIsIiAgICAgICAgICAgICAgICAgICAgb3V0X3BhdGggPSBmc3RyJHNoYXBlX3Jhd19kaXIpIl19 -->
+<pre class="r"><code>create_base_vectors(in_aoi = aoi,
+                    out_path = fstr$shape_raw_dir)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>files are saved in <em>geopackage</em> format.</p>
+<!-- rnb-text-end -->
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUEVNcHJlcHIgUGlwZWxpbmUiCm91dHB1dDogaHRtbF9ub3RlYm9vawotLS0KClRoaXMgaXMgdGhlIFBFTXByZXByIGluc3RhbG1lbnQgb2YgdGhlIFBFTSBQcm9kdWN0aW9uIFBpcGVsaW5lLgoKRG93bmxvYWQgdGhpcyB0ZW1wbGF0ZSB0byB3aGVyZXZlciB5b3Uga2VlcCB5b3VyIFIgc2NyaXB0cyBhbmQgc2F2ZSBpdCB3aXRoIHRoZSBuYW1lIG9mIHlvdXIgQU9JIChlLmcuLCBwaXBlbGluZV9wcmVwcl9LaXRpbWF0LlJtZCkgb3IgaW4gYSBmb2xkZXIgbmFtZWQgYWZ0ZXIgdGhlIEFPSS4gV2UgcmVjb21tZW5kIHN0YXJ0aW5nIHdpdGggYSBmcmVzaCB0ZW1wbGF0ZSBmb3IgZWFjaCBBT0kuCgpJZiB0aGlzIGlzIHlvdXIgZmlyc3QgKG9yIHNlY29uZCwgb3IgdGhpcmQpIHRpbWUgdXNpbmcgdGhlIHBpcGVsaW5lLCB3ZSByZWNvbW1lbmQgcnVubmluZyB0aGUgY2h1bmtzIG9uZSBhdCBhIHRpbWUgYW5kIGNoZWNraW5nIHRoYXQgdGhlIGludGVybWVkaWF0ZSBvYmplY3RzIGFuZCBvdXRwdXRzIGFyZSB3aGF0IHlvdSBleHBlY3QuCgpSYXRoZXIgdGhhbiB3b3JraW5nIG9uIG9iamVjdHMgaW4gdGhlIGVudmlyb25tZW50LCBvdXRwdXRzIGFuZCBrZXkgaW50ZXJtZWRpYXRlIHByb2R1Y3RzIGFyZSB3cml0dGVuIGFuZCByZWFkIGZyb20gZmlsZXMuIEVhY2ggZnVuY3Rpb24gY2hlY2tzIGlmIGFuIG91dHB1dCBmaWxlIGFscmVhZHkgZXhpc3RzIGJlZm9yZSBwZXJmb3JtaW5nIHRoZSBmdW5jdGlvbi4gSWYgdGhlIGZpbGUgZXhpc3RzLCB0aGF0IGZpbGUgaXMgcmVhZCBpbiBhbmQgcHJvdmlkZWQgYXMgb3V0cHV0LiBJZiB0aGUgZmlsZSBkb2VzIG5vdCBleGlzdCwgdGhlIGZ1bmN0aW9uIGlzIHBlcmZvcm1lZCwgd3JpdGVzIHRvIGZpbGUsIGFuZCB0aGVuIG91dHB1dHMuIElmIHlvdSB3b3VsZCBsaWtlIHRvIG92ZXJ3cml0ZSB0aGUgZXhpc3Rpbmcgb3V0cHV0LCB5b3UgY2FuIHNldCB0aGUgYXJndW1lbnQgYHJlZG8gPSBUUlVFYCAoZGVmYXVsdGVkIHRvIEZBTFNFKQoKCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFfQoKIyMgVGhlc2Ugc2hvdWxkIGFsbCBiZSBpbnN0YWxsZWQgYXMgZGVwZW5kZW5jaWVzIGZvciB0aGUgUEVNcHJlcHIgcGFja2FnZQpyZXF1aXJlKGdncGxvdDIpCnJlcXVpcmUoc2YpCnJlcXVpcmUodGVycmEpCnJlcXVpcmUodGlkeXZlcnNlKQpyZXF1aXJlKGJjZGF0YSkKcmVxdWlyZShtYWdyaXR0cikKcmVxdWlyZShwYmFwcGx5KQpyZXF1aXJlKGZ1dHVyZSkKcmVxdWlyZShwYXJhbGxlbCkKcmVxdWlyZShhcmNnaXNiaW5kaW5nKQpyZXF1aXJlKGxpZFIpCnJlcXVpcmUoc3VuY2FsYykKcmVxdWlyZShkZXZ0b29scykKcmVxdWlyZSh1c2V0aGlzKQoKdGVycmE6OnRlcnJhT3B0aW9ucyhvdmVyd3JpdGUgPSBULCB0b2Rpc2sgPSBULCB0ZW1wZGlyID0gdGVtcGRpcigpKQoKa25pdHI6Om9wdHNfY2h1bmskc2V0KAogIGNvbGxhcHNlID0gVFJVRSwKICBjb21tZW50ID0gIiM+IgopCmBgYAoKSW4gdGhlIGBzZXQtdXNlci1pbnB1dHNgIGNodW5rLCB5b3Ugd2lsbCBuZWVkIHRvIHByb3ZpZGUgdGhyZWUgdXNlciBpbnB1dHMsIGxpc3RlZCBiZWxvdy4gWW91IHNob3VsZCBvbmx5IG5lZWQgdG8gZG8gdGhpcyBPTkNFIGFuZCBub3QgdG91Y2ggaXQgYWdhaW4uCjEuIGBkYXRhLmRpcmAgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgIndvcmtpbmcgZGlyZWN0b3J5IiB3aGVyZSBhbGwgeW91ciBQRU0gZGF0YSB3aWxsIGJlIGdlbmVyYXRlZCBhbmQgc3RvcmVkLgoyLiBgYW9pLm5hbWVgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgQU9JIG5hbWUgdGhhdCB3aWxsIGJlIHVzZWQgdG8gbmFtZSB0aGUgZm9sZGVyIHdoZXJlIGFsbCB5b3VyIFBFTSBkYXRhIHdpbGwgYmUgZ2VuZXJhdGVkIGFuZCBzdG9yZWQuCjMuIGBhb2lgKGNoYXJhY3RlciB2ZWN0b3IpOiB0aGUgcGF0aCB0byB0aGUgZGVzaXJlZCBBT0kuCgpgYGB7ciBzZXQtdXNlci1pbnB1dHN9CgojIyBUZXN0aW5nIGlucHV0cwpkYXRhLmRpciA8LSAiRDovQ0NBX1BFTS9UZXN0X0FPSSIKYW9pLm5hbWUgPC0gIktpdGltYXQiCmFvaS5sb2MgPC0gIkQ6L0NDQV9QRU0vVGVzdF9BT0kvS2l0aW1hdF9QRU1fQU9JLnNocCIKCiMjIFBpcGVsaW5lIGlucHV0cwojIGRhdGEuZGlyIDwtICJFOi9QYXRoL1RvL0RhdGEvRHJpdmUiCiMgYW9pLm5hbWUgPC0gIiIKIyBhb2kubG9jIDwtICJFOi9QYXRoL1RvL0FPSSIKCmBgYAoKVGhlIGBzZXR1cC1mb2xkZXItc3RydWN0dXJlYCBjaHVuayBjcmVhdGVzIChpZiBub3QgYWxyZWFkeSBkb25lKSB0aGUgZm9sZGVycyB3aXRoaW4geW91ciBzcGVjaWZpYyBkYXRhIGRpcmVjdG9yeSB1c2luZyB0aGUgbmFtZSBvZiB0aGUgcHJvdmlkZWQgQU9JLiBZb3UgY2FuIGNoZWNrIG91dCB0aGUgZm9sZGVyIHN0cnVjdHVyZSBhdCB0aGUgcGF0aCBuYW1lIHNwZWNpZmllZCBpbiB0aGUgcHJpbnRlZCBvdXRwdXQuCgpgYGB7ciBzZXR1cC1mb2xkZXItc3RydWN0dXJlfQoKZi5pZHMgPC0gUEVNcHJlcHI6OnNldHVwX2ZvbGRlcnMyKGFvaS5uYW1lID0gYW9pLm5hbWUsIGRhdGEuZGlyID0gZGF0YS5kaXIpCnByaW50KGYuaWRzW1siZGlyXzBfQU9JIl1dKQoKYGBgCgpgYGB7ciBjcmVhdGUtYW9pLXRlbXBsYXRlc30KCnN0X3JlYWQoYW9pLmxvYykgJT4lCiAgc3Rfd3JpdGUoLiwgZHNuID0gc3RyaW5ncjo6c3RyX2MoZi5pZHNbWyJkaXJfMDAxMF92ZWN0b3IiXV1bMl0sICIvQU9JX29yaWdpbmFsLmdwa2ciKSwgYXBwZW5kID0gRikKCmFvaV9zbmFwMihmLmlkcyA9IGYuaWRzLCBtZXRob2QgPSAiZXhwYW5kIikKcHVsbF9vdXRwdXQoImFvaS5zbmFwcGVkIiwgZi5pZHMgPSBmLmlkcykKY3JlYXRlX3RlbXBsYXRlMihmLmlkcywgMjUpCgpgYGAKCgojIyBEb3dubG9hZCBvZiBMaWRhciBEYXRhCgpUaGlzIG5leHQgc2VjdGlvbiBkZXRhaWxzIGhvdyB0byBkb3dubG9hZCBwcmUtZXhpc3RpbmcgTGlEQVIgZGF0YSBmcm9tIHRoZSBMaWRhckJDIG9wZW4gZGF0YSBjYXRhbG9ndWUuIElmIHlvdSBhbHJlYWR5IGhhdmUgTGlEQVIgZGF0YSwgeW91IGNhbiBkdW1wIGFsbCBvZiBpdCBpbnRvIHRoZSBsYXMgZm9sZGVyCgpBdCBsZWFzdCBvbmNlIGV2ZXJ5IHNpeCBtb250aHMsIHRoZSBpbmRleCBvZiBhdmFpbGFibGUgTGlEQVIgZmlsZXMgc2hvdWxkIGJlIHJlLWRvd25sb2FkZWQgZnJvbSB0aGUgcG9ydGFsLiBUaGUgY29kZSBjaHVuayBiZWxvdyB3aWxsIGNoZWNrIHRoZSBkYXRlIG9mIHRoZSBtb3N0IHJlY2VudCBpbmRleCBhbmQgZG93bmxvYWQgYSBuZXdlciB2ZXJzaW9uIGlmIGFwcGxpY2FibGUgYW5kIGFuIEFyY0dJUyBsaWNlbnNlIGlzIGF2YWlsYWJsZS4gSXQgcmV0dXJucyB0aGUgZmlsZSBwYXRoIG9mIHRoZSByZWxldmFudCBnZW9wYWNrYWdlIGFmdGVyIHRoaXMgb3BlcmF0aW9uLgoKSWYgeW91IG5lZWQgdG8gdXBkYXRlIG1hbnVhbGx5IGZvciBzb21lIHJlYXNvbiwgdGhlIGluc3RydWN0aW9ucyB0byBkbyB0aGlzIGFyZSBhcyBmb2xsb3dzOgoKMS4gIE5hdmlnYXRlIHRvIExpZGFyQkMgTWFwIEdyaWQKICAgIDxodHRwczovL2dvdmVybm1lbnRvZmJjLm1hcHMuYXJjZ2lzLmNvbS9ob21lL2l0ZW0uaHRtbD9pZD01ZjZhMWYzMTIxMmE0Y2IyODI2NzQzZDJlNTJlZjAyYT4KMi4gIFNlbGVjdCBgT3BlbiBpbiBBcmNHSVMgRGVza3RvcGAgLVw+IGBPcGVuIGluIEFyY0dJUyBQcm9gCjMuICAgRG91YmxlIGNsaWNrIGBpdGVtLnBpdGVteGAgZmlsZSB0byBvcGVuIGluIEFyY0dJUy4gVGhpcyBpcyBhbHNvCiAgICBzdG9yZWQgaW4gdGhlIGBsYXNfaW5kZXhfZmlsZXNgIGZvbGRlci4KNC4gIERvd25sb2FkIHBvaW50IGNsb3VkIGluZGV4IGxheWVyIChlZwogICAgYFBvaW50IENsb3VkIEluZGV4IC0gMToyLDUwMCBHcmlkYCkKNS4gIFVzZSAiYEV4cG9ydCBGZWF0dXJlc2AiIHRvb2wgYW5kIHNhdmUgdG8gdGhlIGBsYXNfaW5kZXhfZmlsZXNgCiAgICBmb2xkZXIgdXNpbmcgdGhlIGZvbGxvd2luZyBmb3JtYXQ6ICJgbGFzX2luZGV4X1lZWVktTU0tREQuc2hwYCIKNi4gIFJlYWQgdGhpcyBzaGFwZWZpbGUgaW4gYXMgeW91ciBpbmRleC4gT3B0aW9uYWw6IGV4cG9ydCBhcyBgLmdwa2dgLgoKYGBge3IgZ2V0LWxpZGFyLWxheWVyc30KCiMjIFB1bGwgdGhlIEFPSSBpbmRleAppbmRleCA8LSBtYWtlX2dwa2dfaW5kZXgoKSAlPiUgc3RfcmVhZCgpCgpgYGAKCkhlcmUsIHdlIHF1ZXJ5IHRoZSBMaURBUiBkYXRhIHRvIGNyZWF0ZSBhbiBpbmRleCBvZiB0aWxlcyB0byBiZSBkb3dubG9hZGVkLiBUaGlzIGZ1bmN0aW9uIGNyZWF0ZXMgYW4gaW5kZXggb2YgdGlsZXMgY2FsbGVkIGBhb2lfaW5kZXhgIHRvIGJlIGRvd25sb2FkZWQgaW4gdGhlIGBkb3dubG9hZF9saWRhcmJjYCBmdW5jdGlvbi4gVGhpcyBvdXRwdXQgaXMgd3JpdHRlbiBhbmQgcmVhZCBmcm9tIHRoZSBkYXRhIGZvbGRlciBpZiB5b3UnZCBsaWtlIHRvIHJldmlldyBpdC4gWW91IGNhbiB1c2UgdGhlIGBrZWVwLmdlb21ldHJ5ID0gVFJVRWAgYXJndW1lbnQgdG8gcmV0YWluIHRoZSBzcGF0aWFsIGZlYXR1cmVzIG9mIHRoZSB0aWxlIGluZGV4LiBUaGlzIGlzIHVzZWZ1bCBpZiB5b3Ugd2FudCB0byB2aWV3IHRoZSB0aWxlIGNvdmVyYWdlLCBidXQgaXQgaXMgZHJvcHBlZCBieSBkZWZhdWx0IGFzIGl0IHNsb3dzIHRoZSBkb3dubG9hZCBwcm9jZXNzLgoKTmV4dCBpcyB0aGUgZG93bmxvYWQgb2YgdGhlIHRpbGVzLiBUaGUgYGRvd25sb2FkX2xpZGFyYmNgIGZ1bmN0aW9uIHRha2VzIHRoZSBvdXRwdXQgbGlzdCBvZiB0aWxlcyBmb3IgdGhlIGFyZWEgZnJvbSBgYW9pX2luZGV4YCBhbmQgZG93bmxvYWRzIHRoZW0uIFRoaXMgZnVuY3Rpb24gYWxzbyBjaGVja3MgdGhlIHByb2plY3Rpb24gb2YgZWFjaCB0aWxlIGFjY29yZGluZyB0byB0aGUgVVRNIFpvbmUgc3RhdGVkIGluIHRoZSBtZXRhZGF0YS4gSWYgdGhlIHByb2plY3Rpb24gaXMgaW5jb3JyZWN0IG9yIG1pc3NpbmcsIHRoZSBmdW5jdGlvbiByZS1wcm9qZWN0cyB0aGUgdGlsZSBhbmQgb3ZlcndyaXRlcyB0aGUgZG93bmxvYWRlZCBvbmUuIFlvdSBjYW4gc2V0IHRoZSBudW1iZXIgb2YgY29yZXMgaW4gdGhlIGBjb3Jlc2AgdmFyaWFibGUsIHdoaWNoIGRlZmF1bHRzIHRvIDYuIERlcGVuZGluZyBvbiB0aGUgbnVtYmVyIG9mIGRvd25sb2FkZWQgdGlsZXMsIHRoaXMgdHlwaWNhbGx5IHRha2VzIGhvdXJzIHRvIGRheXMgdG8gY29tcGxldGUuCgpgYGB7ciBxdWVyeS1kb3dubG9hZH0KCiMgUXVlcnkgdGhlIExpREFSQkMgZGF0YWJhc2UgYW5kIGNyZWF0ZSBhbiBpbmRleApxdWVyeV9saWRhcmJjKGRhdGEucGF0aCA9IGRhdGEucGF0aCwgYW9pID0gYW9pLCBpbmRleCA9IGluZGV4KQojIERvd25sb2FkIHRoZSByZWxldmFudCB0aWxlcyBieSByZWFkaW5nIGZyb20gdGhlIGluZGV4CmRvd25sb2FkX2xpZGFyYmMoZGF0YS5wYXRoID0gZGF0YS5wYXRoKQoKYGBgCgpXZSB1c2UgdGhlIExBU3Rvb2xzIHNvZnR3YXJlIHRvIHJldGlsZSBhbmQgbm9ybWFsaXplIHRoZSBkYXRhIGJlY2F1c2UgaXQgaXMgdGhlIGZhc3Rlc3QgYW5kIG1vc3QgZWZmaWNpZW50LiBUaGUgYHNldHVwX3JldGlsZV9maWxlYCBhbmQgYHNldHVwX25vcm1fZmlsZWAgZnVuY3Rpb25zIGNyZWF0ZSBhbmQgZXhlY3V0ZSBhIGJhdGNoIGZpbGUgZnJvbSBhIHNlcmllcyBvZiBMQVN0b29scyB0ZW1wbGF0ZXMgdG8gYWNjb21wbGlzaCB0aGlzLiBUaGUgYHNldHVwX0RFTV9maWxlYCBhbmQgYHNldHVwX0NITV9maWxlYCBmdW5jdGlvbnMgc2V0IHVwIGFuZCBleGVjdXRlIGJhdGNoIGZpbGVzIGZvciBjcmVhdGluZyBERU0gYW5kIENITSBmaWxlcy4gVGhlc2Ugc3VyZmFjZSBtb2RlbHMgYXJlIGNvbXB1dGVkIGZvciBlYWNoIHRpbGUgYXQgYSAxbSByZXNvbHV0aW9uIGFuZCBvdXRwdXQgYXMgYSByYXN0ZXI7IHRoZXNlIHJhc3RlcnMgYXJlIHRoZW4gbWVyZ2VkIGludG8gb25lIC50aWYgZmlsZSBhY3Jvc3MgdGhlIEFPSSBhdCBhZ2dyZWdhdGUgcmVzb2x1dGlvbnMgaW5wdXR0ZWQgYnkgdGhlIHVzZXIuIEVhY2ggZnVuY3Rpb24gdGFrZXMgYW4gaW50ZWdlciB2ZWN0b3Igb2YgZ3JpZCBjZWxsIHNpemVzIGluIHRoZSBgcmVzYCBhcmd1bWVudC4gVGhlIGRlZmF1bHRzIGFyZSBmb3IgNW0sIDEwbSwgYW5kIDIwbSByYXN0ZXJzIG92ZXIgdGhlIEFPSS4gQXMgYmVmb3JlLCB0aGUgY29yZSBhcmd1bWVudCBjYW4gYmUgc3BlY2lmaWVkIGZvciBwYXJhbGxlbCBwcm9jZXNzaW5nLCBkZWZhdWx0aW5nIHRvIDYuCgpgYGB7ciBsYXN0b29scy1wcm9jZXNzfQoKdGFyZ2V0LmVwc2cgPC0gcmVhZC5jc3YoInByb2plY3Rpb25fY29kZXMuY3N2IikgJT4lCiAgdGliYmxlKCkgJT4lCiAgZmlsdGVyKHByb2plY3Rpb24gPT0gInV0bTA5IikgJT4lCiAgcHVsbChwY3MuZXBzZykKCiMgQ3JlYXRlIGFuZCBleGVjdXRlIHJldGlsZSBvZiBwb2ludCBjbG91ZHMKc2V0dXBfcmV0aWxlX2ZpbGUoZGF0YS5wYXRoID0gZGF0YS5wYXRoLCBjb3JlcyA9IDEyTCkgJT4lIHNoZWxsLmV4ZWMoKQojIENyZWF0ZSBhbmQgZXhlY3V0ZSBub3JtYWxpemF0aW9uIG9mIHBvaW50IGNsb3VkcwpzZXR1cF9ub3JtX2ZpbGUoZGF0YS5wYXRoID0gZGF0YS5wYXRoLCBjb3JlcyA9IDEyTCkgJT4lIHNoZWxsLmV4ZWMoKQojIENyZWF0ZSBhbmQgZXhlY3V0ZSBERU0gbGF5ZXIgY3JlYXRpb24Kc2V0dXBfREVNX2ZpbGUoZGF0YS5wYXRoID0gZGF0YS5wYXRoLCBlcHNnID0gdGFyZ2V0LmVwc2csIGNyZWF0ZSA9IEYsIHJlcyA9IDEsIGNvcmVzID0gMTJMKSAlPiUgc2hlbGwuZXhlYygpCiMgQ3JlYXRlIGFuZCBleGVjdXRlIENITSBsYXllciBjcmVhdGlvbgpzZXR1cF9DSE1fZmlsZShkYXRhLnBhdGggPSBkYXRhLnBhdGgsIGVwc2cgPSB0YXJnZXQuZXBzZywgY29yZXMgPSA2TCkgJT4lIHNoZWxsLmV4ZWMoKQoKYGBgCgpFVkVSWVRISU5HIEJFTE9XIFRISVMgUE9JTlQgSVMgRlJPTSBUSEUgT1JJR0lOQUwgVEVNUExBVEUKCiMgR2VuZXJhdGlvbiBvZiBjb3ZhcmlhdGVzCgpIZXJlIHdlIGdlbmVyYXRlIHRoZSB0ZXJyYWluIGRlcml2ZWQgY292YXJpYXRlcy4gVGhpcyBpcyBwb3dlcmVkIGJ5CltTQUdBLUdJU10oaHR0cHM6Ly9zYWdhLWdpcy5zb3VyY2Vmb3JnZS5pby9lbi9pbmRleC5odG1sKS4gQ292YXJpYXRlcwphcmUgZ2VuZXJhdGVkIGF0IG11bHRpcGxlIHJlc29sdXRpb25zLCBmb3IgZXhhbXBsZSA1LCAxMCwgYW5kIDI1bV4yXi4KClN0ZXBzIHRvIGNyZWF0ZSB0aGUgY292YXJpYXRlcwoKMS4gIGxvYWQgYSBkaWdpdGFsIHRlcnJhaW4gbW9kZWwgKGBkdG1gKS4gR2VuZXJhbGx5LCB0aGlzIHdpbGwgYmUgYSBoaWdoCiAgICByZXNvbHV0aW9uIG1vZGVsIGRlcml2ZWQgZnJvbSBsaWRhci4KMi4gIGFsaWduIHRoZSBgZHRtYCB0byB0aGUgdGVtcGxhdGUuIHJlc2FtcGxlIHRoZSBgZHRtYCB0byB0aGUgZGVzaXJlZAogICAgcmVzb2x1dGlvbiAtLSBoZXJlIHdlIGRlbW9uc3RyYXRlIHVzaW5nIHRoZSAyNW1eMl4gdGVtcGxhdGVkIGNyZWF0ZWQKICAgIGFib3ZlLgozLiAgY3JlYXRlIHRoZSBjb3ZhcmlhdGVzCgojIyBJbXBvcnQgdGhlIHRlcnJhaW4gbW9kZWwKCmBgYHtyfQpkdG0gPC0gdGVycmE6OnJhc3Qoc3lzdGVtLmZpbGUoImV4dGRhdGEvYWxlemFfbncudGlmIiwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBhY2thZ2UgPSAiUEVNcHJlcHIiKSkKZHRtCmBgYAoKYGBge3IsIGV2YWw9RkFMU0UsIGluY2x1ZGU9RkFMU0V9CiMjIEludmlzaWJsZSAtLSB1c2UgdGhpcyBtYW51YWxseSB0byBjcmVhdGUgdGhlIGdyYXBoaWMKbGlicmFyeSh0aWR5dGVycmEpICMjIGdncGxvdCB3aXRoIHJhc3RlcnMgCgpnIDwtIGdncGxvdCgpICsgCiAgZ2VvbV9zcGF0cmFzdGVyKGRhdGEgPSBkdG0pICsKICBzY2FsZV9maWxsX3doaXRlYm94X2MocGFsZXR0ZSA9ICJoaWdoX3JlbGllZiIpICsKICBnZW9tX3NmKGRhdGEgPSBhb2ksIGNvbG91ciA9ICJyZWQiLCBsd2QgPSAxLjUsIGZpbGwgPSBOQSkgKyAKICBsYWJzKHRpdGxlID0gIkFsZXphIExha2UgUkYiLAogICAgICAgc3VidGl0bGUgPSAiTm9ydGgtd2VzdCBjb3JuZXIiLAogICAgICAgZmlsbCA9ICJFbGV2YXRpb24iKSArIAogIHRoZW1lKGF4aXMudGV4dCA9IGVsZW1lbnRfdGV4dChzaXplID0gNikpCgpnZ3NhdmUoIi4vdmlnbmV0dGVzL2FsZXphX2FvaV9kdG0ucG5nIiwgZHBpID0gMTUwLCAKICAgICAgIGhlaWdodCA9IDQsIHdpZHRoID0gNS4yKQpgYGAKCmBgYHtyIGR0bS1hbmQtYW9pLCBlY2hvPUZBTFNFLCBmaWcuY2FwPSJBIHJhdyBkaWdpdGFsIHRlcnJhaW4gbW9kZWwgd2l0aCB0aGUgYXJlYS1vZi1pbnRlcmVzdCBub3RlZCBpbiByZWQuIEFsbCBwcm9jZXNzZWQgcmFzdGVycyB3aWxsIGFsaWduIHdpdGggdGhlIGFvaS4ifQoKa25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoIi4vYWxlemFfYW9pX2R0bS5wbmciKQpgYGAKCiMjIEFsaWduIHRoZSByYXN0ZXIKCmBgYHtyfQpkdG0yNSA8LSBhbGlnbl9yYXN0ZXIoZHRtLCB0MjUpCmR0bTI1CmBgYAoKIyMgQ3JlYXRlIHRoZSBjb3ZhcmlhdGVzCgpgYGB7ciwgZXZhbD1GQUxTRX0KbGF5ZXJfb3B0aW9ucyA8LSAKICBjKCJGaWxsZWRfc2lua3MiLCAic2lua3JvdXRlIiwgImRlbV9wcmVwcm9jIiwgCiAgICAic2xvcGVfYXNwZWN0X2N1cnZlIiwgInRDYXRjaG1lbnQiLCAidGNhIiwgInNDYXRjaG1lbnQiLCAKICAgICJ0d2kiLCAiY2hhbm5lbHNOZXR3b3JrIiwgIkRpc3RhbmNlMldhdGVyIiwgCiAgICAiTXVsdGlSZXNGbGF0bmVzcyIsICJNdWx0aVJlc0ZsYXRuZXNzMiIsCiAgICAiTXVsdGlSZXNGbGF0bmVzczMiLCAiVFJJIiwgImNvbnZlcmdlbmNlIiwgIk9wZW5uZXNzIiwKICAgICJkYWgiLCAiVFBJIiwgIlJpZGdlVmFsbGV5IiwgIk1STiIsICJGbG93QWNjdW11bGF0aW9uIiwKICAgICJTbG9wZUxlbmd0aCIsICJGbG93QWNjdW11bGF0aW9uMiIsICJGbG93QWNjdW11bGF0aW9uMyIsCiAgICAiRmxvd1BhdGhMZW5ndGgiLCAiRmxvd1BhdGhMZW5ndGgyIiwgIkZsb3dQYXRoTGVuZ3RoMyIsIAogICAgIkxTRmFjdG9yIiwgIlNvbGFyUmFkIiwgIkNvbnZleGl0eSIsICJWZXJ0RGlzdGFuY2UiLCAiVENJX2xvdyIsCiAgICAiU1dJIiwgIldpbmRFeHAiLCAiVGV4dHVyZSIsICJQcm90ZWN0aW9uIiwgIlZSTSIsCiAgICAiTUJJIiwgIm1zY2FsZV9UUEkiLCAiUmVsUG9zaXRpb24iLCAiU2xvcGVDdXJ2YXR1cmVzIiwKICAgICJTdGVlcGVzdFNsb3BlIiwgIlVwc2xvcGVBcmVhIikKCgoKY3JlYXRlX2NvdmFyaWF0ZXMoZHRtID0gZHRtMjUsICAgICAgICAgICAjIyByYXN0ZXIgY3JlYXRlZCBhYm92ZQogICAgICAgICAgICAgICAgICBTQUdBcGF0aCA9ICJjOi9TQUdBLyIsICMjIFdoZXJlIFNBR0EgR0lTIGlzIGluc3RhbGxlZAogICAgICAgICAgICAgICAgICBvdXRwdXQgPSBmc3RyJGNvdl9kaXIsICMjIGZyb20gdGhlIHNldHVwX2ZvbGRlcnMgYWJvdmUKICAgICAgICAgICAgICAgICAgbGF5ZXJzID0gImFsbCIpICAgICAgICAjIyB1c2UgYWxsIG9yIG9uZSBvZiB0aGUgYWJvdmUKCmBgYAoKTm90ZSB0aGF0IHRoZSBwcmUtZGVmaW5lZCBvdXRwdXQgZGlyZWN0b3J5IGBmc3RyJGNvdl9kaXJgLCBjcmVhdGVkIHVzaW5nCmBzZXR1cF9mb2xkZXJzKClgLCBpcyB1c2VkIHRvIGVuc3VyZSBnZW5lcmF0ZWQgY292YXJpYXRlcyBhcmUgc2F2ZWQgdG8KdGhlIGNvcnJlY3QgbG9jYXRpb24uIFJhc3RlcnMgYXJlIGFsc28gc2F2ZWQgaW50byBzdWJmb2xkZXJzIG9mIHRoZSBzYW1lCnJlc29sdXRpb24uCgpgYGB7ciwgZXZhbD1GQUxTRX0KbCA8LSBsaXN0LmZpbGVzKHBhdGggPSBmc3RyJGNvdl9kaXIsIHBhdHRlcm4gPSAiLnNkYXQiLAogICAgICAgICAgICAgICAgcmVjdXJzaXZlID0gVFJVRSkKbCA8LSBsWyFncmVwbCgieG1sIixsKV0KCiMjIGNyZWF0ZWQgY292YXJpYXRlcyAKaGVhZChsLCAyMCkKCiM+ICBbMV0gIjI1L2FzcGVjdC5zZGF0IiAgICAgICAgICAgICAgCiM+ICBbMl0gIjI1L2NuZXR3b3JrLnNkYXQiICAgICAgICAgICAgCiM+ICBbM10gIjI1L2NvbnZlcmdlbmNlLnNkYXQiICAgICAgICAgCiM+ICBbNF0gIjI1L2NvbnZleGl0eS5zZGF0IiAgICAgICAgICAgCiM+ICBbNV0gIjI1L2RhaC5zZGF0IiAgICAgICAgICAgICAgICAgCiM+ICBbNl0gIjI1L2RlbV9wcmVwcm9jLnNkYXQiICAgICAgICAgCiM+ICBbN10gIjI1L2RpZmZpbnNvLnNkYXQiICAgICAgICAgICAgCiM+ICBbOF0gIjI1L2RpcmVpbnNvLnNkYXQiICAgICAgICAgICAgCiM+ICBbOV0gIjI1L2Rvd25fY3Vydi5zZGF0IiAgICAgICAgICAgCiM+IFsxMF0gIjI1L2R0bS5zZGF0IiAgICAgICAgICAgICAgICAgCiM+IFsxMV0gIjI1L0ZpbGxlZF9zaW5rcy5zZGF0IiAgICAgICAgCiM+IFsxMl0gIjI1L2Zsb3dfYWNjdW1fZnQuc2RhdCIgICAgICAgCiM+IFsxM10gIjI1L2Zsb3dfYWNjdW1fcC5zZGF0IiAgICAgICAgCiM+IFsxNF0gIjI1L2Zsb3dfYWNjdW1fdGQuc2RhdCIgICAgICAgCiM+IFsxNV0gIjI1L2Zsb3dsZW5ndGgxLnNkYXQiICAgICAgICAgCiM+IFsxNl0gIjI1L0Zsb3dQYXRoTGVuVEQuc2RhdCIgICAgICAgCiM+IFsxN10gIjI1L2dlbmN1cnZlLnNkYXQiICAgICAgICAgICAgCiM+IFsxOF0gIjI1L2hkaXN0bm9iLnNkYXQiICAgICAgICAgICAgCiM+IFsxOV0gIjI1L2xvY2FsX2N1cnYuc2RhdCIgICAgICAgICAgCiM+IFsyMF0gIjI1L2xvY2FsX2Rvd25zbG9wZV9jdXJ2LnNkYXQiCmBgYAoKPGNlbnRlcj4qTm90ZTogQXMgU0FHQS1HSVMgaXMgdXNlZCB0aGUgZmlsZXMgcmVzdWx0aW5nIGZpbGVzIGFyZSBhbGwKc2F2ZWQgaW4gYC5zZGF0YCBmb3JtYXQgLS0gdGhpcyBpcyByZWFkL3dyaXRhYmxlIGJ5CmB0ZXJyYTo6cmFzdGAqPC9jZW50ZXI+CgojIENyZWF0aW9uIG9mIHRoZSBtdWx0aS1yZXNvbHV0aW9uIHJhc3RlciBzdGFjawoKR2VuZXJhdGlvbiBvZiB0aGUgY292YXJpYXRlcyBhYm92ZSBpcyByZXBlYXRlZCBmb3IgZWFjaCByZXNvbHV0aW9uIGluCnRoZSBtdWx0aS1yZXNvbHV0aW9uIG1vZGVsLiBJbiBvcmRlciB0byBtYWtlIGFsbCBvZiB0aGUgcmFzdGVycwpzdGFja2FibGUsIG5lY2Vzc2FyeSBmb3IgbW9kZWwgYW5kIG1hcCBnZW5lcmF0aW9uLCB0aGV5IG11c3QgYWxsIGhhdmUKdGhlIHNhbWUgZXh0ZW50IGFuZCByZXNvbHV0aW9uLgoKVGhlIHByb2Nlc3MgYWJvdmUgZW5zdXJlcyB0aGV5IGFsbCBoYXZlIHRoZSBzYW1lIGV4dGVudC4KCk5leHQgdGhlIGNvYXJzZSByZXNvbHV0aW9uIHJhc3RlcnMgYXJlICpkaXNhZ2dyZWdhdGVkKiB0byBhIGZpbmUgc2NhbGUKcmVzb2x1dGlvbi4gVGhpcyBtZWFucyB0aGF0IHRoZSBkYXRhIGluIHRoZSByZXN1bHRpbmcgcmFzdGVyIGlzIHRoZSBkYXRhCm9mIHRoZSBjb2Fyc2UtcmFzdGVyIGJ1dCBpbiBhIGZpbmUgc2NhbGUgZm9ybWF0LgoKPGNlbnRlcj4qTm90ZTogaXQgaXMgaGlnaGx5IHJlY29tbWVuZGVkIHRvIHVzZSBgZnVsbC5uYW1lcyA9IFRSVUVgIHRvCmxpc3QgdGhlIGZpbGVzLio8L2NlbnRlcj4KCmBgYHtyLCBldmFsPUZBTFNFfQojIyB3ZSBjYW4gdXNlIHRoZSBsaXN0IG9mIGZpbGVzIGZyb20gYWJvdmUKbCA8LSBsaXN0LmZpbGVzKHBhdGggPSBmc3RyJGNvdl9kaXIsCiAgICAgICAgICAgICAgICBwYXR0ZXJuID0gIi5zZGF0IiwKICAgICAgICAgICAgICAgIGZ1bGwubmFtZXMgPSBUUlVFLCAjIyBVc2UgVFJVRQogICAgICAgICAgICAgICAgcmVjdXJzaXZlID0gVFJVRSkKbCA8LSBsWyFncmVwbCgieG1sIixsKV0KCgpjcmVhdGVfZmluZV9yZXMoaW5wdXRGaWxlTGlzdCA9IGxbMTo1XSwgICAgICMjIHVzaW5nIHRoZSBsaXN0IG9mIGZpbGVzIGFib3ZlICAKICAgICAgICAgICAgICAgIG91dHB1dCA9IGZzdHIkY292X2RpciwgIyMgZnJvbSBzZXR1cF9mb2xkZXJzKCkpCiAgICAgICAgICAgICAgICB0YXJnZXRSZXMgPSA1KQoKIz4gWzFdICJQcm9jZXNzaW5nOiBhbGV6YS8xMF9jbGVhbl9pbnB1dHMvY292YXJpYXRlcy8yNS9hc3BlY3Quc2RhdCIKIz4gWzFdICJDcmVhdGVkOiBhbGV6YS8xMF9jbGVhbl9pbnB1dHMvY292YXJpYXRlcy81L2FzcGVjdF8yNS5zZGF0IgojPiBbMV0gIlByb2Nlc3Npbmc6IGFsZXphLzEwX2NsZWFuX2lucHV0cy9jb3ZhcmlhdGVzLzI1L2NuZXR3b3JrLnNkYXQiCiM+IFsxXSAiQ3JlYXRlZDogYWxlemEvMTBfY2xlYW5faW5wdXRzL2NvdmFyaWF0ZXMvNS9jbmV0d29ya18yNS5zZGF0IgojPiBbMV0gIlByb2Nlc3Npbmc6IGFsZXphLzEwX2NsZWFuX2lucHV0cy9jb3ZhcmlhdGVzLzI1L2NvbnZlcmdlbmNlLnNkYXQiCiM+IFsxXSAiQ3JlYXRlZDogYWxlemEvMTBfY2xlYW5faW5wdXRzL2NvdmFyaWF0ZXMvNS9jb252ZXJnZW5jZV8yNS5zZGF0IgojPiAuLi4KYGBgCgpUaGlzIHNjcmlwdCBpcyBhIHdyYXBwZXIgZm9yIGB0ZXJyYTo6ZGlzYWdncmVnYXRlYC4KCiMgQ29sbGVjdGlvbiBvZiB2ZWN0b3IgZGF0YQoKQSBzdGFuZGFyZCBzZXQgb2YgVmVjdG9yIGRhdGEgaXMgdXNlZCBmb3Igc3Vic2VxdWVudCBzYW1wbGUgcGxhbm5pbmcgYW5kCmlzIGJhc2VkIG9uIHRoZSBgYW9pYC4gVGhpcyBzY3JpcHQgY29sbGVjdHMgbnVtZXJvdXMgdmVjdG9yIGxheWVycyBmcm9tCnRoZSBbQkMgRGF0YSBDYXRhbG9ndWVdKGh0dHBzOi8vY2F0YWxvZ3VlLmRhdGEuZ292LmJjLmNhKSBtYWtpbmcgdXNlIG9mCnRoZSBbYGJjZGF0YWBdKGh0dHBzOi8vZ2l0aHViLmNvbS9iY2dvdi9iY2RhdGEpIHBhY2thZ2UKCmBgYHtyLCBldmFsPUZBTFNFfQpjcmVhdGVfYmFzZV92ZWN0b3JzKGluX2FvaSA9IGFvaSwKICAgICAgICAgICAgICAgICAgICBvdXRfcGF0aCA9IGZzdHIkc2hhcGVfcmF3X2RpcikKYGBgCgpmaWxlcyBhcmUgc2F2ZWQgaW4gKmdlb3BhY2thZ2UqIGZvcm1hdC4K</div>
 
 
 
